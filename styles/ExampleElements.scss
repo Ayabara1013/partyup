@@ -14,14 +14,14 @@
   color: black;
 
   &.sent {
-    flex-direction: row-reverse;
-    align-self: flex-end;
+    flex-direction: row-reverse !important;
+    align-self: flex-end  !important;
     margin-right: 0.25rem;
     background-color: aliceblue;
   }
 
   &.recieved {
-    align-self: flex-start;
+    align-self: flex-start !important;
     background-color: rgb(150, 109, 109);
   }
 }

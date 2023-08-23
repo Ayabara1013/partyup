@@ -1,87 +1,46 @@
 'use client'
 
-import Image from 'next/image'
-import '../styles/ExampleElements.scss';
-import ChatWindow from '@/components/ChatWindow';
 import React, { useState } from 'react';
 import ScrollableBox from '../components/ScrollableBox';
+import ExampleElements from '@/components/ExampleElements';
+
+
+
 
 export default function Home(props) {
   return (
-    <div>
-      <ScrollableBox />
+    <div className='chat-page'>
+      <div className='chat-window-row flex flex-row h-full gap-2'>
+        <ChatWindow name={'Canon'} />
+        <ChatWindow name={'Turn'} />
+        <ChatWindow name={'Open'} />
+      </div>
+
+      <div className='bottom-row'>
+
+      </div>
     </div>
   )
 }
 
-
-
-function generateMessages(count) {
-  let messages = [];
-  for (let i = 0; i < count; i++) {
-    let cl = i % 2 ? 'sent' : 'received';
-    messages.push(<div className={cl}>message {i}</div>);
-  }
-  return messages;
-}
-
-// function ChatWindow(props) {
-//   return (
-//     <div className='box w-1/2 overflow-x-hidden'
-//       style={{
-//         position: "relative", 
-//         height: "100%", 
-//         'overflow-y': "scroll"
-//        }}
-//     >
-//       <div
-//         style={{
-//           position: "relative"
-//         }}
-//       >
-//         {/* {children} */}
-//         <ExampleElements numElements={20}/>
-//       </div>
-//     </div>
-//   )
-// }
-
-export function ExampleElements({ numElements = 100 }) {
-  const elements = [];
-
-  function ExampleChatMessage({ num }) {
-    const senderClass = () => {
-      if (num % 2 == 0) return 'sent';
-      else return 'recieved';
-    }
-
-    return (
-      <div className={`example-message-element ${senderClass()}`}>
-        {/* <FontAwesomeIcon icon="fa-solid fa-user" /> */}
-        <div className='example-message-text'>Element {num}</div>
-      </div>
-    )
-  }
-  
-  for (let i = 0; i < numElements; i++) {
-    elements.push(<ExampleChatMessage key={i} num={i} />)
-  }
-  
-  elements.push(
-    <div key={numElements} className='example-message-element sent'>
-      {/* <FontAwesomeIcon icon="fa-solid fa-user" /> */}
-      <div className='example-message-text'>wee Special Element! also, {numElements}</div>
-    </div>
-  );
-  
-    
+function ChatWindow(props) {
+  const { name } = props;
   return (
-    <>
-      {elements}
-      
-      <div className='example-message-element'>warning</div>
-      <div className='example-message-element recieved'>recieved</div>
-      <div className='example-message-element sent'>sent</div>
-    </>
+    <div className='chat-window flex w-full flex-col p-2 gap-2'>
+      <h1 className='text-center text-3xl font-bold'>{name}</h1>
+      <div className="message-container flex  flex-col smooth-scroll">
+        {/* {Array.from({ length: 60 }, (_, index) => (
+          <div
+            key={index}
+            className='chat-message flex items-center justify-center py-2'>
+            {index + 1}
+          </div>
+        ))} */}
+
+        <ExampleElements numElements={50} />
+      </div>
+
+      <input />
+    </div>
   )
 }

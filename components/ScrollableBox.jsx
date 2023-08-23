@@ -1,30 +1,20 @@
-'use client'
+import React from 'react';
 
-// components/ScrollableBox.js
-import React, { useState } from 'react';
-
-const ScrollableBox = () => {
-  const [count, setCount] = useState(100);
-
-  const handleIncrement = () => {
-    setCount(count + 1);
-  };
-
+const ScrollableBox = (props) => {
   return (
-    <div className="w-full h-64 border rounded-lg overflow-hidden">
-      <div className="h-full overflow-y-scroll p-4">
-        {Array.from({ length: count }).map((_, index) => (
-          <div key={index} className=" bg-slate-500 mb-2 p-2">
-            Item {index + 1}
-          </div>
-        ))}
+    <div className="w-full h-full border border-gray-300 p-4">
+      <div className="message-area overflow-hidden">
+        <div className="message-container h-full overflow-y-scroll">
+          {Array.from({ length: 20 }, (_, index) => (
+            <div
+              key={index}
+              className="flex items-center justify-center border-b border-gray-200 py-2"
+            >
+              {index + 1}
+            </div>
+          ))}
+        </div>
       </div>
-      <button
-        className="w-full p-2 bg-blue-500 text-white"
-        onClick={handleIncrement}
-      >
-        Add Item
-      </button>
     </div>
   );
 };

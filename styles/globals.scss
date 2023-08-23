@@ -4,7 +4,7 @@
 
 // unified sizings
 $gap-1: 1rem;
-$nav-height: 6rem;
+$nav-height: 3rem;
 
 @mixin box-wrapper {
   margin: auto;
@@ -13,7 +13,7 @@ $nav-height: 6rem;
 
 @mixin base-styles {
   box-sizing: border-box;
-  // font-family: 'Cera Round Pro', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+  font-family: 'Cera Round Pro', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
   // font-weight: 500;
 }
 
@@ -28,7 +28,7 @@ $nav-height: 6rem;
 
 .dark {
   @layer components {
-    @apply bg-slate-900 text-white;
+    @apply z0 text-white;
   }
 }
 
@@ -39,21 +39,28 @@ $nav-height: 6rem;
 }
 
 .app-wrapper {
-  // height: calc(100% - $nav-height);
+  // height: calc(100% - 4rem);
+  max-height: calc(100% - ($nav-height * 2));
+  flex-grow: 1;
+  border: 1px dotted rgb(0, 255, 242);
+  margin: 0;
+  padding: 1rem;
 }
 
 .chat-page {
-  // @include box-wrapper;
-  // padding: 0;
-  // height: 100%;
+  height: 100%;
+
+  @layer components {
+    // @apply z1;
+  }
 }
   
 
 .chat-window {
-  // height: 100%;
+  height: 100%;
 
   @layer components {
-    @apply bg-slate-800;
+    @apply z1;
   }
 }
 
@@ -69,17 +76,22 @@ $nav-height: 6rem;
 }
 
 .message-container {
-  // display: flex;
-  // flex-direction: column;
-  // overflow-y: scroll;
-  // align-items: center;
+  overflow-y: scroll;
+
+  @layer components {
+    @apply smooth-scroll;
+  }
 }
 
+.chat-message {
+  @layer components {
+    @apply border-b border-gray-200;
+  }
+}
 
 .chat-log {
   ul {
     li {
-
       display: flex;
       flex-direction: row;
       align-items: center;
@@ -109,7 +121,7 @@ $nav-height: 6rem;
 .box {
   border: 1px dotted rgb(219, 72, 72);
   // padding: 0.5rem;
-  border-radius: 0.5rem;
+  // border-radius: 0.5rem;
   
   &.-blue {
     border-color: rgb(101, 214, 214);
@@ -141,6 +153,9 @@ $nav-height: 6rem;
 
 .z0 {
   border-radius: 0;
+  @layer components {
+    @apply bg-slate-900;
+  }
 }
 
 .z1 {
@@ -182,4 +197,20 @@ $nav-height: 6rem;
 
 .flex-fill {
   flex: 1 1 auto;
+}
+
+.smooth-scroll {
+  &::-webkit-scrollbar {
+    width: 0.5em;
+    height: 0.5em;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(255,255,255,.1);
+    border-radius: 3px;
+
+    &:hover {
+    background: rgba(255,255,255,.2);
+    }
+  }
 }

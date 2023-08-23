@@ -1,0 +1,20 @@
+npm install react-bootstrap bootstrap
+npm i bootstrap@5.3.1
+npm i --save @fortawesome/fontawesome-svg-core
+# Free icons styles
+npm i --save @fortawesome/free-solid-svg-icons
+npm i --save @fortawesome/free-regular-svg-icons
+npm i --save @fortawesome/react-fontawesome@latest
+
+# apparently sass is partially depreciated, see this post
+# https://stackoverflow.com/questions/70301395/setting-spacing-per-breakpoint-in-bootstrap-5
+npm install -g sass
+npm i sass --save-dev
+
+npm install firebase
+
+
+future (need setup?)
+# tailwinds
+npm install -D tailwindcss
+npx tailwindcss init
