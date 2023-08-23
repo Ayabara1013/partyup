@@ -25,6 +25,10 @@
     align-self: flex-start !important;
     // background-color: rgb(150, 109, 109);
   }
+
+  &.error {
+    align-items: center;
+  }
 }
 
 .chat-bubble {
