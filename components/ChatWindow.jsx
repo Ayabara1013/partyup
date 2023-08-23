@@ -1,30 +1,43 @@
-// components/ScrollableBox.js
-import React, { useState } from 'react';
+'use client'
 
-const ScrollableBox = () => {
-  const [count, setCount] = useState(1);
+import React from 'react';
+import ExampleElements from './ExampleElements';
 
-  const handleIncrement = () => {
-    setCount(count + 1);
-  };
+// font awesome imports
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCoffee, faHome, faUser, faPaperPlane, faAnglesDown, faHouse } from '@fortawesome/free-solid-svg-icons';
+library.add(faCoffee, faHome, faUser, faPaperPlane, faAnglesDown, faHouse);
 
+
+export default function ChatWindow(props) {
+  const { name } = props;
   return (
-    <div className="w-full h-64 border rounded-lg overflow-hidden">
-      <div className="h-full overflow-y-scroll p-4">
-        {Array.from({ length: count }).map((_, index) => (
-          <div key={index} className="border-b p-2">
-            Item {index + 1}
+    <div className='chat-window w-full p-2 gap-2'>
+      {/* <h1 className='text-center text-3xl font-bold'><FontAwesomeIcon icon="fa-solid fa-user" />{name}</h1> */}
+      <FontAwesomeIcon icon="fa-solid fa-user" />
+      <div className="message-container flex  flex-col smooth-scroll">
+        {/* {Array.from({ length: 60 }, (_, index) => (
+          <div
+            key={index}
+            className='chat-message flex items-center justify-center py-2'>
+            {index + 1}
           </div>
-        ))}
-      </div>
-      <button
-        className="w-full p-2 bg-blue-500 text-white"
-        onClick={handleIncrement}
-      >
-        Add Item
-      </button>
-    </div>
-  );
-};
+        ))} */}
 
-export default ScrollableBox;
+        <ExampleElements numElements={50} />
+      </div>
+
+      <InputField />
+    </div>
+  )
+}
+
+
+function InputField(props) {
+  return (
+    <div className='chat-form'>
+      <input />
+    </div>
+  )
+}

@@ -1,8 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
+
+import '../styles/ExampleElements.scss'
+
+// font awesome imports
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-import '../styles/ExampleElements.scss';
+import { faCoffee, faHome, faUser, faPaperPlane, faAnglesDown, faHouse } from '@fortawesome/free-solid-svg-icons';
+library.add(faCoffee, faHome, faUser, faPaperPlane, faAnglesDown, faHouse);
 
 
 
@@ -35,7 +39,7 @@ function ExampleElements({ numElements = 100 }) {
   
   elements.push(
     <div key={numElements} className='example-message-element sent'>
-      {/* <FontAwesomeIcon icon="fa-solid fa-user" /> */}
+      <FontAwesomeIcon icon="fa-solid fa-user" />
       <div className='example-message-text'>wee Special Element! also, {numElements}</div>
     </div>
   );
