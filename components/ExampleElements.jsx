@@ -15,14 +15,20 @@ function ExampleElements({ numElements = 100 }) {
 
   function ExampleChatMessage({ num }) {
     const senderClass = () => {
-      if (num % 2 == 0) return 'sent';
-      else return 'recieved';
+      if (num % 2 == 0) return 'sent chat-end';
+      else return 'recieved chat-start';
+    }
+
+    const colourClass = () => {
+      if (num % 2 == 0) return 'chat-bubble-primary';
+      else return 'chat-bubble-secondary';
     }
 
     return (
-      <div className={`example-message-element ${senderClass()}`}>
-        <FontAwesomeIcon icon="fa-solid fa-user" />
-        <div className='example-message-text'>Element {num}</div>
+      <div className={`example-message-element chat ${senderClass()}`}>
+        <div className={`chat-bubble ${colourClass()}`}>
+          hello world hello world 
+        </div>
       </div>
     )
   }

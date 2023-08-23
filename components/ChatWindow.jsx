@@ -13,10 +13,10 @@ library.add(faCoffee, faHome, faUser, faPaperPlane, faAnglesDown, faHouse);
 export default function ChatWindow(props) {
   const { name } = props;
   return (
-    <div className='chat-window w-full p-2 gap-2'>
-      {/* <h1 className='text-center text-3xl font-bold'><FontAwesomeIcon icon="fa-solid fa-user" />{name}</h1> */}
-      <FontAwesomeIcon icon="fa-solid fa-user" />
-      <div className="message-container flex  flex-col smooth-scroll">
+    <div className='chat-window w-full p-2 gap-2 bg-gray-800'>
+      <h1 className='text-center text-3xl font-bold'><FontAwesomeIcon icon="fa-solid fa-user" />{name}</h1>
+      {/* <FontAwesomeIcon icon="fa-solid fa-user" /> */}
+      <div className="message-container flex  flex-col smooth-scroll p-2">
         {/* {Array.from({ length: 60 }, (_, index) => (
           <div
             key={index}
@@ -29,6 +29,8 @@ export default function ChatWindow(props) {
       </div>
 
       <InputField />
+
+      
     </div>
   )
 }
@@ -36,8 +38,10 @@ export default function ChatWindow(props) {
 
 function InputField(props) {
   return (
-    <div className='chat-form'>
-      <input />
+    <div className='chat-text-input flex gap-2'>
+      <input type="text" placeholder="Type here" className="input input-bordered input-secondary w-full" />
+
+      <button className="btn"><FontAwesomeIcon icon="fa-solid fa-paper-plane" /></button>
     </div>
   )
 }

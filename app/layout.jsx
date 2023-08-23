@@ -15,11 +15,11 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" data-theme="night">
       <head>
         <link href="https://fonts.cdnfonts.com/css/cera-round-pro" rel="stylesheet"></link>
       </head>
-      
+
       <body className={`app dark flex flex-col max-h-screen`}>
         <NavigationBar />
 
@@ -35,12 +35,12 @@ export default function RootLayout({ children }) {
 
 function NavigationBar(props) {
   return (
-    <div className='z1 h-12'>navbar</div>
+    <div className='h-12'>navbar</div>
   )
 }
 
 function Footer(props) {
   return (
-    <div className='z1 h-12'>footer</div>
+    <div className='h-12'>footer</div>
   )
 }

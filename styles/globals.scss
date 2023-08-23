@@ -24,47 +24,36 @@ $nav-height: 3rem;
   @include base-styles();
 }
 
-
-
 .dark {
   @layer components {
-    @apply z0 text-white;
+    @apply text-white;
   }
 }
 
 .app {
   height: 100vh;
   // overflow-y: hidden;
-  border: 1px dotted red;
+  // border: 1px dotted red;
 }
 
 .app-wrapper {
   // height: calc(100% - 4rem);
   max-height: calc(100% - ($nav-height * 2));
   flex-grow: 1;
-  border: 1px dotted rgb(0, 255, 242);
+  // border: 1px dotted rgb(0, 255, 242);
   margin: 0;
   padding: 1rem;
 }
 
 .chat-page {
   height: 100%;
-
-  @layer components {
-    // @apply z1;
-  }
 }
   
 
 .chat-window {
   display: flex;
   flex-direction: column;
-  // align-items: center;
   height: 100%;
-
-  @layer components {
-    @apply z1;
-  }
 }
 
 .message-area {
@@ -80,7 +69,9 @@ $nav-height: 3rem;
 
 .message-container {
   overflow-y: scroll;
-  align-items: center;
+  overflow-x: hidden;
+  // align-items: center;
+
 
   @layer components {
     @apply smooth-scroll;
@@ -115,7 +106,6 @@ $nav-height: 3rem;
 }
 
 .user-icon {
-  // height: 100%;
   @layer components {
     @apply h-full border p-4;
 
