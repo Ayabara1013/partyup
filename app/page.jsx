@@ -9,7 +9,7 @@ import ChatWindow from '@/components/ChatWindow';
 function Home(props) {
   return (
     <div className='chat-page'>
-      <div className='chat-window-row flex flex-row h-full gap-2'>
+      <div className='chat-window-row flex flex-row h-full gap-4'>
         <ChatWindow name='Canon' />
         <ChatWindow name='Turn' />
         <ChatWindow name='Open' />
