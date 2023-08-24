@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 
 import '../styles/ExampleElements.scss'
 
@@ -14,19 +14,13 @@ function ExampleElements({ numElements = 100 }) {
   const elements = [];
 
   function ExampleChatMessage({ num }) {
-    const senderClass = () => {
-      if (num % 2 == 0) return 'chat-end';
-      else return 'chat-start';
-    }
 
-    const colourClass = () => {
-      if (num % 2 == 0) return 'chat-bubble-primary';
-      else return 'chat-bubble-secondary';
-    }
+    const senderClass = (num % 2 == 0) ? 'chat-end' : 'chat-start';
+    const colourClass = (num % 2 == 0) ? 'chat-bubble-primary' : 'chat-bubble-secondary';
 
     return (
-      <div className={`chat ${senderClass()}`}>
-        <div className={`chat-bubble ${colourClass()}`}>
+      <div className={`chat ${senderClass}`}>
+        <div className={`chat-bubble ${colourClass}`}>
           hello world hello world 
         </div>
       </div>
@@ -36,19 +30,12 @@ function ExampleElements({ numElements = 100 }) {
   for (let i = 0; i < numElements; i++) {
     elements.push(<ExampleChatMessage key={i} num={i} />)
   }
-  
-  // elements.push(
-  //   <div key={numElements} className='example-message-element sent'>
-  //     <FontAwesomeIcon icon="fa-solid fa-user" />
-  //     <div className='example-message-text'>wee Special Element! also, {numElements}</div>
-  //   </div>
-  // );
     
   return (
     <>
       {elements}
-
-      
+      <ExampleStart />
+      <ExampleEnd />
     </>
   )
 }
@@ -56,13 +43,35 @@ function ExampleElements({ numElements = 100 }) {
 function ExampleElement(props) {
   const { numElements, senderClass, colourClass } = props;
   return (
-    <div key={numElements} className={`chat ${senderClass || `chat-start`}`}>
-      <FontAwesomeIcon icon="fa-solid fa-user" />
-      <div className={`chat-bubble ${colourClass || 'chat-bubble-error'}`}>
-          wee Special Element! also, {numElements} 
+    <div key={numElements} className={`chat chat`}>
+      <div className={`chat-bubble chat-bubble-primary`}>
+        hello world hello world
       </div>
-      {/* <div className='example-message-text'></div> */}
     </div>
+  )
+}
+
+export const ExampleStart = () => {
+  return (
+    <>
+      <div className="chat chat-start">
+        <div className="chat-bubble">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. In iaculis nibh commodo turpis porttitor, eu condimentum libero fringilla. Quisque nibh ipsum, pulvinar sed mi sed, blandit dapibus risus. Nullam in elementum sem.
+        </div>
+      </div>
+    </>
+  )
+}
+
+export const ExampleEnd = () => {
+  return (
+    <>
+      <div className="chat chat-end">
+        <div className="chat-bubble">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. In iaculis nibh commodo turpis porttitor, eu condimentum libero fringilla. Quisque nibh ipsum, pulvinar sed mi sed, blandit dapibus risus. Nullam in elementum sem.
+        </div>
+      </div>
+    </>
   )
 }
 

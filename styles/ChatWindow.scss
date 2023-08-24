@@ -9,7 +9,7 @@
 
 .chat-window {
   @layer components {
-    @apply bg-neutral text-white;
+    @apply bg-base-100;
   }
 }
 
@@ -19,29 +19,21 @@
   // width: $chat-element-width;
   // min-width: $min-chat-element-width;
   // max-width: $max-chat-element-width;
-
-  // &.chat-start {
-  //   .chat-bubble {
-  //     text-align: start;
-  //   }
-  // }
-
-  // &.chat-end {
-  //   .chat-bubble {
-  //     text-align: end;
-  //   }
-  // }
-  // color: white;
 }
 
 .chat-bubble {
   min-width: 50%;
-  // justify-content: flex-start;
+  
   @layer components {
-    @apply bg-base-100;
+    // @apply;
   }
 }
 
 .chat-bubble:before {
   content: none;
+}
+
+.send-button {
+  // background-color: white;
+  color: white;
 }

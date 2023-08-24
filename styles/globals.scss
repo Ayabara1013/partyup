@@ -20,9 +20,9 @@ $nav-height: 3rem;
 
 
 // --- top to bottom ~ --- //
-* {
-  @include base-styles();
-}
+// body {
+//   @include base-styles();
+// }
 
 .dark {
   @layer components {
@@ -30,7 +30,12 @@ $nav-height: 3rem;
   }
 }
 
+.icon {
+  // height: auto;
+}
+
 .app {
+  @include base-styles();
   height: 100vh;
   // overflow-y: hidden;
   // border: 1px dotted red;

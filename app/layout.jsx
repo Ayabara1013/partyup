@@ -1,8 +1,7 @@
 import Link from 'next/link';
 import '../styles/globals.scss';
 import { Inter } from 'next/font/google';
-import { ExampleElements } from './page';
-
+import NavigationBar from '../components/NavigationBar';
 
 const inter = Inter({ subsets: ['latin'], });
 
@@ -20,8 +19,9 @@ export default function RootLayout({ children }) {
         <link href="https://fonts.cdnfonts.com/css/cera-round-pro" rel="stylesheet"></link>
       </head>
 
-      <body className={`app dark flex flex-col max-h-screen`}>
-        <NavigationBar />
+      <body className={`app flex flex-col max-h-screen`}>
+      {/* bg-base-200 */}
+        <NavigationBar /> 
 
         <main className='app-wrapper'>
           {children}
@@ -33,14 +33,8 @@ export default function RootLayout({ children }) {
   )
 }
 
-function NavigationBar(props) {
-  return (
-    <div className='h-12'>navbar</div>
-  )
-}
-
 function Footer(props) {
   return (
-    <div className='h-12'>footer</div>
+    <div className='h-12 bg-base-100'>footer</div>
   )
 }
