@@ -18,6 +18,14 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
+## Required Packages
+(I dont entirely know how to make it mandatory or synced, but regardless I'm going to list them here as I think of them)
+
+1. Next JS
+2. Tailwind CSS
+    1. DaisyUI
+3. Sass/SCSS
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
