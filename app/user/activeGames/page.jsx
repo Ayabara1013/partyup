@@ -2,11 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import {useContext, useEffect} from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 
 import LoadingUi from "@/components/LoadinUi";
 import PageLayout from "@/components/PageLayout";
-import { userAuth } from "@/firebase/base";
 import { gameManagement } from "@/firebase/gameManagement";
 import { ApplicationContext } from "@/app/ApplicationContext";
 

@@ -7,7 +7,6 @@ import { useContext, useEffect, useState } from "react";
 import { ui } from "@/util/ui";
 import { userAuth } from "@/firebase/base";
 import { messaging } from "@/firebase/messaging";
-import { gameManagement } from "@/firebase/gameManagement";
 import { ApplicationContext } from "@/app/ApplicationContext";
 
 export default function Page({params}) {
