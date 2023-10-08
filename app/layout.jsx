@@ -1,8 +1,10 @@
-import Link from 'next/link';
 import '../styles/globals.scss';
 import { Inter } from 'next/font/google';
-import { ExampleElements } from './page';
 
+import { ui } from "@/util/ui";
+import NavBar from "@/components/NavBar";
+import LoadingUi from "@/components/LoadinUi";
+import { Application } from "@/app/ApplicationContext";
 
 const inter = Inter({ subsets: ['latin'], });
 
@@ -13,28 +15,30 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} app dark flex flex-col max-h-screen`}>
-        <NavBar />
-
-        <main className='flex-grow box m-2'>
-          {children}
-        </main>
-
-        <Footer />
+      <html lang="en">
+      <body className={inter.className}>
+      <Application>
+          <NavBar/>
+          <main className="">
+              <div className="flex flex-col routeLoad">
+                  <LoadingUi/>
+              </div>
+              {children}
+          </main>
+          <Footer/>
+      </Application>
       </body>
-    </html>
+      </html>
   )
 }
 
-function NavBar(props) {
+function Footer() {
   return (
-    <div className='z1 h-12'>navbar</div>
-  )
-}
-
-function Footer(props) {
-  return (
-    <div className='z1 h-12'>footer</div>
+    <div className='z1'>
+        <div className="alert" id={ui.mainLayout.alert.id}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span id={ui.mainLayout.alertMessage.id}/>
+        </div>
+    </div>
   )
 }

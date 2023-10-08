@@ -1,0 +1,190 @@
+@use "styles/basicClasses";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// unified sizings
+$gap-1: 1rem;
+
+$nav-height: 6rem;
+
+@mixin box-wrapper {
+  margin: auto;
+  padding: $gap-1;
+}
+
+@mixin base-styles {
+  box-sizing: border-box;
+  // font-family: 'Cera Round Pro', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+  // font-weight: 500;
+}
+
+// --- top to bottom ~ --- //
+* {
+  @include base-styles();
+}
+
+textarea{
+  resize: none;
+}
+
+
+.dark {
+  @layer components {
+    @apply bg-slate-900 text-white;
+  }
+}
+
+.app {
+  height: 100vh;
+  // overflow-y: hidden;
+  border: 1px dotted red;
+}
+
+.app-wrapper {
+  // height: calc(100% - $nav-height);
+}
+
+.chat-page {
+  // @include box-wrapper;
+  // padding: 0;
+  // height: 100%;
+}
+
+
+.chat-window {
+  // height: 100%;
+
+  @layer components {
+    @apply bg-slate-800;
+  }
+}
+
+.message-area {
+  // // display: flex;
+  // // flex-direction: column;
+  // position: relative;
+  // // margin: 0;
+  // // padding: 0;
+  // height: 100%;
+  // overflow-y: hidden;
+  // // background-color: #325D57;
+}
+
+.message-container {
+  // display: flex;
+  // flex-direction: column;
+  // overflow-y: scroll;
+  // align-items: center;
+}
+
+
+.chat-log {
+  ul {
+    li {
+
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      @layer components {
+        @apply mb-2 bg-slate-600 p-2 gap-2;
+      }
+
+      &.sent {
+        flex-direction: row-reverse;
+        @layer components {
+          @apply bg-slate-500; //border-green-500
+        }
+      }
+    }
+  }
+}
+
+.user-icon {
+  // height: 100%;
+  @layer components {
+    @apply h-full border p-4;
+
+  }
+}
+
+.box {
+  border: 1px dotted rgb(219, 72, 72);
+  // padding: 0.5rem;
+  border-radius: 0.5rem;
+
+  &.-blue {
+    border-color: rgb(101, 214, 214);
+  }
+
+  &.-green {
+    border-color: rgb(110, 214, 101);
+  }
+
+  &.-white {
+    border-color: rgb(255, 255, 255);
+  }
+
+  &.-red {
+    border-color: rgb(219, 72, 72);
+    @layer components {
+      @apply bg-slate-500;
+    }
+  }
+
+  &.-yellow {
+    border-color: rgb(219, 219, 72);
+  }
+
+  &.-purple {
+    border-color: rgb(219, 72, 219);
+  }
+}
+
+.z0 {
+  border-radius: 0;
+}
+
+.z1 {
+  @layer components {
+    @apply bg-slate-800;
+  }
+}
+
+.z2 {
+  @layer components {
+    @apply bg-slate-700;
+  }
+}
+
+.z3 {
+  @layer components {
+    @apply bg-slate-600;
+  }
+}
+
+.z4 {
+  @layer components {
+    @apply bg-slate-500;
+  }
+}
+
+.z5 {
+  @layer components {
+    @apply bg-slate-400;
+  }
+}
+
+.z6 {
+  @layer components {
+    @apply bg-slate-300;
+  }
+}
+
+
+.flex-fill {
+  height: 80%;
+  flex: 1 1 auto;
+}
