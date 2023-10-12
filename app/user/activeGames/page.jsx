@@ -1,17 +1,21 @@
 'use client'
 
 import { useRouter } from "next/navigation";
-import {useContext, useEffect} from "react";
+import { useContext, useEffect } from "react";
 
 import LoadingUi from "@/components/LoadinUi";
 import PageLayout from "@/components/PageLayout";
-import { gameManagement } from "@/firebase/gameManagement";
+
+import { alertUser } from "@/util/functions";
+
+import { baseUrl } from "@/util/baseUrl";
+import { fbManagement } from "@/firebase/fbManagement";
 import { ApplicationContext } from "@/app/ApplicationContext";
 
 export default function Page() {
     const { push } = useRouter();
 
-    const { activeGames, displayPage} = useContext(ApplicationContext);
+    const { activeGames, displayPage, updateGames} = useContext(ApplicationContext);
 
     useEffect(() => {
         displayPage(true)
@@ -20,9 +24,10 @@ export default function Page() {
     const startOnClick = async (e) => {
         let gameId = e.target.value;
         for(let gameInfo of activeGames.dmGames){
-            let game = gameInfo.game;
-            if(game.id === gameId){
-                await gameManagement.startGame(gameId)
+            if(gameInfo.game.id === gameId){
+                await fbManagement.dm.startGame(gameId)
+                updateGames()
+                alertUser(`'${gameInfo.game.name}' has started!`, 'info')
                 return;
             }
         }
@@ -45,40 +50,34 @@ export default function Page() {
         }
     }
 
+    const copyInviteOnClick = async (e) => {
+        await navigator.clipboard.writeText(`${baseUrl}invite/${e.target.value}`);
+        alertUser('Invite code copied to clipboard.', 'info');
+    }
+
     const generateDmList = () => {
         let elementList = [
             <h1 key="DMGamestitle" className="w-full text-center text-3xl mt-5">DM Games</h1>
         ]
         for(let gameInfo of activeGames.dmGames){
-            let { game, requestList } = gameInfo;
+            let { game, inviteCode } = gameInfo;
             let { started, completed } = game;
             let buttons = []
-            let requestCount = 0;
-            for(let req of requestList){
-                if(req.status === 'pending')
-                requestCount++
-            }
-            if(started){
+            buttons.push(
+                (started)?
+                    <button className="btn" key={`open${game.id}`} value={game.id} onClick={gameOptionOnClick} dir="">Open</button> :
+                    <button className="btn" key={`start${game.id}`} value={game.id} onClick={startOnClick}>Start</button>
+            )
+            if(!completed) {
                 buttons.push(
-                    <button className="btn" key={`${game.id}`} value={game.id} onClick={gameOptionOnClick} dir="">Open</button>
-                )
-            } else{
-                console.log(game.members.length)
-                buttons.push(
-                    (game.members.length === 0)?(
-                        <div className="tooltip info" key={`start${game.id}`} data-tip="Requires at-least 1 person">
-                            <button className="btn" value={game.id} onClick={startOnClick} disabled>Start</button>
+                    <div className="btn-group" key={`request${game.id}`}>
+                        <button className="btn" value={game.id} onClick={gameOptionOnClick} dir="/members">
+                            Members
+                        </button>
+                        <div className="tooltip tooltip-info" data-tip="Copy invite Link">
+                            <button className="btn btn-link" onClick={copyInviteOnClick} value={inviteCode}>🖅</button>
                         </div>
-                        ):
-                        <button className="btn" key={`start${game.id}`} value={game.id} onClick={startOnClick}>Start</button>
-                )
-            }
-            if(!completed && !started) {
-                buttons.push(
-                    <button className="btn" key={`request${game.id}`} value={game.id} onClick={gameOptionOnClick} dir="/requests">
-                        Pending Requests
-                        {(requestCount > 0)?<div className="badge badge-error">{requestCount}</div>:<></>}
-                    </button>
+                    </div>
                 )
                 buttons.push(
                     <button className="btn" key={`edit${game.id}`} value={game.id} onClick={gameOptionOnClick} dir="/edit">Edit</button>

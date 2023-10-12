@@ -7,6 +7,7 @@ import { useContext, useEffect, useState } from "react";
 import { ui } from "@/util/ui";
 import { userAuth } from "@/firebase/base";
 import { messaging } from "@/firebase/messaging";
+import { fbManagement } from "@/firebase/fbManagement";
 import { ApplicationContext } from "@/app/ApplicationContext";
 
 export default function Page({params}) {
@@ -17,6 +18,7 @@ export default function Page({params}) {
 
     let [ initChat, setInitChat ] = useState(null);
     let [ casualChat, setCasualChat ] = useState(null);
+    let [ members, setMembers ] = useState(null);
     let { gameId } = params;
 
     useEffect(() => {
@@ -42,20 +44,70 @@ export default function Page({params}) {
         ui.messaging.canon.element().scrollIntoView({ behavior: 'smooth' });
         ui.messaging.casual.element().scrollIntoView({ behavior: 'smooth' });
         displayPage(true);
-        console.log(initChat, casualChat)
     }, [initChat, casualChat]);
     const setItems = async () => {
+        let game = await fbManagement.get.singleGame(gameId)
+        let tempList = {};
+
+        //Add all members to list
+        for(let member of game.members){
+            tempList[member.id] = (member.id !== userAuth.currentUser.uid)?`${member.uName} (Player)`:'You';
+        }
+
+        //Add DM to list
+        tempList[game.uid] = (game.uid === userAuth.currentUser.uid)?'You':`${game.uName} (DM)`;
+
+        //Set state with chats and members
+        setMembers(tempList);
         setInitChat(await messaging.init.getMessages(gameId))
         setCasualChat(await messaging.casual.getMessages(gameId))
     }
+
+    const generateChat = (messages, keyPrefix) =>{
+        let finalChat = [];
+        for(let i = 0; i < messages.length; i++){
+            let msg = messages[i];
+            msg.type = [];
+            //check if last consecutive msg by a player to display name, also will do for first msg in the log.
+            if(i !== 0){
+                let prevMsg = messages[i - 1];
+                if(prevMsg.uid !== msg.uid){
+                    msg.type.push('header')
+                }
+            } else {
+                msg.type.push('header')
+            }
+            if(i === messages.length - 1){
+                msg.type.push('icon');
+                finalChat.push(msg);
+                break;
+            }
+            //check if last consecutive msg by a player to display icon.
+            let nextMsg = messages[i + 1];
+            if(nextMsg.uid !== msg.uid){
+                msg.type.push('icon')
+            }
+            finalChat.push(msg);
+        }
+        return finalChat.map(msg => <ChatMessage key={`${keyPrefix}-${msg.id}`} message={msg} members={members}/> )
+    }
     const generateCanonChat = () => {
-        return (initChat && initChat.map(msg => (msg.canon)?<ChatMessage key={msg.id} message={msg}></ChatMessage>:<></>))
+        if(initChat){
+            let cannonMessages = [];
+            for(let msg of initChat){
+                if(msg.canon){
+                    cannonMessages.push(msg)
+                }
+            }
+            return generateChat(cannonMessages, 'canon');
+        }
+        return <></>
     }
     const generateInitChat = () => {
-        return (initChat && initChat.map(msg => <ChatMessage key={msg.id} message={msg}></ChatMessage>))
+        return (initChat && generateChat(initChat, ('init')))
     }
     const generateCasualChat = () => {
-        return (casualChat && casualChat.map(msg => <ChatMessage key={msg.id} message={msg}></ChatMessage>))
+        return (casualChat && generateChat(casualChat, 'casual'))
     }
     const canonTextOnKeyUp = async (e) => {
         if((e.key === 'Enter' || e.keyCode === 13) && !e.shiftKey){
@@ -79,13 +131,13 @@ export default function Page({params}) {
                     Some Rolling Stuff
                 </div>
                 <div className="w-1/3 border">
-                    <div className="chat-box h-full">
+                    <div className="chat-box h-full ">
                         {generateCanonChat()}
                         <span id={ui.messaging.canon.id}/>
                     </div>
                 </div>
                 <div className="w-1/3 border flex flex-col">
-                    <div className="chat-box">
+                    <div className="chat-box ">
                         {generateInitChat()}
                         <span id={ui.messaging.canon.id}/>
                     </div>
@@ -103,12 +155,25 @@ export default function Page({params}) {
     )
 }
 
-function ChatMessage(props) {
-    const { text, uid } = props.message;
-    const messageClass = uid === userAuth.currentUser.uid ? 'sent' : 'received';
+function ChatMessage({message, members}) {
+    const { text, uid, type } = message;
+    const messageClass = (uid === userAuth.currentUser.uid)?'chat-end':'chat-start';
+    let name = (members)?members[uid]:uid;
+
+    let avatar = <img src={(type.includes('icon'))?'some image source':''} alt=""/>
 
     return (
-        <div className={`message ${messageClass}`}>
-            <p>{text}</p>
-        </div>)
+        <div className={`chat ${messageClass}`}>
+            <div className="chat-image avatar">
+                <div className="w-10 rounded-full">
+                    {/*<img src={(type.includes('icon'))?'some image source':''} alt=""/>*/}
+                    <img alt=""/>
+                </div>
+            </div>
+                <div className="chat-header opacity-50">
+                    {(type.includes('header'))?name:''}
+                </div>
+            <div className="chat-bubble">{text}</div>
+        </div>
+    )
 }

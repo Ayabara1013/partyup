@@ -6,19 +6,22 @@ import { useContext, useEffect, useState } from "react";
 import LoadingUi from "@/components/LoadinUi";
 import PageLayout from "@/components/PageLayout";
 import { userAuth } from "@/firebase/base";
-import { gameManagement } from "@/firebase/gameManagement";
+import { fbManagement } from "@/firebase/fbManagement";
 import { ApplicationContext } from "@/app/ApplicationContext";
+import {useRouter} from "next/navigation";
 
 export default function Page() {
     const [ user ] = useAuthState(userAuth);
 
-    const [ publicGames, setPublicGames ] = useState(null)
     const [ render, reRender ] = useState(false);
+    const [ publicGames, setPublicGames ] = useState(null);
 
     const { displayPage } = useContext(ApplicationContext);
+    const { push } = useRouter();
 
     useEffect(() => {
-        displayPage(true)
+        push('/home')
+        // displayPage(true)
     }, []);
     useEffect(() => {
         setGames();
@@ -26,13 +29,13 @@ export default function Page() {
 
     const setGames = async () => {
         if(user){
-            setPublicGames(await gameManagement.getPublicGames());
+            setPublicGames(await fbManagement.get.publicGames());
         }
     }
 
     const joinGameOnClick = async (e) => {
         let gameId = e.target.value;
-        await gameManagement.joinGame(e.target.value);
+        await fbManagement.player.joinPublicGame(e.target.value);
         for(let game of publicGames){
             if(game.id === gameId){
                 game.userRequest = 'pending'
@@ -43,7 +46,7 @@ export default function Page() {
 
     const pendingOnClick = async (e) => {
         let gameId = e.target.value;
-        await gameManagement.cancelJoinRequest(gameId);
+        await fbManagement.player.cancelJoinRequest(gameId);
         for(let game of publicGames){
             if(game.id === gameId){
                 game.userRequest = 'none'

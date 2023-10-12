@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from "react";
 
 
 import { ui } from "@/util/ui";
-import { gameManagement } from "@/firebase/gameManagement";
+import { fbManagement } from "@/firebase/fbManagement";
 import { ApplicationContext } from "@/app/ApplicationContext";
 import PageLayout from "@/components/PageLayout";
 
@@ -45,7 +45,7 @@ export default function Page({params}) {
         let isPublic = ui.editGame.isPublic.element().checked;
         let playerCount = parseInt(ui.editGame.playerCount.element().value);
 
-        await gameManagement.updateGame(gameId, name, description, isPublic, playerCount);
+        await fbManagement.dm.updateGame(gameId, name, description, isPublic, playerCount);
         push('/user/activeGames')
         e.target.removeAttribute('disabled')
     }
