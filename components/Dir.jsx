@@ -12,7 +12,7 @@ export default function Dir({ children }) {
 Dir.home = ({ children, className }) => {
     return (
         <Link className={className} href='/home'>
-            {(children)? children : 'Home'}
+            {(children) ? children : 'Home'}
         </Link>
     );
 }
@@ -21,7 +21,7 @@ Dir.game = {
     create:({ children, className }) => {
         return (
             <Link className={className} href='/game/create'>
-                {(children)? children : 'Create Game'}
+                {(children) ? children : 'Create Game'}
             </Link>
         );
     },
@@ -29,14 +29,14 @@ Dir.game = {
         return (
             (disabled)? <button className={className} disabled>Continue Last Game</button> :
             <Link className={className} href={`/game/${gameId}`} disabled={disabled}>
-                {(children)? children : 'Continue Last Game'}
+                {(children) ? children : 'Continue Last Game'}
             </Link>
         );
     },
     public:({ children, className }) => {
         return (
             <Link className={className} href='/game/public'>
-                {(children)? children : 'Join Public Games'}
+                {(children) ? children : 'Join Public Games'}
             </Link>
         );
     },
@@ -45,7 +45,17 @@ Dir.user = {
     active:({ children, className }) => {
         return (
             <Link className={className} href='/user/activeGames'>
-                {(children)? children : 'Current Active Games'}
+                {(children) ? children : 'Current Active Games'}
+            </Link>
+        );
+    },
+}
+
+Dir.test = {
+    chat:({ children, className }) => {
+        return (
+            <Link className={className} href='/test-page'>
+                {(children) ? children : 'test page'}
             </Link>
         );
     },
