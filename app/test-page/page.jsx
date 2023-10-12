@@ -1,5 +1,5 @@
 import React from 'react';
-import { Test1, Test2 } from './testComponents';
+import { Test1, Test2, Test3 } from './testComponents';
 
 
 
@@ -19,6 +19,7 @@ export default function TestPage() {
 
         <Test1 />
         <Test2 />
+        <Test3 />
       
       </div>
     </div>

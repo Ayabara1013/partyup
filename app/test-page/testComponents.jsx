@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react';
-import {displayRollResults2, roll, rollDie } from './rolls';
+import {displayRollResults, roll, rollDie, typedRoll } from './rolls';
 
 
 
@@ -20,7 +20,7 @@ function RollTestButton(props) {
       {children}
 
       <div className={`${defHeaderTextClass}`}>
-        {Object.values(result).join(', ')}
+        {result}
       </div>
     </div>
   )
@@ -52,22 +52,54 @@ export function Test2(props) {
      */
 
     const rollResult = roll([
-      [2, 6], [1, 4], [5, 'strength']
+      [2, 6], [2,6,'fire'], [1, 4], [-2, 'strength']
     ]);
 
     console.log(`--- rollResult--- `);
-    console.log(displayRollResults2(rollResult));
-    
-    // setResult(
-    //   // displayRollResults(result.rolls, result.sum)
-    //   displayRollResults2(result.rolls, result.sum)
-    // )
+
+    // console.log(rollResult);
+    // console.log(rollResult2);
+
+    // console.log(displayRollResults(rollResult));
+
+    const rollString = displayRollResults(rollResult);
+
+    // console.log(rollString);
+
+
+    console.log(rollResult);
+
+    setResult(rollString);
+
+    // console.log(result);
   }
 
   return (
     <RollTestButton name={`roll2()`} result={result}>
       <button className='btn' onClick={handleClick}>
         roll 2d6 + 1d4 + 5
+      </button>
+    </RollTestButton>
+  )
+}
+
+
+export function Test3(props) {
+  const [result, setResult] = React.useState(0);
+  const testRolls = [
+    [2, 6], [2,6,'fire'], [1, 4], [-2, 'strength']
+  ]
+  
+  const handleClick = () => {
+    console.log(`--- testRolls ---`)
+    for (const item of testRolls) console.log(item)
+    setResult(rollDie(6));
+  }
+
+  return (
+    <RollTestButton name={`rollDie()`} result={result}>
+      <button className='btn' onClick={handleClick}>
+        roll 1d6
       </button>
     </RollTestButton>
   )

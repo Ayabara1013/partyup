@@ -17,94 +17,79 @@ export class Results {
 
 const rollTemplate = [`quantity`, `die`, `type`];
 
-const rol
-
-
-// /** 
-//  * @param {*} dice 
-//  * @returns 
-//  */
-// export function roll(dice) {
-//   let sum = 0;
-//   let rolls = []; // [[2, on a d4], [3, on a d6]] >> [[2, 4], [3, 6]]
-  
-//   console.log(dice)
-
-//   for (const val of dice) {
-
-//     if (Array.isArray(val)) {
-//       console.log(`[${val[0]}d${val[1]}] is array`);
-//       console.log(`rolling ${val[0]}d${val[1]}`);
-
-//       for (let num = 0; num < val[0]; num++) {
-//         result = rollDie(val[1]);
-//         sum += result;
-//         rolls.push([result, val[1]]);
-//       }
-//     }
-//     else {
-//       // this is not an array, meaning its not a die roll (for now?) so we just add or sub the values
-
-//       console.log(`item is not a die roll*, adding ${val}`);
-
-//       sum += val;
-//       rolls.push(val);
-//     }
-
-//     console.log(`current sum: ${sum}`);
-//   }
-
-//   // for (const item in rolls) console.log(rolls[item]);
-  
-//   const results = {
-//     sum: sum,
-//     rolls: rolls
-//   };
-
-//   console.log(`displaying all results: `)
-//   console.log(results);
-
-//   return results;
-// }
-
+export class Roll {
+  constructor(quantity, die, type) {
+    this.quantity = quantity ?? 1;
+    this.die = die ?? 6;
+    this.type = type ?? null;
+  }
+}
 
 
 /**
- * text goes here
+ * this function takes in an array, I may want to change it to an object? Im not sure yet
  * @param {*} rolls array
  * @returns object
  */
 export function roll(rolls) {
   const results = new Results();
 
-  console.log(`--- rolling dice ---`);
+  // console.log(`--- rolling dice ---`);
 
-  for (const val of rolls) {
-    console.log(`[ ${typeof val[1] === 'number' ? 'd' : 'mod, '}${val[1]} ]`);
-
+  for (const item of rolls) {
     let result = 0;
+    console.log(item, item.length > 2 ? `typed` : `untyped`);
 
-    if (typeof val[1] === 'number') { // roll the die
-      for (let i = 0; i < val[0]; i++) {
-        result = rollDie(val[1]);
+    // if (item.length > 2) {
+    //   console.log(`this one has a type!`)
+    // }
 
-        results.rolls[`d${val[1]}`].push(result);
+    if (typeof item[1] === 'number') { // roll the die
+      // console.log(`rolling ${item[0]}d${item[1]}`)
+
+      for (let i = 0; i < item[0]; i++) {
+        
+
+        result = rollDie(item[1]);
+        results.rolls[`d${item[1]}`].push(result);
         results.sum += result;
 
-        console.log(`rolled ${result} on a d${val[1]}, sum is now ${results.sum}`)
+        // console.log(`rolled ${result} on a d${val[1]}, sum is now ${results.sum}`)
       }
     }
-    else if (typeof val[1] === 'string') { // add the modifier
-      result = val[0];
-      results.mods[val[1]] = result;
-      console.log(`added ${result} to mods.${val[1]}`)
+    else if (typeof item[1] === 'string') { // add the modifier
+      console.log(`adding [${item[0]}] from [${item[1]}]`)
+
+      result = item[0];
+      results.mods[item[1]] = result;
+      // console.log(`added ${result} to mods.${val[1]}`)
       results.sum += result;
-      console.log(`sum is now ${results.sum}`)
+      // console.log(`sum is now ${results.sum}`)
     }
 
   }
 
   return results;
+}
+
+
+
+export function typedRoll(rolls) {
+  const results = new Results();
+  let rollsArray = [];
+  
+  for (const item of rolls) {
+    console.log(item);
+  }
+
+  for (const item of rollsArray) {
+    console.log(item);
+
+    let roll = rollDie(item.die);
+    
+  }
+
+  console.log(rollsArray);
 }
 
 
@@ -139,53 +124,53 @@ export function parseRolls(rolls) {
 
 
 
-/** 
- * @param {*} array 
- * @param {*} complexity - simple, verbose
- */
-export function displayRollResults(array, sum, complexity) {
-  let string = '';
-  let append = 'd';
+// /** 
+//  * @param {*} array 
+//  * @param {*} complexity - simple, verbose
+//  */
+// export function displayRollResults(array, sum, complexity) {
+//   let string = '';
+//   let append = 'd';
 
-  switch (complexity) {
-    case 'modifiers':
-      for (const val of array) {
-        if (typeof val === 'number') {
-          string += `${val} + `;
-        }
-        else if (typeof val === 'string') {
+//   switch (complexity) {
+//     case 'modifiers':
+//       for (const val of array) {
+//         if (typeof val === 'number') {
+//           string += `${val} + `;
+//         }
+//         else if (typeof val === 'string') {
         
-        }
-      }
-    case 'verbose':
-      for (const roll of array) {
-        if (Array.isArray(roll)) {
-          string += `${roll[0]} (${roll[1]}) + `;
-        }
-        else string += roll;
-      }
-      break;
-    default:
-      for (const roll of array) {
-        if (Array.isArray(roll)) {
-          string += `${roll[0]} + `;
-        }
-        else string += `${roll} + `;
-      }
-      break;
-  }
+//         }
+//       }
+//     case 'verbose':
+//       for (const roll of array) {
+//         if (Array.isArray(roll)) {
+//           string += `${roll[0]} (${roll[1]}) + `;
+//         }
+//         else string += roll;
+//       }
+//       break;
+//     default:
+//       for (const roll of array) {
+//         if (Array.isArray(roll)) {
+//           string += `${roll[0]} + `;
+//         }
+//         else string += `${roll} + `;
+//       }
+//       break;
+//   }
 
-  if (string.endsWith(' + ')) string = string.slice(0, -3);
+//   if (string.endsWith(' + ')) string = string.slice(0, -3);
 
-  string += ` = ${sum}`;
+//   string += ` = ${sum}`;
 
-  console.log(`--- displaying roll results ---`)
-  console.log(string);
-}
+//   console.log(`--- displaying roll results ---`)
+//   console.log(string);
+// }
 
 
 
-export function displayRollResults2(array, complexity) {
+export function displayRollResults(array, complexity) {
   const rolls = array.rolls;
   const mods = array.mods;
   let result = '';
@@ -200,7 +185,13 @@ export function displayRollResults2(array, complexity) {
           console.log(item, rolls[item]);
           
           for (const value of rolls[item]) {
-            result += `${value} + `;
+
+            if (typeof value === 'array') {
+              result += `${value[0]} (${value[1]}) + `;
+            }
+            else {
+              result += `${value} + `;
+            }
           }
         }
       }
