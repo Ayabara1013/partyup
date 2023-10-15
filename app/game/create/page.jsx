@@ -11,7 +11,7 @@ import { ApplicationContext } from "@/app/ApplicationContext";
 
 export default function Page() {
   const { push } = useRouter();
-  const { displayPage, updateGames } = useContext(ApplicationContext);
+  const { displayPage } = useContext(ApplicationContext);
 
   useEffect(() => {
     displayPage(true)
@@ -26,7 +26,6 @@ export default function Page() {
     let playerCount = parseInt(ui.createGame.playerCount.element().value);
     await fbManagement.dm.createGame(name, description, isPublic, playerCount);
     e.target.removeAttribute('disabled');
-    updateGames();
     push('/user/activeGames');
   }
 

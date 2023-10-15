@@ -15,7 +15,7 @@ import { ApplicationContext } from "@/app/ApplicationContext";
 export default function Page() {
   const { push } = useRouter();
 
-  const { activeGames, displayPage, updateGames } = useContext(ApplicationContext);
+  const { activeGames, displayPage } = useContext(ApplicationContext);
 
   useEffect(() => {
     displayPage(true);
@@ -26,7 +26,6 @@ export default function Page() {
     for (let gameInfo of activeGames.dmGames) {
       if (gameInfo.game.id === gameId) {
         await fbManagement.dm.startGame(gameId);
-        updateGames();
         toastUser(`'${ gameInfo.game.name }' has started!`, 'info');
         return;
       }

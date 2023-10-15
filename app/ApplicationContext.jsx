@@ -10,27 +10,61 @@ export const ApplicationContext = createContext();
 
 export function Application({ children }) {
   const [ user ] = useAuthState(userAuth);
+  const [ updateOn, setUpdateOn ] = useState(false);
 
   const [ activeGames, setActiveGames ] = useState(null);
 
   useEffect(() => {
     ui.mainLayout.loginButton.element().classList[(user) ? 'add' : 'remove']('hidden');
     ui.mainLayout.logoutButton.element().classList[(!user) ? 'add' : 'remove']('hidden');
-    updateGames();
+    setGames();
   }, [ user ]);
-
+  useEffect(() => {
+    if (user && !updateOn) {
+      fbManagement.live.userIsDmGames(updateDmGames);
+      fbManagement.live.userIsPlayerGames(updatePlayerGames);
+      setUpdateOn(true);
+    }
+  }, [ activeGames ]);
+  const setGames = async () => {
+    if (user) {
+      let dmGames = await fbManagement.get.userIsDmGames();
+      let playerGames = await fbManagement.get.userIsPlayerGames();
+      let length = dmGames.length + playerGames.length || 0;
+      for (let item of dmGames) {
+        item.game.unsub = await fbManagement.live.memberJoined(item.game, updateDmGames);
+      }
+      let games = { dmGames, playerGames, length }
+      setActiveGames(games);
+    }
+  }
 
   const displayPage = (isLoaded) => {
     document.getElementsByClassName('routeLoad')[0].classList[(isLoaded) ? 'add' : 'remove']('hidden');
     document.getElementsByClassName('routePage')[0].classList[(!isLoaded) ? 'add' : 'remove']('hidden');
   }
-  const updateGames = async () => {
+
+  const updateDmGames = async (dmGames) => {
+    console.log(dmGames)
     if (user) {
-      let dmGames = await fbManagement.get.userIsDmGames();
-      let playerGames = await fbManagement.get.userIsPlayerGames();
+      if(activeGames){
+        for (let item of activeGames.dmGames) {
+          item.game.unsub();
+        }
+      }
+      let playerGames = (activeGames) ? activeGames.playerGames : [];
       let length = dmGames.length + playerGames.length || 0;
-      let games = { dmGames, playerGames, length }
-      setActiveGames(games);
+      for (let item of dmGames) {
+        item.game.unsub = await fbManagement.live.memberJoined(item.game, updateDmGames);
+      }
+      setActiveGames({ dmGames, playerGames, length });
+    }
+  }
+  const updatePlayerGames = async (playerGames) => {
+    if (user) {
+      let dmGames = (activeGames) ? activeGames.dmGames : [];
+      let length = dmGames.length + playerGames.length || 0;
+      setActiveGames({ dmGames, playerGames, length });
     }
   }
 
@@ -38,7 +72,7 @@ export function Application({ children }) {
     <ApplicationContext.Provider value={ {
       user,
       activeGames, setActiveGames,
-      displayPage, updateGames
+      displayPage
     } }>
       { children }
     </ApplicationContext.Provider>

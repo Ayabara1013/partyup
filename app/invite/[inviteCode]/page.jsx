@@ -14,28 +14,43 @@ import { fbManagement } from "@/firebase/fbManagement";
 export default function Page({ params }) {
   let { inviteCode } = params;
   const { push } = useRouter();
-  const { user, displayPage, updateGames } = useContext(ApplicationContext);
+  const { user, activeGames, displayPage } = useContext(ApplicationContext);
 
   const [ game, setGame ] = useState(null);
 
 
   useEffect(() => {
     getGameFromInvite();
-  }, [ user ]);
+  }, [ user, activeGames ]);
 
   const getGameFromInvite = async () => {
-    let gameDoc = await fbManagement.player.findGameFromInviteCode(inviteCode);
-    if (!gameDoc) {
-      toastUser('Invalid invite code.', 'error');
-      push('/home');
+    if(user && activeGames){
+      let gameDoc = await fbManagement.player.findGameFromInviteCode(inviteCode);
+      if (!gameDoc) {
+        toastUser('Invalid invite code.', 'error');
+        push('/home');
+      }
+      for (let gameInfo of activeGames.dmGames) {
+        if (gameInfo.game.id === gameDoc.id) {
+          toastUser('You are the DM of this game.', 'error');
+          push('/home');
+          return;
+        }
+      }
+      for (let game of activeGames.playerGames) {
+        if (game.id === gameDoc.id) {
+          toastUser('You have already joined this game.', 'error');
+          push('/home');
+          return;
+        }
+      }
+      setGame(gameDoc);
+      displayPage(true);
     }
-    setGame(gameDoc);
-    displayPage(true);
   }
 
   const joinGameOnClick = async () => {
     await fbManagement.player.acceptInviteLink(inviteCode, game.id);
-    updateGames();
     toastUser(`You have joined the game: ${ game.name }`, 'info');
     push('/home');
   }
