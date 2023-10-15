@@ -66,6 +66,9 @@ export const ui = {
         canon:{
             id: 'canonChatEnd',
             element: () => {return document.getElementById('canonChatEnd')}},
+        init:{
+            id: 'initChatEnd',
+            element: () => {return document.getElementById('initChatEnd')}},
         casual:{
             id: 'casualChatEnd',
             element: () => {return document.getElementById('casualChatEnd')}},

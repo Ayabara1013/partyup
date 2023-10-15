@@ -6,7 +6,7 @@ import { useContext, useEffect, useState } from "react";
 
 import { ApplicationContext } from "@/app/ApplicationContext";
 import {fbManagement} from "@/firebase/fbManagement";
-import {alertUser} from "@/util/functions";
+import {toastUser} from "@/util/functions";
 import PageLayout from "@/components/PageLayout";
 import LoadingUi from "@/components/LoadinUi";
 
@@ -28,7 +28,7 @@ export default function Page({params}) {
         for(let item of activeGames.dmGames){
             if(item.game.id === gameId){
                 if(!gameDoc){
-                    alertUser('Unable to grab game documents.', 'error');
+                    toastUser('Unable to grab game documents.', 'error');
                     push('/user/activeGames');
                 }
                 setGame(gameDoc);
@@ -36,7 +36,7 @@ export default function Page({params}) {
                 return;
             }
         }
-        alertUser('You do not have permission to see this page.', 'error');
+        toastUser('You do not have permission to see this page.', 'error');
         push('/user/activeGames');
     }
 

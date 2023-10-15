@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from "react";
 
 import { ApplicationContext } from "@/app/ApplicationContext";
 import {fbManagement} from "@/firebase/fbManagement";
-import {alertUser} from "@/util/functions";
+import {toastUser} from "@/util/functions";
 import PageLayout from "@/components/PageLayout";
 import LoadingUi from "@/components/LoadinUi";
 
@@ -24,7 +24,7 @@ export default function Page({params}) {
     const getGameFromInvite = async () => {
         let gameDoc = await fbManagement.player.findGameFromInviteCode(inviteCode);
         if(!gameDoc){
-            alertUser('Invalid invite code.', 'error');
+            toastUser('Invalid invite code.', 'error');
             push('/home');
         }
         setGame(gameDoc);
@@ -34,7 +34,7 @@ export default function Page({params}) {
     const joinGameOnClick = async () => {
         await fbManagement.player.acceptInviteLink(inviteCode, game.id);
         updateGames();
-        alertUser(`You have joined the game: ${game.name}`, 'info')
+        toastUser(`You have joined the game: ${game.name}`, 'info')
         push('/home');
     }
 

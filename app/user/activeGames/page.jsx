@@ -6,7 +6,7 @@ import { useContext, useEffect } from "react";
 import LoadingUi from "@/components/LoadinUi";
 import PageLayout from "@/components/PageLayout";
 
-import { alertUser } from "@/util/functions";
+import { toastUser } from "@/util/functions";
 
 import { baseUrl } from "@/util/baseUrl";
 import { fbManagement } from "@/firebase/fbManagement";
@@ -27,7 +27,7 @@ export default function Page() {
             if(gameInfo.game.id === gameId){
                 await fbManagement.dm.startGame(gameId)
                 updateGames()
-                alertUser(`'${gameInfo.game.name}' has started!`, 'info')
+                toastUser(`'${gameInfo.game.name}' has started!`, 'info')
                 return;
             }
         }
@@ -52,7 +52,7 @@ export default function Page() {
 
     const copyInviteOnClick = async (e) => {
         await navigator.clipboard.writeText(`${baseUrl}invite/${e.target.value}`);
-        alertUser('Invite code copied to clipboard.', 'info');
+        toastUser('Invite code copied to clipboard.', 'info');
     }
 
     const generateDmList = () => {
