@@ -25,8 +25,8 @@ export default function Page({ params }) {
   const getGame = async () => {
 
     let gameDoc = await fbManagement.get.singleGame(gameId);
-    for (let item of activeGames.dmGames) {
-      if (item.game.id === gameId) {
+    for (let game of activeGames.dmGames) {
+      if (game.id === gameId) {
         if (!gameDoc) {
           toastUser('Unable to grab game documents.', 'error');
           push('/user/activeGames');

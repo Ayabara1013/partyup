@@ -71,7 +71,7 @@ export default function Page() {
             </div>
             <div className="w-1/3 center vertical border">
               <span className="w-2/3 mx-2">Player Count:</span>
-              <span className="w-1/3 mx-2">{ game.members.length }/{ game.playerMax }</span>
+              <span className="w-1/3 mx-2">{ game.members.length }/{ game.maxPlayers }</span>
             </div>
           </div>
           <>

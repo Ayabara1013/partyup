@@ -24,11 +24,11 @@ export default function Page({ params }) {
 
   const { activeGames, displayPage } = useContext(ApplicationContext);
 
+  const [ game, setGame ] = useState(null);
   const [ isDm, setIsDm ] = useState(false);
   const [ members, setMembers ] = useState(null);
   const [ clicked, setClicked ] = useState(false);
-  const [ initChat, setInitChat ] = useState(null);
-  const [ casualChat, setCasualChat ] = useState(null);
+  const [ messages, setMessages ] = useState(null);
   const [ contextMenu, setContextMenu ] = useState(null);
 
 
@@ -46,21 +46,18 @@ export default function Page({ params }) {
 
   useEffect(() => {
     if (activeGames) {
-      for (let gameInfo of activeGames.dmGames) {
-        let { game } = gameInfo;
+      for (let game of activeGames.dmGames) {
         if (game.id === gameId) {
           setIsDm(true);
           setItems();
-          messaging.init.liveMessages(gameId, liveInitUpdate).then();
-          messaging.casual.liveMessages(gameId, liveCasualUpdate).then();
+          messaging.game.liveMessages(gameId, liveGameMessageUpdate).then();
           return;
         }
       }
       for (let game of activeGames.playerGames) {
         if (game.id === gameId) {
           setItems();
-          messaging.init.liveMessages(gameId, liveInitUpdate).then();
-          messaging.casual.liveMessages(gameId, liveCasualUpdate).then();
+          messaging.game.liveMessages(gameId, liveGameMessageUpdate).then();
           return;
         }
       }
@@ -70,10 +67,11 @@ export default function Page({ params }) {
 
   useEffect(() => {
     ui.messaging.canon.element().scrollIntoView({ behavior: 'smooth' });
-    ui.messaging.casual.element().scrollIntoView({ behavior: 'smooth' });
+    ui.messaging.open.element().scrollIntoView({ behavior: 'smooth' });
     ui.messaging.init.element().scrollIntoView({ behavior: 'smooth' });
     displayPage(true);
-  }, [ initChat, casualChat ]);
+  }, [ messages ]);
+
   const setItems = async () => {
     //Get game info
     let game = await fbManagement.get.singleGame(gameId);
@@ -87,54 +85,64 @@ export default function Page({ params }) {
     tempList[game.uid] = (game.uid === userAuth.currentUser.uid) ? 'You' : `${ game.uName } (DM)`;
 
     //Get messages from local storage
-    let initMessages = messageLocalStorage.getInit(gameId);
-    let casualMessages = messageLocalStorage.getCasual(gameId);
+    let messages = messageLocalStorage.game.get(gameId);
 
     //Get messages from server if local storage is empty or if there are new messages (saves on reads)
-    if (initMessages.length > 0) {
-      let lastTime = messageLocalStorage.getInitAccessTime(gameId);
-      let tempMessages = await messaging.init.getUpdateMessage(gameId, lastTime);
-      addArrayToArray(initMessages, tempMessages, 'id');
+    if (messages.length > 0) {
+      let lastTime = messageLocalStorage.game.getAccessTime(gameId);
+      let tempMessages = await messaging.game.getUpdateMessage(gameId, lastTime);
+      addArrayToArray(messages, tempMessages, 'id');
     } else {
-      initMessages = await messaging.init.getMessages(gameId);
+      messages = await messaging.game.getMessages(gameId);
     }
-    if (casualMessages.length > 0) {
-      let lastTime = messageLocalStorage.getCasualAccessTime(gameId);
-      let tempMessages = await messaging.casual.getUpdateMessage(gameId, lastTime);
-      addArrayToArray(casualMessages, tempMessages, 'id');
-    } else {
-      casualMessages = await messaging.casual.getMessages(gameId);
-    }
-    //Sort messages by time
-    sortByKey(initMessages, 'createdAt');
-    sortByKey(casualMessages, 'createdAt');
+
+    sortByKey(messages, 'createdAt');
 
     //Save messages to local storage and state
-    messageLocalStorage.setInit(gameId, initMessages);
-    messageLocalStorage.setCasual(gameId, casualMessages);
+    messageLocalStorage.game.set(gameId, messages);
+    setGame(game);
     setMembers(tempList);
-    setInitChat(initMessages);
-    setCasualChat(casualMessages);
+    setMessages(messages);
   }
 
   //Live update of new init messages
-  const liveInitUpdate = async (tempInitMessages) => {
-    let initMessages = messageLocalStorage.getInit(gameId);
-    addArrayToArray(initMessages, tempInitMessages, 'id');
-    sortByKey(initMessages, 'createdAt');
-    messageLocalStorage.setInit(gameId, initMessages);
-    setInitChat(initMessages);
+  const liveGameMessageUpdate = async (messages) => {
+    let localMessages = messageLocalStorage.game.get(gameId);
+    addArrayToArray(localMessages, messages, 'id');
+    sortByKey(localMessages, 'createdAt');
+    messageLocalStorage.game.set(gameId, localMessages);
+    setMessages(localMessages);
   }
-  //Live update of new casual messages
-  const liveCasualUpdate = async (tempCasualMessages) => {
-    let casualMessages = messageLocalStorage.getCasual(gameId);
-    addArrayToArray(casualMessages, tempCasualMessages, 'id');
-    sortByKey(casualMessages, 'createdAt');
-    messageLocalStorage.setCasual(gameId, casualMessages);
-    setCasualChat(casualMessages);
-  }
-  //Generate chat messages
-  const generateChat = (messages, keyPrefix) => {
+
+  return (
+    <div className="h-full w-full gap-4 routePage hidden">
+      <div className="h-3/4 w-full border gap-4 flex px-4">
+        <div className="w-1/6 border">
+          Some Rolling Stuff
+        </div>
+        <ChatWindow window="canon" gameItems={ { game, messages, members, setClicked, setContextMenu } }/>
+        <ChatWindow window="init" gameItems={ { game, messages, members, setClicked, setContextMenu } }/>
+        <ChatWindow window="open" gameItems={ { game, messages, members, setClicked, setContextMenu } }/>
+      </div>
+      <div className="h-1/4 w-full border gap-4 flex px-4">
+
+      </div>
+      { clicked && (
+        <ContextMenuBase style={ contextMenu.style }>
+          <PlayerMessageOptions message={ contextMenu.message }/>
+          { (isDm && contextMenu.message.canon !== undefined) &&
+            <DmMessageOptions message={ contextMenu.message } gameId={ gameId }/> }
+        </ContextMenuBase>
+      ) }
+    </div>
+  )
+}
+
+function ChatWindow({ window, gameItems }) {
+  let { game, messages, members, setClicked, setContextMenu } = gameItems
+  let canon = (window === 'canon');
+  const generateMessages = (preFilterMessages) => {
+    let messages = filterMessages(preFilterMessages);
     let finalChat = [];
     for (let i = 0; i < messages.length; i++) {
       let msg = messages[i];
@@ -161,74 +169,39 @@ export default function Page({ params }) {
       finalChat.push(msg);
     }
     let setFunc = { context: setContextMenu, clicked: setClicked }
-    return finalChat.map(msg => <ChatMessage key={ `${ keyPrefix }-${ msg.id }` } message={ msg } members={ members }
+    return finalChat.map(msg => <ChatMessage key={ `${ window }-${ msg.id }` } message={ msg } members={ members }
                                              setFunc={ setFunc }/>);
   }
-  const generateCanonChat = () => {
-    if (initChat) {
-      let canonMessages = [];
-      for (let msg of initChat) {
-        if (msg.canon) {
-          canonMessages.push(structuredClone(msg));
+  const filterMessages = () => {
+    let newMessageList = [];
+    if (messages) {
+      for (let msg of messages) {
+        (msg.window === window) && newMessageList.push(structuredClone(msg));
+        if(window === 'canon'){
+          (msg.window === 'init' && msg.canon === true) && newMessageList.push(structuredClone(msg));
         }
       }
-      sortByKey(canonMessages, 'createdAt');
-      return generateChat(canonMessages, 'canon');
+      sortByKey(newMessageList, 'createdAt');
+
+      return newMessageList;
     }
+
     return <></>
   }
-  const generateInitChat = () => {
-    return (initChat && generateChat(initChat, ('init')));
-  }
-  const generateCasualChat = () => {
-    return (casualChat && generateChat(casualChat, 'casual'));
-  }
-  const canonTextOnKeyUp = async (e) => {
-    if ((e.key === 'Enter' || e.keyCode === 13) && !e.shiftKey) {
-      await messaging.init.addMessage(gameId, e.target.value.trim());
-      e.target.value = '';
-    }
-  }
-  const casualTextOnKeyUp = async (e) => {
-    if ((e.key === 'Enter' || e.keyCode === 13) && !e.shiftKey) {
-      await messaging.casual.addMessage(gameId, e.target.value.trim());
-      e.target.value = '';
-    }
-  }
 
+  const textOnKeyUp = async (e) => {
+    if ((e.key === 'Enter' || e.keyCode === 13) && !e.shiftKey) {
+      await messaging.game.addMessage(game, window, e.target.value.trim(), []);
+      e.target.value = '';
+    }
+  }
   return (
-    <div className="h-full w-full gap-4 routePage hidden">
-      <div className="h-3/4 w-full border gap-4 flex px-4">
-        <div className="w-1/6 border">
-          Some Rolling Stuff
-        </div>
-        <div className="w-1/3 border">
-          <div className="chat-box h-full">
-            { generateCanonChat() }
-            <span id={ ui.messaging.canon.id }/>
-          </div>
-        </div>
-        <div className="w-1/3 border flex flex-col">
-          <div className="chat-box">
-            { generateInitChat() }
-            <span id={ ui.messaging.init.id }/>
-          </div>
-          <textarea className="w-full flex-1" onKeyUp={ canonTextOnKeyUp }/>
-        </div>
-        <div className="w-1/3 border flex flex-col">
-          <div className="chat-box">
-            { generateCasualChat() }
-            <span id={ ui.messaging.casual.id }/>
-          </div>
-          <textarea className="w-full flex-1" onKeyUp={ casualTextOnKeyUp }/>
-        </div>
+    <div className="w-1/3 border flex flex-col">
+      <div className={ `chat-box ${ (canon) && 'h-full' }` }>
+        { generateMessages() }
+        <span id={ ui.messaging[window].id }/>
       </div>
-      { clicked && (
-        <ContextMenuBase style={ contextMenu.style }>
-          <PlayerMessageOptions message={ contextMenu.message }/>
-          { isDm && <DmMessageOptions message={ contextMenu.message } gameId={ gameId }/> }
-        </ContextMenuBase>
-      ) }
+      { !canon && <textarea className="w-full flex-1" onKeyUp={ textOnKeyUp }/> }
     </div>
   )
 }

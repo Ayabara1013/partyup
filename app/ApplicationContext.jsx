@@ -17,7 +17,9 @@ export function Application({ children }) {
   useEffect(() => {
     ui.mainLayout.loginButton.element().classList[(user) ? 'add' : 'remove']('hidden');
     ui.mainLayout.logoutButton.element().classList[(!user) ? 'add' : 'remove']('hidden');
-    setGames();
+    if (user) {
+      setGames();
+    }
   }, [ user ]);
   useEffect(() => {
     if (user && !updateOn) {
@@ -28,11 +30,11 @@ export function Application({ children }) {
   }, [ activeGames ]);
   const setGames = async () => {
     if (user) {
-      let dmGames = await fbManagement.get.userIsDmGames();
-      let playerGames = await fbManagement.get.userIsPlayerGames();
+      let dmGames = await fbManagement.get.userIsDmGames() || [];
+      let playerGames = await fbManagement.get.userIsPlayerGames() || [];
       let length = dmGames.length + playerGames.length || 0;
-      for (let item of dmGames) {
-        item.game.unsub = await fbManagement.live.memberJoined(item.game, updateDmGames);
+      for (let game of dmGames) {
+        game.unsub = await fbManagement.live.memberJoined(game, updateDmGames);
       }
       let games = { dmGames, playerGames, length }
       setActiveGames(games);
@@ -45,17 +47,16 @@ export function Application({ children }) {
   }
 
   const updateDmGames = async (dmGames) => {
-    console.log(dmGames)
     if (user) {
-      if(activeGames){
-        for (let item of activeGames.dmGames) {
-          item.game.unsub();
+      if (activeGames) {
+        for (let game of activeGames.dmGames) {
+          game.unsub();
         }
       }
       let playerGames = (activeGames) ? activeGames.playerGames : [];
       let length = dmGames.length + playerGames.length || 0;
-      for (let item of dmGames) {
-        item.game.unsub = await fbManagement.live.memberJoined(item.game, updateDmGames);
+      for (let game of dmGames) {
+        game.unsub = await fbManagement.live.memberJoined(game, updateDmGames);
       }
       setActiveGames({ dmGames, playerGames, length });
     }

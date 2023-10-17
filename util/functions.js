@@ -18,7 +18,6 @@ function toastUser(message, type) {
 
   if (validTypes.includes(type)) {
     alertElement.classList.add(`alert-${ type }`)
-    console.log(`alert-${ type }`)
   }
 
   alertMessageElement.innerHTML = message;
@@ -50,7 +49,6 @@ function addArrayToArray(array, arrayToAdd, key) {
     if (index === -1) {
       array.push(newMsg);
     } else {
-      console.log('update:', array[index], newMsg)
       array[index] = newMsg;
     }
   }

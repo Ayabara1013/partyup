@@ -50,13 +50,37 @@ export const ui = {
         return document.getElementById('createGameDescription')
       }
     },
+    hasChapters: {
+      id: 'createGameHasChapters',
+      element: () => {
+        return document.getElementById('createGameHasChapters')
+      }
+    },
+    maxChapters: {
+      id: 'createGameMaxChapters',
+      element: () => {
+        return document.getElementById('createGameMaxChapters')
+      }
+    },
+    hasActs: {
+      id: 'createGameHasActs',
+      element: () => {
+        return document.getElementById('createGameHasActs')
+      }
+    },
+    maxActs: {
+      id: 'createGameMaxActs',
+      element: () => {
+        return document.getElementById('createGameMaxActs')
+      }
+    },
     isPublic: {
       id: 'createGameIsPublic',
       element: () => {
         return document.getElementById('createGameIsPublic')
       }
     },
-    playerCount: {
+    maxPlayers: {
       id: 'createGamePlayerCount',
       element: () => {
         return document.getElementById('createGamePlayerCount')
@@ -82,10 +106,46 @@ export const ui = {
         return document.getElementById('editGameIsPublic')
       }
     },
-    playerCount: {
+    maxPlayers: {
       id: 'editGamePlayerCount',
       element: () => {
         return document.getElementById('editGamePlayerCount')
+      }
+    },
+    maxChapters: {
+      id: 'editGameMaxChapters',
+      element: () => {
+        return document.getElementById('editGameMaxChapters')
+      }
+    },
+    hasActs: {
+      id: 'editGameHasActs',
+      element: () => {
+        return document.getElementById('editGameHasActs')
+      }
+    },
+    hasChapters: {
+      id: 'editGameHasChapters',
+      element: () => {
+        return document.getElementById('editGameHasChapters')
+      }
+    },
+    maxActs: {
+      id: 'editGameMaxActs',
+      element: () => {
+        return document.getElementById('editGameMaxActs')
+      }
+    },
+    currentChapter: {
+      id: 'editGameCurrentChapter',
+      element: () => {
+        return document.getElementById('editGameCurrentChapter')
+      }
+    },
+    currentAct: {
+      id: 'editGameCurrentAct',
+      element: () => {
+        return document.getElementById('editGameCurrentAct')
       }
     },
   },
@@ -128,10 +188,10 @@ export const ui = {
         return document.getElementById('initChatEnd')
       }
     },
-    casual: {
-      id: 'casualChatEnd',
+    open: {
+      id: 'openChatEnd',
       element: () => {
-        return document.getElementById('casualChatEnd')
+        return document.getElementById('openChatEnd')
       }
     },
     dm: {

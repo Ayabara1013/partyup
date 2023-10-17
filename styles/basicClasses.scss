@@ -20,6 +20,14 @@
   }
 }
 
+.stat-desc{
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+}
+.stats{
+  grid-template-columns: 5fr 3fr 3fr 3fr;
+}
+
 .publicPending{
   &::after{
     content:"Pending..."

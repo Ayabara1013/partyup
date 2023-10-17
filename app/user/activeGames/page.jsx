@@ -23,10 +23,10 @@ export default function Page() {
 
   const startOnClick = async (e) => {
     let gameId = e.target.value;
-    for (let gameInfo of activeGames.dmGames) {
-      if (gameInfo.game.id === gameId) {
+    for (let game of activeGames.dmGames) {
+      if (game.id === gameId) {
         await fbManagement.dm.startGame(gameId);
-        toastUser(`'${ gameInfo.game.name }' has started!`, 'info');
+        toastUser(`'${ game.name }' has started!`, 'info');
         return;
       }
     }
@@ -34,8 +34,8 @@ export default function Page() {
 
   const gameOptionOnClick = (e) => {
     let gameId = e.target.value;
-    for (let gameInfo of activeGames.dmGames) {
-      if (gameInfo.game.id === gameId) {
+    for (let game of activeGames.dmGames) {
+      if (game.id === gameId) {
         let req = e.target.attributes.dir.value;
         push(`/game/${ gameId + req }`);
         return;
@@ -58,26 +58,16 @@ export default function Page() {
     let elementList = [
       <h1 key="DMGamestitle" className="w-full text-center text-3xl mt-5">DM Games</h1>
     ]
-    for (let gameInfo of activeGames.dmGames) {
-      let { game, inviteCode } = gameInfo;
-      let { started, completed } = game;
+    for (let game of activeGames.dmGames) {
       let buttons = [];
       buttons.push(
-        (started)
-          ? <button className="btn" key={ `open${ game.id }` } value={ game.id } onClick={ gameOptionOnClick } dir="">Open</button>
-          : <button className="btn" key={ `start${ game.id }` } value={ game.id } onClick={ startOnClick }>Start</button>
+        (game.started)
+          ? <button className="btn" key={ `open${ game.id }` } value={ game.id } onClick={ gameOptionOnClick }
+                    dir="">Open</button>
+          :
+          <button className="btn" key={ `start${ game.id }` } value={ game.id } onClick={ startOnClick }>Start</button>
       );
-      if (!completed) {
-        buttons.push(
-          <div className="btn-group" key={ `request${ game.id }` }>
-            <button className="btn" value={ game.id } onClick={ gameOptionOnClick } dir="/members">
-              Members
-            </button>
-            <div className="tooltip tooltip-info" data-tip="Copy invite Link">
-              <button className="btn btn-link" onClick={ copyInviteOnClick } value={ inviteCode }>🖅</button>
-            </div>
-          </div>
-        );
+      if (!game.completed) {
         buttons.push(
           <button className="btn" key={ `edit${ game.id }` } value={ game.id } onClick={ gameOptionOnClick }
                   dir="/edit">Edit</button>
@@ -85,20 +75,56 @@ export default function Page() {
       }
 
       elementList.push(
-        <div key={ game.id } className="w-full h-14 mt-5 center border">
-          <div className="w-1/4 center vertical border">
-            <span className="w-1/3 mx-2">Name:</span>
-            <span className="w-2/3 mx-2">{ game.name }</span>
+        <div key={ game.id } className="stats border h-32">
+          <div className="stat">
+            <div className="stat-value text-primary text-2xl">{ game.name }</div>
+            <div className="stat-desc">{ game.description }</div>
           </div>
-          <div className="w-1/8 center vertical border">
-            <span className="w-2/3 mx-2">Player Count:</span>
-            <span className="w-1/3 mx-2">{ game.members.length }/{ game.playerMax }</span>
+          <div className="stat">
+            <div className="stat-title">Players:</div>
+            <div className="stat-value text-primary text-xl">{ game.members.length }/{ game.maxPlayers }</div>
+            <div className="btn-group">
+              <button className="btn btn-sm" value={ game.id } onClick={ gameOptionOnClick } dir="/members">Check
+                Players
+              </button>
+              <div className="tooltip tooltip-info" data-tip="Copy invite Link">
+                <button className="btn btn-sm w-1/6 btn-active" onClick={ copyInviteOnClick }
+                        value={ game.inviteCode }>🖅
+                </button>
+              </div>
+            </div>
           </div>
-          <div className="w-1/2 center">
-            { buttons }
+          <div className="stat">
+            <div className="stat-title">Acts/Chapters:</div>
+            <div
+              className="stat-value text-primary text-base">{ game.hasActs ? `Act:${ game.currentAct }` : 'No Acts' }</div>
+            <div
+              className="stat-value text-primary text-base">{ game.hasChapters ? `Chapter:${ game.currentChapter }` : 'No Chapters' }</div>
+          </div>
+          <div className="stat">
+            { (game.started)
+              ? <button className="btn btn-sm mt-2" value={ game.id } onClick={ gameOptionOnClick } dir="">Open</button>
+              : <button className="btn btn-sm mt-2" value={ game.id } onClick={ startOnClick }>Start</button>
+            }
+            <button className="btn btn-sm" value={ game.id } onClick={ gameOptionOnClick } dir="/edit">Edit</button>
           </div>
         </div>
-      );
+      )
+      // elementList.push(
+      //   <div key={ game.id } className="w-full h-14 mt-5 center border">
+      //     <div className="w-1/4 center vertical border">
+      //       <span className="w-1/3 mx-2">Name:</span>
+      //       <span className="w-2/3 mx-2">{ game.name }</span>
+      //     </div>
+      //     <div className="w-1/8 center vertical border">
+      //       <span className="w-2/3 mx-2">Player Count:</span>
+      //       <span className="w-1/3 mx-2">{ game.members.length }/{ game.maxPlayers }</span>
+      //     </div>
+      //     <div className="w-1/2 center">
+      //       { buttons }
+      //     </div>
+      //   </div>
+      // );
     }
 
     return (activeGames.dmGames.length > 0) && elementList;
@@ -124,7 +150,7 @@ export default function Page() {
             </div>
             <div className="w-1/3 center vertical border">
               <span className="w-2/3 mx-2">Player Count:</span>
-              <span className="w-1/3 mx-2">{ game.members.length }/{ game.playerMax }</span>
+              <span className="w-1/3 mx-2">{ game.members.length }/{ game.maxPlayers }</span>
             </div>
           </div>
           <div className="w-1/3 center">

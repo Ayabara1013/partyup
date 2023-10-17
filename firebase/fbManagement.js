@@ -1,5 +1,18 @@
 // noinspection JSCheckFunctionSignatures
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query, setDoc, updateDoc, and, where } from "firebase/firestore";
+import {
+  addDoc,
+  and,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  onSnapshot,
+  query,
+  setDoc,
+  updateDoc,
+  where
+} from "firebase/firestore";
 
 import { db, userAuth } from "@/firebase/base";
 import { toastUser } from "@/util/functions";
@@ -14,35 +27,17 @@ function reconstructDoc(doc) {
   }
 }
 
-async function generateDmList(gameIdList){
+async function generateGameList(idList, dm) {
   let gameList = [];
-  for (const dmGame of gameIdList) {
-    // let requestList = []
-    // let requestsDocs = toArray(await getDocs(requestRef));
-    // for (let request of requestsDocs) {
-    //   requestList.push(reconstructDoc(request))
-    // }
-    // const requestRef = collection(db, `game`, dmGame.id, `joinRequest`);
-
-    const gameRef = doc(db, `game`, dmGame.id);
-    const gameMemberRef = collection(db, 'game', dmGame.id, 'members');
+  for (const entry of idList) {
+    const gameRef = doc(db, `game`, entry.id);
+    const gameMemberRef = collection(db, 'game', entry.id, 'members');
 
     let game = reconstructDoc(await getDoc(gameRef));
     game.members = toArray(await getDocs(gameMemberRef));
-
-    gameList.push({ game, inviteCode: dmGame.inviteCode })
-  }
-  return gameList;
-}
-
-async function generatePlayerList(gameIdList) {
-  let gameList = [];
-
-  for (const item of gameIdList) {
-    const gameRef = doc(db, `game`, item.id);
-    const gameMemberRef = collection(db, 'game', item.id, 'members');
-    let game = reconstructDoc(await getDoc(gameRef));
-    game.members = toArray(await getDocs(gameMemberRef));
+    if (dm) {
+      game.inviteCode = entry.inviteCode;
+    }
     gameList.push(game)
   }
   return gameList;
@@ -72,38 +67,37 @@ function checkActive(gameDoc) {
 }
 
 export const fbManagement = {
-  live:{
+  live: {
     userIsDmGames:
       async (callback) => {
         const dmListRef = collection(db, `user`, userAuth.currentUser.uid, 'dmList');
         onSnapshot(dmListRef, async (snapshot) => {
-          callback(await generateDmList(toArray(snapshot)));
+          callback(await generateGameList(toArray(snapshot), true));
         })
       },
     userIsPlayerGames:
       async (callback) => {
         const playerListRef = collection(db, `user`, userAuth.currentUser.uid, 'playerList');
         onSnapshot(playerListRef, async (snapshot) => {
-          callback(await generatePlayerList(toArray(snapshot)));
+          callback(await generateGameList(toArray(snapshot)));
         })
       },
     memberJoined:
       async (game, callBack) => {
         const gameMemberRef = collection(db, 'game', game.id, 'members');
         let compoundClause;
-        for(let member of game.members){
-          if (compoundClause){
+        for (let member of game.members) {
+          if (compoundClause) {
             compoundClause = and(compoundClause, where('id', '!=', member.id))
-          } else{
+          } else {
             compoundClause = where('id', '!=', member.id)
           }
         }
-        console.log(compoundClause)
         const q = query(gameMemberRef, compoundClause && compoundClause);
         return onSnapshot(q, async (snapshot) => {
           let memberList = toArray(snapshot);
-          if(memberList.length > 0){
-            toastUser(`${memberList[0].uName} has joined the game: ${game.name}`)
+          if (memberList.length > 0) {
+            toastUser(`${ memberList[0].uName } has joined the game: ${ game.name }`)
             callBack(await fbManagement.get.userIsDmGames());
             return toArray(snapshot);
           }
@@ -146,29 +140,36 @@ export const fbManagement = {
       async () => {
         const dmListRef = collection(db, `user`, userAuth.currentUser.uid, 'dmList');
         let dmGameList = toArray(await getDocs(dmListRef));
-        return await generateDmList(dmGameList);
+        return await generateGameList(dmGameList, true);
       },
     userIsPlayerGames:
       async () => {
         const playerListRef = collection(db, `user`, userAuth.currentUser.uid, 'playerList');
         let playerGameList = toArray(await getDocs(playerListRef));
-        return await generatePlayerList(playerGameList);
+        return await generateGameList(playerGameList);
       },
   },
   dm: {
     createGame:
-      async (name, description, isPublic, playerMax) => {
+      async (name, description, isPublic, maxPlayers, hasActs, maxActs, hasChapters, maxChapters) => {
         //Create Game Entry in Database
         const { uid, displayName } = userAuth.currentUser;
         const gameCollection = collection(db, `game`);
         let newGameRef = await addDoc(gameCollection, {
-          name, description, isPublic, playerMax,
+          name, description, isPublic, maxPlayers,
+
+          hasActs, maxActs,
+          currentAct: 1,
+
+          hasChapters, maxChapters,
+          currentChapter: 1,
+
           createdAt: Date.now(),
           uid: uid,
           uName: displayName,
           started: false,
           completed: false,
-          completionResult: 'none'
+          completionResult: 'none',
         })
 
         //Create an invite-code for the game
@@ -236,34 +237,34 @@ export const fbManagement = {
         // }
       },
     updateGame:
-      async (gameId, name, description, isPublic, playerMax) => {
+      async (gameId, name, description, isPublic, maxPlayers, hasActs, maxActs, currentAct, hasChapters, maxChapters, currentChapter) => {
         const updateGameRef = doc(db, 'game', gameId);
         await updateDoc(updateGameRef, {
-          name, description, isPublic, playerMax
+          name, description, isPublic, maxPlayers, hasActs, maxActs, currentAct, hasChapters, maxChapters, currentChapter
         })
-
-        let publicGamesRef = doc(db, `game`, `availableGames`);
-        let publicGamesDoc = await getDoc(publicGamesRef);
-        let idList = publicGamesDoc.data().idList || [];
-
-        if (isPublic) {
-          let addToList = true;
-          for (let id of idList) {
-            if (gameId === id) {
-              addToList = false;
-              break;
-            }
-          }
-          if (addToList) {
-            idList.push(gameId);
-          }
-        } else {
-          let index = idList.indexOf(gameId)
-          if (index >= 0) {
-            idList.splice(index, 1)
-          }
-        }
-        await updateDoc(publicGamesRef, { idList });
+        //
+        // let publicGamesRef = doc(db, `game`, `availableGames`);
+        // let publicGamesDoc = await getDoc(publicGamesRef);
+        // let idList = publicGamesDoc.data().idList || [];
+        //
+        // if (isPublic) {
+        //   let addToList = true;
+        //   for (let id of idList) {
+        //     if (gameId === id) {
+        //       addToList = false;
+        //       break;
+        //     }
+        //   }
+        //   if (addToList) {
+        //     idList.push(gameId);
+        //   }
+        // } else {
+        //   let index = idList.indexOf(gameId)
+        //   if (index >= 0) {
+        //     idList.splice(index, 1)
+        //   }
+        // }
+        // await updateDoc(publicGamesRef, { idList });
       },
     denyJoinRequest:
       async (gameId, userId) => {
@@ -285,7 +286,7 @@ export const fbManagement = {
         let game = reconstructDoc(await getDoc(gameRef));
         let members = toArray(await getDocs(gameMemberRef));
 
-        if (members.length >= game.playerMax) {
+        if (members.length >= game.maxPlayers) {
           return { success: false, message: 'Game already at player max.' }
         }
         for (let member of members) {
@@ -313,7 +314,6 @@ export const fbManagement = {
         const inviteRef = doc(db, 'invite', inviteCode);
         let invite = reconstructDoc(await getDoc(inviteRef));
         if (!invite) return null;
-
 
         const gameRef = doc(db, 'game', invite.gameId);
         let game = reconstructDoc(await getDoc(gameRef));
