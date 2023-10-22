@@ -1,47 +1,67 @@
-import { collection, doc, getDocs, setDoc } from "firebase/firestore";
-import { db, userAuth } from "@/firebase/base";
+import { addDoc, collection, doc, getDocs, onSnapshot, query, setDoc, updateDoc, where } from "firebase/firestore";
 
-const messageDataDestructure = (data) => {
-    let messageList =[];
-    data.forEach(doc=>{
-        let message = doc.data()
-        message.id = doc.id;
-        messageList.push(message);
-    })
-    messageList.sort((a, b) => (a.createdAt > b.createdAt) ? 1 : (b.createdAt > a.createdAt) ? -1 : 0);
-    return messageList;
-}
+import { sortByKey } from "@/util/functions";
+
+import { db, toArray, userAuth } from "@/firebase/base";
 
 export const messaging = {
-    init: {
-        addMessage: async (gameId, message) => {
-            const initChatDoc = doc(collection(db, `game`, gameId, `initChat`))
-            await setDoc(initChatDoc, {
-                text: message,
-                uid: userAuth.currentUser.uid,
-                createdAt: Date.now(),
-                canon: false
-            })},
-        getMessages:
-            async (gameId) => {
-                const initChatDoc = collection(db, `game`, gameId, `initChat`)
-                let data = await getDocs(initChatDoc);
-                return messageDataDestructure(data,true)
-            }
-    },
-    casual: {
-        addMessage: async (gameId, message) => {
-            const casualChatDoc = doc(collection(db, `game`, gameId, `casualChat`))
-            await setDoc(casualChatDoc, {
-                text: message,
-                uid: userAuth.currentUser.uid,
-                createdAt: Date.now()
-            })},
-        getMessages:
-            async (gameId) => {
-                const casualChatDoc = collection(db, `game`, gameId, `casualChat`)
-                let data = await getDocs(casualChatDoc);
-                return messageDataDestructure(data)
-            }
-    }
+  game: {
+    addMessage:
+      async (game, window, text, tags) => {
+        const gameChatRef = collection(db, `game`, game.id, `messages`)
+        await addDoc(gameChatRef, {
+          text, window, tags,
+
+          createdAt: Date.now(),
+          lastEditAt: Date.now(),
+          uid: userAuth.currentUser.uid,
+
+          chapter: game.currentChapter,
+          act: game.currentAct,
+          canon: false,
+        })
+      },
+    getMessages:
+      async (gameId) => {
+        const messageRef = collection(db, `game`, gameId, `messages`);
+
+        return toArray(await getDocs(messageRef));
+      },
+    getUpdateMessage:
+      async (gameId, lastUpdate) => {
+        const messageRef = collection(db, `game`, gameId, `messages`);
+        const q = query(messageRef,
+          where('lastEditAt', '>=', lastUpdate - 2000));
+
+        return toArray(await getDocs(q));
+      },
+    liveMessages:
+      async (gameId, callback) => {
+        const messageRef = collection(db, `game`, gameId, `messages`);
+        const q = query(messageRef,
+          where('lastEditAt', '>=', Date.now() - 1000));
+        return onSnapshot(q, (snapshot) => {
+          callback(toArray(snapshot));
+        })
+      },
+    addCanon:
+      async (gameId, messageId) => {
+        const messageRef = doc(db, `game`, gameId, `messages`, messageId);
+        await updateDoc(messageRef, {
+          lastEditAt: Date.now(),
+          canon: true
+        })
+      },
+    removeCanon:
+      async (gameId, messageId) => {
+        const messageRef = doc(db, `game`, gameId, `messages`, messageId);
+        await updateDoc(messageRef, {
+          lastEditAt: Date.now(),
+          canon: false
+        })
+      },
+  },
+  dm: {
+
+  }
 }

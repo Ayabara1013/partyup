@@ -1,83 +1,106 @@
 'use client'
 
 import { useRouter } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
+import PageLayout from "@/components/PageLayout";
+import EditFormInput from "@/app/game/[gameId]/edit/_EditFormInput";
+import EditFormActChapterInput from "@/app/game/[gameId]/edit/_EditFormActChapterInput";
 
 import { ui } from "@/util/ui";
-import { gameManagement } from "@/firebase/gameManagement";
-import { ApplicationContext } from "@/app/ApplicationContext";
-import PageLayout from "@/components/PageLayout";
+import { fbManagement } from "@/firebase/fbManagement";
+import { useApplicationContext } from "@/app/ApplicationContext";
+import { toastUser } from "@/util/functions";
+export default function Page({ params }) {
+  const { push } = useRouter();
 
-export default function Page({params}) {
-    const { push } = useRouter();
+  let { gameId } = params;
+  const { activeGames } = useApplicationContext();
+  const [ game, setGame ] = useState(null);
 
-    const { activeGames, displayPage} = useContext(ApplicationContext);
-    const [ game, setGame ] = useState(null)
-
-    let { gameId } = params;
-
-    console.log(activeGames)
-    useEffect(() => {
-        if(game)
-            displayPage(true)
-
-    }, [game]);
-
-    useEffect(() => {
-        if(activeGames){
-            for(let gameInfo of activeGames.dmGames){
-                let { game } = gameInfo;
-                if(game.id === gameId){
-                    setGame(game)
-                    return;
-                }
-            }
-            push('/home');
+  useEffect(() => {
+    if (activeGames) {
+      for (let game of activeGames.dmGames) {
+        if (game.id === gameId) {
+          setGame(game);
+          return;
         }
-    }, [activeGames]);
+      }
+      push('/home');
+    }
+  }, [ activeGames ]);
 
-    const updateGameOnClick = async (e) =>{
-        e.target.setAttribute('disabled', true)
+  const updateGameOnClick = async (e) => {
+    e.target.setAttribute('disabled', true)
+    let errMsg = ''
+    //Set up data
+    let name = ui.editGame.name.element().value.trim();
+    let description = ui.editGame.description.element().value.trim();
+    let isPublic = false;
+    let maxPlayers = parseInt(ui.editGame.maxPlayers.element().value);
+    let hasActs = ui.editGame.hasActs.element().checked;
+    let hasChapters = ui.editGame.hasChapters.element().checked;
+    let currentChapter = parseInt(ui.editGame.currentChapter.element().value);
+    let maxChapters = parseInt(ui.editGame.maxChapters.element().value);
+    let currentAct = parseInt(ui.editGame.currentAct.element().value);
+    let maxActs= parseInt(ui.editGame.maxActs.element().value);
 
-        let name = ui.editGame.name.element().value;
-        let description = ui.editGame.description.element().value;
-        let isPublic = ui.editGame.isPublic.element().checked;
-        let playerCount = parseInt(ui.editGame.playerCount.element().value);
-
-        await gameManagement.updateGame(gameId, name, description, isPublic, playerCount);
-        push('/user/activeGames')
-        e.target.removeAttribute('disabled')
+    //Validate data
+    if(name === '') {
+      errMsg = 'Game name cannot be empty';
+    }
+    //Validate act numbers if applicable
+    if(hasActs){
+      (!currentAct) && (errMsg = 'Current Act cannot be empty');
+      (!maxActs) && (errMsg = 'Max Acts cannot be empty');
+      if(currentAct > maxActs){
+        errMsg = 'Current Act cannot be greater than Max Acts';
+      }
+    }
+    //Validate chapter numbers if applicable
+    if(hasChapters){
+      (!currentChapter) && (errMsg = 'Current Chapter cannot be empty');
+      (!maxChapters) && (errMsg = 'Max Chapters cannot be empty');
+      if(currentChapter > maxChapters){
+        errMsg = 'Current Chapter cannot be greater than Max Chapters';
+      }
+    }
+    //Set up data with conditional updates fields
+    let data = {
+      name,
+      description,
+      isPublic,
+      maxPlayers,
+      hasActs,
+      ...hasActs && { currentAct },
+      ...hasActs && { maxActs },
+      hasChapters,
+      ...hasActs && { currentChapter },
+      ...hasActs && { maxChapters },
     }
 
-    return (activeGames && game)?(
-        <PageLayout title={`Edit ${game.name}`} backHref="/user/activeGames">
-            <div className="w-full flex mt-4">
-                <label className="w-1/4 mx-2">Game Name: </label>
-                <input className="w-3/4 mx-2" type="text" placeholder="Enter a name" id={ui.editGame.name.id} defaultValue={game.name}/>
-            </div>
-            <div className="w-full flex mt-4">
-                <label className="w-1/4 mx-2">Game Description (optional): </label>
-                <input className="w-3/4 mx-2" type="text" placeholder="Enter a description" id={ui.editGame.description.id} defaultValue={game.description}/>
-            </div>
-            <div className="w-full flex mt-4">
-                <div className="w-1/2 flex mx-2">
-                    <label className="w-1/2">Public Game?: </label>
-                    <input className="" type="checkbox" id={ui.editGame.isPublic.id} defaultChecked={game.isPublic}/>
-                </div>
-                <div className="w-1/2 flex mx-2">
-                    <label className="w-1/2">Max Player Count: </label>
-                    <select className="w-1/2" defaultValue={game.playerMax} id={ui.editGame.playerCount.id}>
-                        <option value="1">1</option>
-                        <option value='2'>2</option>
-                        <option value='3'>3</option>
-                        <option value='4'>4</option>
-                        <option value='5'>5</option>
-                        <option value='6'>6</option>
-                    </select>
-                </div>
-            </div>
-            <button className="btn mt-5" onClick={updateGameOnClick}>Update Game!</button>
-        </PageLayout>
-    ):<></>
+    if(errMsg !== ''){
+      toastUser(errMsg, 'error');
+      e.target.removeAttribute('disabled');
+      return;
+    }
+    //Update game
+    await fbManagement.dm.updateGame(gameId, data);
+    e.target.removeAttribute('disabled');
+    push('/user/activeGames');
+  }
+
+  return (activeGames && game) && (
+    <PageLayout title={ `Edit: ${ game.name }` } backHref="/user/activeGames">
+      <div className="flex flex-col">
+        <EditFormInput title={ "What is the game name" } id={ ui.editGame.name.id } defaultValue={ game.name }/>
+        <EditFormInput title={ "Game description (optional)" } id={ ui.editGame.description.id }
+                       defaultValue={ game.description }/>
+        <EditFormActChapterInput game={ game }/>
+        <EditFormInput type="players" title={ "Max Players:" } id={ ui.editGame.maxPlayers.id }
+                       defaultValue={ game.maxPlayers }/>
+      </div>
+      <button className="btn mt-5" onClick={ updateGameOnClick }>Update Game!</button>
+    </PageLayout>
+  )
 }

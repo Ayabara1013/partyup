@@ -1,118 +1,110 @@
 'use client'
 
+import moment from "moment";
 import { useRouter } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
+import DmMessageOptions from "@/components/ContextMenu/DmMessageOptions";
+import PlayerMessageOptions from "@/components/ContextMenu/PlayerMessageOptions";
+
+import { addArrayToArray, sortByKey } from "@/util/functions";
 
 import { ui } from "@/util/ui";
 import { userAuth } from "@/firebase/base";
 import { messaging } from "@/firebase/messaging";
-import { ApplicationContext } from "@/app/ApplicationContext";
+import { fbManagement } from "@/firebase/fbManagement";
+import { useApplicationContext } from "@/app/ApplicationContext";
+import { messageLocalStorage } from "@/util/localStorage";
+import ChatWindow from "@/app/game/[gameId]/_ChatWindow";
 
-export default function Page({params}) {
+export default function Page({ params }) {
 
   const { push } = useRouter();
 
-  const { activeGames, displayPage } = useContext(ApplicationContext);
-
-  let [ initChat, setInitChat ] = useState(null);
-  let [ casualChat, setCasualChat ] = useState(null);
   let { gameId } = params;
+  const { activeGames } = useApplicationContext();
+
+  const [ game, setGame ] = useState(null);
+  const [ members, setMembers ] = useState(null);
+  const [ messages, setMessages ] = useState(null);
 
   useEffect(() => {
-    if(activeGames){
-      for(let gameInfo of activeGames.dmGames){
-        let { game } = gameInfo;
-        if(game.id === gameId){
+    if (activeGames) {
+      let games = [];
+      addArrayToArray(games, activeGames.playerGames, 'id');
+      addArrayToArray(games, activeGames.dmGames, 'id');
+      console.log(games, gameId);
+      for (let game of games) {
+        if (game.id === gameId) {
           setItems();
-          return;
-        }
-      }
-      for(let game of activeGames.playerGames){
-        if(game.id === gameId){
-          setItems();
+          messaging.game.liveMessages(gameId, liveGameMessageUpdate).then();
           return;
         }
       }
       push('/home');
     }
-  }, [activeGames]);
+  }, [ activeGames ]);
 
   useEffect(() => {
     ui.messaging.canon.element().scrollIntoView({ behavior: 'smooth' });
-    ui.messaging.casual.element().scrollIntoView({ behavior: 'smooth' });
-    displayPage(true);
-    console.log(initChat, casualChat)
-  }, [initChat, casualChat]);
+    ui.messaging.open.element().scrollIntoView({ behavior: 'smooth' });
+    ui.messaging.init.element().scrollIntoView({ behavior: 'smooth' });
+  }, [ messages ]);
+
   const setItems = async () => {
-    setInitChat(await messaging.init.getMessages(gameId))
-    setCasualChat(await messaging.casual.getMessages(gameId))
-  }
-  const generateCanonChat = () => {
-    return (initChat && initChat.map(msg => (msg.canon)?<ChatMessage key={msg.id} message={msg}></ChatMessage>:<></>))
-  }
-  const generateInitChat = () => {
-    return (initChat && initChat.map(msg => <ChatMessage key={msg.id} message={msg}></ChatMessage>))
-  }
-  const generateCasualChat = () => {
-    return (casualChat && casualChat.map(msg => <ChatMessage key={msg.id} message={msg}></ChatMessage>))
-  }
-  const canonTextOnKeyUp = async (e) => {
-    if((e.key === 'Enter' || e.keyCode === 13) && !e.shiftKey){
-      await messaging.init.addMessage(gameId, e.target.value.trim())
-      e.target.value = '';
-      setItems()
+    //Get game info
+    let game = await fbManagement.get.singleGame(gameId);
+    let tempList = {};
+
+    //Add all members to list for quick message lookup
+    for (let member of game.members) {
+      tempList[member.id] = (member.id !== userAuth.currentUser.uid) ? `${ member.uName } (Player)` : 'You';
     }
-  }
-  const casualTextOnKeyUp = async (e) => {
-    if((e.key === 'Enter' || e.keyCode === 13) && !e.shiftKey){
-      await messaging.casual.addMessage(gameId, e.target.value.trim())
-      e.target.value = '';
-      setItems()
+    //Add DM to list
+    tempList[game.uid] = (game.uid === userAuth.currentUser.uid) ? 'You' : `${ game.uName } (DM)`;
+
+    //Get messages from local storage
+    let messages = messageLocalStorage.game.get(gameId);
+
+    //Get messages from server if local storage is empty or if there are new messages (saves on reads)
+    if (messages.length > 0) {
+      let lastTime = messageLocalStorage.game.getAccessTime(gameId);
+      let tempMessages = await messaging.game.getUpdateMessage(gameId, lastTime);
+      addArrayToArray(messages, tempMessages, 'id');
+    } else {
+      messages = await messaging.game.getMessages(gameId);
     }
+
+    sortByKey(messages, 'createdAt');
+
+    //Save messages to local storage and state
+    messageLocalStorage.game.set(gameId, messages);
+    setGame(game);
+    setMembers(tempList);
+    setMessages(messages);
+  }
+
+  //Live update of new init messages
+  const liveGameMessageUpdate = async (messages) => {
+    let localMessages = messageLocalStorage.game.get(gameId);
+    addArrayToArray(localMessages, messages, 'id');
+    sortByKey(localMessages, 'createdAt');
+    messageLocalStorage.game.set(gameId, localMessages);
+    setMessages(localMessages);
   }
 
   return (
-    <div className="h-full w-full gap-4 routePage hidden">
-      <div className="h-3/4 w-full border gap-4 flex">
-        <div className="w-1/6 ml-4 border">
+    <div className="h-full w-full gap-4 routePage">
+      <div className="h-3/4 w-full border chat-container px-4">
+        <div className="border">
           Some Rolling Stuff
         </div>
-        
-        <div className="w-1/3 border">
-          <div className="chat-box h-full">
-            {generateCanonChat()}
-            <span id={ui.messaging.canon.id}/>
-          </div>
-        </div>
-        
-        <div className="w-1/3 border flex flex-col">
-          <div className="chat-box">
-            {generateInitChat()}
-            <span id={ui.messaging.canon.id}/>
-          </div>
-          <textarea className="w-full flex-1" onKeyUp={canonTextOnKeyUp}/>
-        </div>
-        
-        <div className="w-1/3 border flex flex-col mr-4">
-          <div className="chat-box">
-            {generateCasualChat()}
-            <span id={ui.messaging.casual.id}/>
-          </div>
-          <textarea className="w-full flex-1" onKeyUp={casualTextOnKeyUp}/>
-        </div>
-        
+        <ChatWindow window="canon" gameItems={ { game, messages, members } }/>
+        <ChatWindow window="init" gameItems={ { game, messages, members } }/>
+        <ChatWindow window="open" gameItems={ { game, messages, members } }/>
+      </div>
+      <div className="h-1/4 w-full border gap-4 flex px-4">
       </div>
     </div>
   )
-}
-
-function ChatMessage(props) {
-  const { text, uid } = props.message;
-  const messageClass = uid === userAuth.currentUser.uid ? 'sent' : 'received';
-
-  return (
-    <div className={`message ${messageClass}`}>
-      <p>{text}</p>
-    </div>)
 }
