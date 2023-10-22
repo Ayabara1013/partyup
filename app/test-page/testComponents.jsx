@@ -51,21 +51,15 @@ export function Test2(props) {
      * this wasnt a good test, I may want to parse the result into a string with parseRollResult
      */
 
-    const rollResult = roll([
-      [2, 6], [2,6,'fire'], [1, 4], [-2, 'strength']
-    ]);
+    // const rollResult = roll([
+    //   [2, 6], [2,6,'fire'], [1, 4], [-2, 'strength']
+    // ]);
+
+    const rollResult = roll(`!roll 2d6 + 1d10 + 5`);
 
     console.log(`--- rollResult--- `);
 
-    // console.log(rollResult);
-    // console.log(rollResult2);
-
-    // console.log(displayRollResults(rollResult));
-
     const rollString = displayRollResults(rollResult);
-
-    // console.log(rollString);
-
 
     console.log(rollResult);
 
@@ -104,3 +98,4 @@ export function Test3(props) {
     </RollTestButton>
   )
 }
+
