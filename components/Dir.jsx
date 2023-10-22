@@ -50,3 +50,12 @@ Dir.user = {
     );
   },
 }
+Dir.test = {
+  chat:({ children, className }) => {
+    return (
+        <Link className={className} href='/test-page'>
+          {(children) ? children : 'test page'}
+        </Link>
+    );
+  },
+}
