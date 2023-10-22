@@ -1,4 +1,20 @@
 export const ui = {
+  user:{
+    activeGames:{
+      dmTab:{
+        id: 'activeGamesDmTab',
+        element: () => {
+          return document.getElementById('activeGamesDmTab')
+        }
+      },
+      playerTab:{
+        id: 'activeGamesPlayerTab',
+        element: () => {
+          return document.getElementById('activeGamesPlayerTab')
+        }
+      }
+    }
+  },
   home: {
     userName: {
       id: 'homeUserName',

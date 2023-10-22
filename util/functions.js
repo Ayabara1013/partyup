@@ -1,4 +1,5 @@
 import { ui } from "@/util/ui";
+import { dieRegex } from "@/util/constants";
 
 /**
  * Adds a message to the alert overlay.
@@ -27,12 +28,29 @@ function toastUser(message, type) {
   }, 2000)
 }
 
-/**
- * Disables the context menu on the given element.
- * @param {object} e Target element to disable context menu on.
- */
-function preventContextMenu(e) {
-  e.preventDefault();
+function validateCommand(input) {
+    let args = input.trim().split(' ');
+    let command = args[0].slice(0,2);
+
+    switch (command){
+      case '!r':
+        let die = args[1];
+        if(dieRegex.test(die)){
+          let rollCount = parseInt(die.split('r')[0]);
+          let dieSize = parseInt(die.split('r')[1].split('+')[0]);
+          let modifier = parseInt(die.split('+')[1]);
+          return {
+            return: {
+              success: true,
+              type: 'roll',
+              data:{
+                rollCount, dieSize, modifier
+              }
+            },
+          }
+        }
+    }
+    return 'test';
 }
 
 function sortByKey(array, key) {
@@ -47,7 +65,7 @@ function addArrayToArray(array, arrayToAdd, key) {
   for (let newMsg of arrayToAdd) {
     let index = array.indexOf(array.find(msg => msg[key] === newMsg[key]));
     if (index === -1) {
-      array.push(newMsg);
+      array.push( newMsg);
     } else {
       array[index] = newMsg;
     }
@@ -56,7 +74,7 @@ function addArrayToArray(array, arrayToAdd, key) {
 
 export {
   toastUser,
-  preventContextMenu,
   sortByKey,
-  addArrayToArray
+  addArrayToArray,
+  validateCommand
 };

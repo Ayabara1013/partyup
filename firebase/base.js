@@ -27,9 +27,29 @@ const googleSignInPopUp = (func) => {
   })
 }
 
+const reconstructDoc = (doc) => {
+  try {
+    let data = doc.data();
+    data.id = doc.id;
+    return data;
+  } catch (e) {
+    return null;
+  }
+}
+
+function toArray(docs) {
+  let docArray = [];
+  docs.forEach(doc => {
+    docArray.push(reconstructDoc(doc))
+  })
+  return docArray;
+}
+
 export {
   db,
   fireApp,
   userAuth,
   googleSignInPopUp,
+  reconstructDoc,
+  toArray
 };

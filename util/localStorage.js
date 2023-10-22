@@ -20,6 +20,15 @@ const messageLocalStorage = {
     },
   }
 }
+const accountLocalStorage = {
+  getCurrentGame(uid) {
+    return localStorage.getItem(`${uid}-currentGame`);
+  },
+  setCurrentGame(uid, gameId) {
+    localStorage.setItem(`${uid}-currentGame`, gameId);
+  }
+}
 export {
+  accountLocalStorage,
   messageLocalStorage
 }

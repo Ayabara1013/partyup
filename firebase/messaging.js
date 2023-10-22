@@ -2,19 +2,7 @@ import { addDoc, collection, doc, getDocs, onSnapshot, query, setDoc, updateDoc,
 
 import { sortByKey } from "@/util/functions";
 
-import { db, userAuth } from "@/firebase/base";
-
-const messageDataDestructure = (data) => {
-  let messageList = [];
-  data.forEach(doc => {
-    let message = doc.data();
-    message.id = doc.id;
-    messageList.push(message);
-  })
-  sortByKey(messageList, 'createdAt');
-  sortByKey(messageList, 'createdAt');
-  return messageList;
-}
+import { db, toArray, userAuth } from "@/firebase/base";
 
 export const messaging = {
   game: {
@@ -37,7 +25,7 @@ export const messaging = {
       async (gameId) => {
         const messageRef = collection(db, `game`, gameId, `messages`);
 
-        return messageDataDestructure(await getDocs(messageRef));
+        return toArray(await getDocs(messageRef));
       },
     getUpdateMessage:
       async (gameId, lastUpdate) => {
@@ -45,7 +33,7 @@ export const messaging = {
         const q = query(messageRef,
           where('lastEditAt', '>=', lastUpdate - 2000));
 
-        return messageDataDestructure(await getDocs(q));
+        return toArray(await getDocs(q));
       },
     liveMessages:
       async (gameId, callback) => {
@@ -53,7 +41,7 @@ export const messaging = {
         const q = query(messageRef,
           where('lastEditAt', '>=', Date.now() - 1000));
         return onSnapshot(q, (snapshot) => {
-          callback(messageDataDestructure(snapshot));
+          callback(toArray(snapshot));
         })
       },
     addCanon:
@@ -72,5 +60,8 @@ export const messaging = {
           canon: false
         })
       },
+  },
+  dm: {
+
   }
 }

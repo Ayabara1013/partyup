@@ -1,24 +1,19 @@
 'use client'
 
 import { useRouter } from "next/navigation";
-import { useContext, useEffect } from "react";
 
 import PageLayout from "@/components/PageLayout";
 
 import { ui } from "@/util/ui";
 import { fbManagement } from "@/firebase/fbManagement";
-import { ApplicationContext } from "@/app/ApplicationContext";
+import { toastUser } from "@/util/functions";
 
 export default function Page() {
   const { push } = useRouter();
-  const { displayPage } = useContext(ApplicationContext);
-
-  useEffect(() => {
-    displayPage(true)
-  }, []);
 
   const createGameOnClick = async (e) => {
     e.target.setAttribute('disabled', true);
+    let errMsg = '';
     let name = ui.createGame.name.element().value;
     let description = ui.createGame.description.element().value;
     let isPublic = false;
@@ -30,7 +25,34 @@ export default function Page() {
     let hasChapters = ui.createGame.hasChapters.element().checked;
     let maxChapters = parseInt(ui.createGame.maxChapters.element().value);
 
-    await fbManagement.dm.createGame(name, description, isPublic, maxPlayers, hasActs, maxActs, hasChapters, maxChapters);
+
+    //Validate data
+    if (name === '') {
+      errMsg = 'Game name cannot be empty';
+    }
+    //Validate act numbers if applicable
+    (hasActs && !maxActs) && (errMsg = 'Max Acts cannot be empty');
+    (hasChapters && !maxChapters) && (errMsg = 'Max Chapters cannot be empty');
+
+    //Set up data with conditional updates fields
+    let data = {
+      name,
+      description,
+      isPublic,
+      maxPlayers,
+      hasActs,
+      maxActs: hasActs ? maxActs : 1,
+      currentAct: 1,
+      hasChapters,
+      maxChapters: hasActs ? maxChapters : 1,
+      currentChapter: 1,
+    }
+    if (errMsg !== '') {
+      toastUser(errMsg);
+      e.target.removeAttribute('disabled');
+      return;
+    }
+    await fbManagement.dm.createGame(data);
     e.target.removeAttribute('disabled');
     push('/user/activeGames');
   }
@@ -100,22 +122,24 @@ function CreateFormActChapter() {
           <label className="label">
             <span className="label-text">Does your game use acts?</span>
           </label>
-          <div className="input-group center vertical w-full">
-            <input type="checkbox" className="checkbox h-full" value={ ui.createGame.maxActs.id } onChange={ onCheck }
-                   id={ui.createGame.hasActs.id} defaultChecked/>
-            <input type="number" placeholder="Count" defaultValue={ 1 } className="input input-bordered w-full"
-                   id={ ui.createGame.maxActs.id } min={ 1 }/>
+          <div className="join center vertical w-full">
+            <input type="checkbox" className="checkbox h-full join-item" value={ ui.createGame.maxActs.id }
+                   onChange={ onCheck }
+                   id={ ui.createGame.hasActs.id } defaultChecked/>
+            <input type="number" defaultValue={ 1 } className="input input-bordered w-full join-item"
+                   id={ ui.createGame.maxActs.id } min={ 1 } placeholder="Count"/>
           </div>
         </div>
         <div className="form-control w-1/2">
           <label className="label">
             <span className="label-text">Does your game use chapters?</span>
           </label>
-          <div className="input-group center vertical w-full">
-            <input type="checkbox" className="checkbox h-full" value={ ui.createGame.maxChapters.id } onChange={ onCheck }
-                   id={ui.createGame.hasChapters.id} defaultChecked/>
-            <input type="number" placeholder="Count" defaultValue={ 1 } className="input input-bordered w-full"
-                   id={ ui.createGame.maxChapters.id } min={ 1 }/>
+          <div className="join center vertical w-full">
+            <input type="checkbox" className="checkbox h-full join-item" value={ ui.createGame.maxChapters.id }
+                   onChange={ onCheck }
+                   id={ ui.createGame.hasChapters.id } defaultChecked/>
+            <input type="number" defaultValue={ 1 } className="input input-bordered w-full join-item"
+                   id={ ui.createGame.maxChapters.id } min={ 1 } placeholder="Count"/>
           </div>
         </div>
       </div>

@@ -24,8 +24,18 @@
   display: -webkit-box;
   -webkit-line-clamp: 2;
 }
+
 .stats{
-  grid-template-columns: 5fr 3fr 3fr 3fr;
+  display: inline-grid;
+  grid-template-columns: 3fr 3fr 3fr 3fr;
+  &.player {
+    grid-template-columns: 4fr 3fr 2fr;
+  }
+}
+
+.chat-container {
+  display: inline-grid;
+  grid-template-columns: 2fr 4fr 4fr 4fr;
 }
 
 .publicPending{

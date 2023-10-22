@@ -14,18 +14,8 @@ import {
   where
 } from "firebase/firestore";
 
-import { db, userAuth } from "@/firebase/base";
+import { db, reconstructDoc, toArray, userAuth } from "@/firebase/base";
 import { toastUser } from "@/util/functions";
-
-function reconstructDoc(doc) {
-  try {
-    let data = doc.data();
-    data.id = doc.id;
-    return data;
-  } catch (e) {
-    return null;
-  }
-}
 
 async function generateGameList(idList, dm) {
   let gameList = [];
@@ -41,14 +31,6 @@ async function generateGameList(idList, dm) {
     gameList.push(game)
   }
   return gameList;
-}
-
-function toArray(docs) {
-  let docArray = [];
-  docs.forEach(doc => {
-    docArray.push(reconstructDoc(doc))
-  })
-  return docArray;
 }
 
 function checkActive(gameDoc) {
@@ -151,26 +133,18 @@ export const fbManagement = {
   },
   dm: {
     createGame:
-      async (name, description, isPublic, maxPlayers, hasActs, maxActs, hasChapters, maxChapters) => {
+      async (data) => {
         //Create Game Entry in Database
         const { uid, displayName } = userAuth.currentUser;
         const gameCollection = collection(db, `game`);
-        let newGameRef = await addDoc(gameCollection, {
-          name, description, isPublic, maxPlayers,
+        data.uid = uid;
+        data.uName = displayName;
+        data.createdAt = Date.now();
+        data.started = false;
+        data.completed = false;
+        data.completionResult = 'none';
 
-          hasActs, maxActs,
-          currentAct: 1,
-
-          hasChapters, maxChapters,
-          currentChapter: 1,
-
-          createdAt: Date.now(),
-          uid: uid,
-          uName: displayName,
-          started: false,
-          completed: false,
-          completionResult: 'none',
-        })
+        let newGameRef = await addDoc(gameCollection, data);
 
         //Create an invite-code for the game
         const inviteRef = collection(db, 'invite');
@@ -192,7 +166,7 @@ export const fbManagement = {
         })
 
         //Add game to public list if set to true by user
-        if (isPublic) {
+        if (data.isPublic) {
           let publicGamesRef = doc(db, `game`, `availableGames`);
           let publicGamesDoc = await getDoc(publicGamesRef);
           let idList = publicGamesDoc.data().idList || [];
@@ -225,46 +199,11 @@ export const fbManagement = {
             started: true
           })
         }
-
-        // const publicGamesRef = doc(db, `game`, `availableGames`);
-        // let publicGamesDoc = await getDoc(publicGamesRef);
-        // let idList = publicGamesDoc.data().idList || [];
-        // let index = idList.indexOf(gameId);
-        //
-        // if (index >= 0) {
-        //   idList.splice(index, 1)
-        //   await updateDoc(publicGamesRef, { idList });
-        // }
       },
     updateGame:
-      async (gameId, name, description, isPublic, maxPlayers, hasActs, maxActs, currentAct, hasChapters, maxChapters, currentChapter) => {
+      async (gameId, data) => {
         const updateGameRef = doc(db, 'game', gameId);
-        await updateDoc(updateGameRef, {
-          name, description, isPublic, maxPlayers, hasActs, maxActs, currentAct, hasChapters, maxChapters, currentChapter
-        })
-        //
-        // let publicGamesRef = doc(db, `game`, `availableGames`);
-        // let publicGamesDoc = await getDoc(publicGamesRef);
-        // let idList = publicGamesDoc.data().idList || [];
-        //
-        // if (isPublic) {
-        //   let addToList = true;
-        //   for (let id of idList) {
-        //     if (gameId === id) {
-        //       addToList = false;
-        //       break;
-        //     }
-        //   }
-        //   if (addToList) {
-        //     idList.push(gameId);
-        //   }
-        // } else {
-        //   let index = idList.indexOf(gameId)
-        //   if (index >= 0) {
-        //     idList.splice(index, 1)
-        //   }
-        // }
-        // await updateDoc(publicGamesRef, { idList });
+        await updateDoc(updateGameRef, data)
       },
     denyJoinRequest:
       async (gameId, userId) => {

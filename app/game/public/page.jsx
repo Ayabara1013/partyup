@@ -1,7 +1,7 @@
 'use client'
 
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import LoadingUi from "@/components/LoadinUi";
 import PageLayout from "@/components/PageLayout";
@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation";
 
 import { userAuth } from "@/firebase/base";
 import { fbManagement } from "@/firebase/fbManagement";
-import { ApplicationContext } from "@/app/ApplicationContext";
 
 export default function Page() {
   const [ user ] = useAuthState(userAuth);
@@ -18,12 +17,10 @@ export default function Page() {
   const [ render, reRender ] = useState(false);
   const [ publicGames, setPublicGames ] = useState(null);
 
-  const { displayPage } = useContext(ApplicationContext);
   const { push } = useRouter();
 
   useEffect(() => {
     push('/home');
-    // displayPage(true)
   }, []);
   useEffect(() => {
     setGames();

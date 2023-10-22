@@ -1,21 +1,20 @@
 'use client'
 
 import { useRouter } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import PageLayout from "@/components/PageLayout";
 import LoadingUi from "@/components/LoadinUi";
 
 import { toastUser } from "@/util/functions";
 
-import { ApplicationContext } from "@/app/ApplicationContext";
+import { useApplicationContext } from "@/app/ApplicationContext";
 import { fbManagement } from "@/firebase/fbManagement";
-import { act } from "react-dom/test-utils";
 
 export default function Page({ params }) {
   let { inviteCode } = params;
   const { push } = useRouter();
-  const { user, activeGames, displayPage } = useContext(ApplicationContext);
+  const { user, activeGames } = useApplicationContext();
 
   const [ game, setGame ] = useState(null);
 
@@ -46,7 +45,6 @@ export default function Page({ params }) {
         }
       }
       setGame(gameDoc);
-      displayPage(true);
     }
   }
 
@@ -57,7 +55,7 @@ export default function Page({ params }) {
   }
 
   return (
-    <PageLayout title={ (game) ? `Join Game: ${ game.name }` : 'Joining a game!' } backHref="/home">
+    <PageLayout title={ `Join Game: ${ game?.name }` } backHref="/home">
       { (game) ?
         <>
           <div className="w-full center px-2">
