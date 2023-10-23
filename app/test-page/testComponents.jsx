@@ -59,13 +59,11 @@ export function Test2(props) {
 
     console.log(`--- rollResult--- `);
 
-    const rollString = displayRollResults(rollResult);
+    // const rollString = displayRollResults(rollResult);
 
-    console.log(rollResult);
+    // console.log(rollResult);
 
-    setResult(rollString);
-
-    // console.log(result);
+    // setResult(rollString);
   }
 
   return (

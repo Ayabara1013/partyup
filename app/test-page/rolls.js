@@ -72,22 +72,87 @@ const comm8 = `roll 2d6 SLASHING + 1d10 FIRE + 5 STR`;      // this is all caps,
  */
 export function roll(command) {
   // add the rolls to an array?
-  const rolls = {
-    rolls: [],
-    mods: [],
-  }
+  // const rolls = {
+  //   rolls: [],
+  //   mods: [],
+  // }
 
-  const parts = command.split(' '); // I THINK THIS WILL BREAK ON THE SPACED COMMANDS
+  // const results = '';
 
-  if (parts.length < 2) {
-    return `invalid command`;
-  }
+  const input = command || `!roll 2d6 + 1d10 fire + 5 strength`;
 
-  // add the roll commands to the array
+  // console.log(input.split(' ')[0].slice(1))
+  // const commandType = input.split(' ')[0].slice(1);
 
-  for (const part of parts.slice(1)) {
-    console.log (part);
-  }
+  // const pattern= /(\S+)\s|([^+\-]+)|[+\-]\s*[^+\-]+/g;
+  // const pattern = /(\S+[^+-]*)|[-+](\s*\S+[^+-]*)|([^+-]*)/g;
+  // const pModifier = /[+-]/g;
+
+  // const pattern = {
+  //   command: /(!\w+)/g,
+  //   dieRoll: /(\d+d\d+)/g,
+  // }
+
+  const regex = [
+    { pattern: /(!\w+)/g, type: 'command' },
+    { pattern: /(?:\+ )?\d+d\d+(?=\s[+\-])/g, type: 'basic roll' }, // the /s may not be good
+  ];
+
+  regex.forEach(({ pattern, type }) => {
+    const matches = input.match(pattern);
+
+    if (matches) {
+      console.log(type, matches);
+
+      // if (type === 'basic roll') {
+      //   console.log(matches[0])
+      // }
+    }
+  })
+
+
+  // create the parts;
+  // const parts = input.match(pattern.command);
+
+  // console.log(parts);
+
+
+
+  // const input = "Hello world, hello universe!";
+
+  // const output = [];
+
+  // // Define an array of objects with patterns and actions
+  // const regexPatterns = [
+  //   { pattern: /hello/g, action: "Found 'hello'" },
+  //   { pattern: /world/g, action: "Found 'world'" },
+  //   { pattern: /universe/g, action: "Found 'universe'" },
+  // ];
+  
+  // // Iterate through the patterns and perform actions
+  // regexPatterns.forEach(({ pattern, action }) => {
+  //   const matches = input.match(pattern);
+  //   if (matches) {
+  //     // console.log(action);
+  //     console.log(matches);
+
+  //     matches.forEach((match) => {
+  //       output.push(match);
+  //     });
+  //   }
+  // });
+
+  // console.log(output)
+  
+
+
+
+  // if (parts.length < 2) {
+  //   return `invalid command`;
+  // }
+
+
+  // return results;
 
 }
 
@@ -165,9 +230,9 @@ export function roll(command) {
 
 
 
-// /** 
-//  * @param {*} rolls 
-//  * @returns 
+// /**
+//  * @param {*} rolls
+//  * @returns
 //  */
 // export function parseRolls(rolls) {
 //   let string = "";
@@ -181,6 +246,10 @@ export function roll(command) {
 //   return string;
 // }
 
+
+export function displayRollResults() {
+  return `--- displaying roll results ---`;
+}
 
 
 // /** 
@@ -271,6 +340,6 @@ export function roll(command) {
 
 
 
-export function roll3(rolls) {
+// export function roll3(rolls) {
 
-}
+// }
