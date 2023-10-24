@@ -1,8 +1,9 @@
-import { sortByKey } from "@/util/functions";
+import { sortByKey, validateCommand } from "@/util/functions";
 
 import { ui } from "@/util/ui";
 import { messaging } from "@/firebase/messaging";
 import ChatMessage from "@/app/game/[gameId]/_ChatWindow/_ChatMessage";
+import { dieRegex } from "@/util/constants";
 
 export default function ChatWindow({ window, gameItems }) {
     let { game, messages, members } = gameItems
@@ -58,23 +59,9 @@ export default function ChatWindow({ window, gameItems }) {
         if ((e.key === 'Enter' || e.keyCode === 13) && !e.shiftKey) {
             let newMessage = e.target.value.trim();
             if(newMessage !== ''){
-                checkChatCommands(newMessage)
+                validateCommand(newMessage);
                 await messaging.game.addMessage(game, window, newMessage, []);
                 e.target.value = '';
-            }
-        }
-    }
-
-    const checkChatCommands = (text) => {
-        let args = text.split(' ');
-        if(args.length > 0) {
-            let cmd = args[0][0] + args[0][1]
-            switch(cmd) {
-                case '!r':
-                    if(args[1])
-                        break;
-                default:
-                    break;
             }
         }
     }

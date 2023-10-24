@@ -5,10 +5,10 @@ import { useEffect, useState } from "react";
 
 
 import PageLayout from "@/components/PageLayout";
-import { toastUser } from "@/util/functions";
 import { useApplicationContext } from "@/app/ApplicationContext";
 import { fbManagement } from "@/firebase/fbManagement";
 import moment from "moment";
+import toast from "react-hot-toast";
 
 export default function Page({ params }) {
   let { gameId } = params;
@@ -25,14 +25,14 @@ export default function Page({ params }) {
     for (let game of activeGames.dmGames) {
       if (game.id === gameId) {
         if (!gameDoc) {
-          toastUser('Unable to grab game documents.', 'error');
+          toast.error('Unable to grab game documents.');
           push('/user/activeGames');
         }
         setGame(gameDoc);
         return;
       }
     }
-    toastUser('You do not have permission to see this page.', 'error');
+    toast.error('You do not have permission to see this page.');
     push('/user/activeGames');
   }
   //Todo: Kick player

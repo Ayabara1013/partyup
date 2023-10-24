@@ -4,13 +4,13 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import PageLayout from "@/components/PageLayout";
-import EditFormInput from "@/app/game/[gameId]/edit/_EditFormInput";
-import EditFormActChapterInput from "@/app/game/[gameId]/edit/_EditFormActChapterInput";
+import EditFormInput from "@/app/game/edit/[gameId]/_EditFormInput";
+import EditFormActChapterInput from "@/app/game/edit/[gameId]/_EditFormActChapterInput";
 
 import { ui } from "@/util/ui";
 import { fbManagement } from "@/firebase/fbManagement";
 import { useApplicationContext } from "@/app/ApplicationContext";
-import { toastUser } from "@/util/functions";
+import toast from "react-hot-toast";
 export default function Page({ params }) {
   const { push } = useRouter();
 
@@ -80,7 +80,7 @@ export default function Page({ params }) {
     }
 
     if(errMsg !== ''){
-      toastUser(errMsg, 'error');
+      toast.error(errMsg);
       e.target.removeAttribute('disabled');
       return;
     }

@@ -7,6 +7,7 @@ import LoadingUi from "@/components/LoadinUi";
 import { Application } from "@/app/ApplicationContext";
 
 import { ui } from "@/util/ui";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: [ 'latin' ], });
 
@@ -18,6 +19,7 @@ export default function RootLayout({ children }) {
   return (<html lang="en">
   <body className={ inter.className }>
   <Application>
+    <Toaster position="bottom-right" reverseOrder={false}/>
     <NavBar/>
     <main className="">
       {/*<div className="flex flex-col routeLoad">*/}

@@ -1,56 +1,35 @@
 import { ui } from "@/util/ui";
 import { dieRegex } from "@/util/constants";
+import toast from "react-hot-toast";
 
-/**
- * Adds a message to the alert overlay.
- * @param {string} message Alert message to display.
- * @param {string?} type If given, will change alert ui color. (info, success, warning, error)
- */
-function toastUser(message, type) {
-  let alertElement = ui.mainLayout.alert.element();
-  let alertMessageElement = ui.mainLayout.alertMessage.element();
-
-  alertElement.classList.remove('hidden');
-  let validTypes = [ 'info', 'success', 'warning', 'error' ];
-
-  for (let item of validTypes) {
-    alertElement.classList.remove(`alert-${ item }`)
-  }
-
-  if (validTypes.includes(type)) {
-    alertElement.classList.add(`alert-${ type }`)
-  }
-
-  alertMessageElement.innerHTML = message;
-  setTimeout(() => {
-    alertElement.classList.add('hidden');
-    alertMessageElement.innerHTML = '';
-  }, 2000)
-}
-
-function validateCommand(input) {
-    let args = input.trim().split(' ');
+function validateCommand(input, character) {
+    let args = input.split(' ');
     let command = args[0].slice(0,2);
 
     switch (command){
       case '!r':
-        let die = args[1];
-        if(dieRegex.test(die)){
-          let rollCount = parseInt(die.split('r')[0]);
-          let dieSize = parseInt(die.split('r')[1].split('+')[0]);
-          let modifier = parseInt(die.split('+')[1]);
-          return {
-            return: {
-              success: true,
-              type: 'roll',
-              data:{
-                rollCount, dieSize, modifier
-              }
-            },
+        let dice = args;
+        let formattedDice = [];
+        dice.splice(0);
+        for(let die of dice){
+          if(dieRegex.test(die)){
+            let quantity = parseInt(die.split('d')[0]);
+            let dieSize = parseInt(die.split('d')[1].split('+')[0]);
+            let modifier = parseInt(die.split('+')[1]);
+            formattedDice.push({
+                quantity, dieSize, modifier, type: null
+            })
           }
         }
+        return {
+          command: 'roll',
+          dice: formattedDice
+        };
+      default:
+        return {
+            command: 'invalid',
+        }
     }
-    return 'test';
 }
 
 function sortByKey(array, key) {
@@ -72,9 +51,19 @@ function addArrayToArray(array, arrayToAdd, key) {
   }
 }
 
+const capitalizeWords = (string) => {
+  return string.split(" ").map(word => {
+    if (word.length > 2) {
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    } else {
+      return word;
+    }
+  }).join(" ");
+}
+
 export {
-  toastUser,
   sortByKey,
   addArrayToArray,
-  validateCommand
+  validateCommand,
+  capitalizeWords
 };

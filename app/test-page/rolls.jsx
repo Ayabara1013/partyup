@@ -25,7 +25,6 @@ export class Roll {
     }
 }
 
-
 /**
  * this function takes in an array, I may want to change it to an object? Im not sure yet
  * @param {*} rolls array
@@ -100,7 +99,9 @@ export function typedRoll(rolls) {
  */
 export function rollDie(val) {
     let result = Math.floor(Math.random() * val) + 1;
-    // console.log(`rolled ${result} on a d${val}`)
+    // conso
+    // |
+    // |le.log(`rolled ${result} on a d${val}`)
     return result;
 }
 

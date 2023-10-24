@@ -1,12 +1,11 @@
 import { useRouter } from "next/navigation";
 
-import { toastUser } from "@/util/functions";
-
-import { constants } from "@/util/constants";
+import { baseUrl } from "@/util/constants";
 import { userAuth } from "@/firebase/base";
 import { fbManagement } from "@/firebase/fbManagement";
 import { accountLocalStorage } from "@/util/localStorage";
 import GameStat from "@/app/user/activeGames/_GameList/GameListStat";
+import toast from "react-hot-toast";
 
 export default function GameList({ games }) {
   const { push } = useRouter();
@@ -17,22 +16,21 @@ export default function GameList({ games }) {
       for (let game of games) {
         if (game.id === gameId) {
           accountLocalStorage.setCurrentGame(userAuth.currentUser.uid, gameId);
-          if (path === '/start') {
+          if (path === 'start/') {
             await fbManagement.dm.startGame(gameId);
-            toastUser(`'${ game.name }' has started!`, 'info');
+            toast.success(`'${ game.name }' has started!`);
             path = '';
           }
-          console.log(path)
           accountLocalStorage.setCurrentGame(userAuth.currentUser.uid, false);
-          push(`/game/${ gameId + path }`);
+          push(`/game/${ path + gameId }`);
           return;
         }
       }
     }
   }
   const copyInviteOnClick = async (e) => {
-    await navigator.clipboard.writeText(`${ constants }invite/${ e.target.value }`);
-    toastUser('Invite code copied to clipboard.', 'info');
+    await navigator.clipboard.writeText(`${ baseUrl }invite/${ e.target.value }`);
+    toast.success('Invite code copied to clipboard.');
   }
 
   return games.map(game =>
@@ -46,7 +44,7 @@ export default function GameList({ games }) {
         <GameStat title="Players:" values={[`${game.members.length }/${ game.maxPlayers}`]}>
           { dm &&
             <div className="join">
-              <button className="btn btn-xs join-item" value={ game.id } onClick={ gameOnClick('/members') }>
+              <button className="btn btn-xs join-item" value={ game.id } onClick={ gameOnClick('members/') }>
                 Check Players
               </button>
               <div className="tooltip tooltip-info" data-tip="Copy invite Link">
@@ -66,10 +64,10 @@ export default function GameList({ games }) {
           { game.started
             ? <button className="btn btn-sm mt-2" value={ game.id } onClick={ gameOnClick('') }>Open</button>
             : dm
-              ? <button className="btn btn-sm mt-2" value={ game.id } onClick={ gameOnClick('/start') }>Start</button>
+              ? <button className="btn btn-sm mt-2" value={ game.id } onClick={ gameOnClick('start/') }>Start</button>
               : <button className="btn btn-sm mt-2" value={ game.id } disabled>Waiting on Dm..</button>
           }
-          { dm && <button className="btn btn-sm mt-2" value={ game.id } onClick={ gameOnClick('/edit') }>Edit</button> }
+          { dm && <button className="btn btn-sm mt-2" value={ game.id } onClick={ gameOnClick('edit/') }>Edit</button> }
         </GameStat>
       </div>
     </div>

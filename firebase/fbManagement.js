@@ -16,6 +16,7 @@ import {
 
 import { db, reconstructDoc, toArray, userAuth } from "@/firebase/base";
 import { toastUser } from "@/util/functions";
+import toast from "react-hot-toast";
 
 async function generateGameList(idList, dm) {
   let gameList = [];
@@ -45,7 +46,7 @@ function checkActive(gameDoc) {
       break;
     }
   }
-  return { isDm, isMember };
+  return {isDm, isMember};
 }
 
 export const fbManagement = {
@@ -79,7 +80,7 @@ export const fbManagement = {
         return onSnapshot(q, async (snapshot) => {
           let memberList = toArray(snapshot);
           if (memberList.length > 0) {
-            toastUser(`${ memberList[0].uName } has joined the game: ${ game.name }`)
+            toast.success(`${memberList[0].uName} has joined the game: ${game.name}`);
             callBack(await fbManagement.get.userIsDmGames());
             return toArray(snapshot);
           }
@@ -100,7 +101,7 @@ export const fbManagement = {
 
           let gameDoc = reconstructDoc(await getDoc(gameRef));
           let joinRequest = await getDoc(joinGameRef);
-          let { isMember, isDm } = checkActive(gameDoc)
+          let {isMember, isDm} = checkActive(gameDoc)
 
           gameDoc.userRequest = (joinRequest.exists()) ? joinRequest.data().status : 'none';
           if (!isMember && !isDm) {
@@ -135,7 +136,7 @@ export const fbManagement = {
     createGame:
       async (data) => {
         //Create Game Entry in Database
-        const { uid, displayName } = userAuth.currentUser;
+        const {uid, displayName} = userAuth.currentUser;
         const gameCollection = collection(db, `game`);
         data.uid = uid;
         data.uName = displayName;
@@ -172,7 +173,7 @@ export const fbManagement = {
           let idList = publicGamesDoc.data().idList || [];
           idList.push(newGameRef.id);
 
-          await updateDoc(publicGamesRef, { idList });
+          await updateDoc(publicGamesRef, {idList});
         }
       },
     startGame:
@@ -217,7 +218,7 @@ export const fbManagement = {
   player: {
     acceptInviteLink:
       async (inviteCode, gameId) => {
-        const { uid, displayName } = userAuth.currentUser;
+        const {uid, displayName} = userAuth.currentUser;
 
         const gameRef = doc(db, 'game', gameId);
         const gameMemberRef = collection(db, 'game', gameId, 'members');
@@ -226,11 +227,11 @@ export const fbManagement = {
         let members = toArray(await getDocs(gameMemberRef));
 
         if (members.length >= game.maxPlayers) {
-          return { success: false, message: 'Game already at player max.' }
+          return {success: false, message: 'Game already at player max.'}
         }
         for (let member of members) {
           if (member.id === uid) {
-            return { success: false, message: 'You are already in this game.' }
+            return {success: false, message: 'You are already in this game.'}
           }
         }
         //Update Game to have user as member

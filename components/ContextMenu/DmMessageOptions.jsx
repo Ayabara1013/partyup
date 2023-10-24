@@ -1,16 +1,17 @@
 import { toastUser } from "@/util/functions";
 import { messaging } from "@/firebase/messaging";
+import toast from "react-hot-toast";
 
 export default function PlayerMessageOptions({ message, gameId }) {
 
   async function addCanonOnClick() {
     await messaging.game.addCanon(gameId, message.id);
-    toastUser('Message Added to Canon', 'success');
+    toast.success('Message Added to Canon');
   }
 
   async function removeCanonOnClick() {
     await messaging.game.removeCanon(gameId, message.id);
-    toastUser('Message Removed from Canon', 'success');
+    toast.success('Message Removed from Canon');
   }
 
   return (

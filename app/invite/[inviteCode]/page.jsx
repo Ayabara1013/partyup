@@ -6,10 +6,9 @@ import { useEffect, useState } from "react";
 import PageLayout from "@/components/PageLayout";
 import LoadingUi from "@/components/LoadinUi";
 
-import { toastUser } from "@/util/functions";
-
 import { useApplicationContext } from "@/app/ApplicationContext";
 import { fbManagement } from "@/firebase/fbManagement";
+import toast from "react-hot-toast";
 
 export default function Page({ params }) {
   let { inviteCode } = params;
@@ -27,19 +26,19 @@ export default function Page({ params }) {
     if(user && activeGames){
       let gameDoc = await fbManagement.player.findGameFromInviteCode(inviteCode);
       if (!gameDoc) {
-        toastUser('Invalid invite code.', 'error');
+        toast.error('Invalid invite code.');
         push('/home');
       }
       for (let game of activeGames.dmGames) {
         if (game.id === gameDoc.id) {
-          toastUser('You are the DM of this game.', 'error');
+          toast.error('You are the DM of this game.');
           push('/home');
           return;
         }
       }
       for (let game of activeGames.playerGames) {
         if (game.id === gameDoc.id) {
-          toastUser('You have already joined this game.', 'error');
+          toast.error('You have already joined this game.');
           push('/home');
           return;
         }
@@ -51,7 +50,7 @@ export default function Page({ params }) {
   const joinGameOnClick = async () => {
     push('/home');
     await fbManagement.player.acceptInviteLink(inviteCode, game.id);
-    toastUser(`You have joined the game: ${ game.name }`, 'info');
+    toast.success(`You have joined the game: ${ game.name }`);
   }
 
   return (

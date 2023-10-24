@@ -6,7 +6,7 @@ import PageLayout from "@/components/PageLayout";
 
 import { ui } from "@/util/ui";
 import { fbManagement } from "@/firebase/fbManagement";
-import { toastUser } from "@/util/functions";
+import toast from "react-hot-toast";
 
 export default function Page() {
   const { push } = useRouter();
@@ -48,11 +48,12 @@ export default function Page() {
       currentChapter: 1,
     }
     if (errMsg !== '') {
-      toastUser(errMsg);
+      toast.error(errMsg);
       e.target.removeAttribute('disabled');
       return;
     }
     await fbManagement.dm.createGame(data);
+    toast.error('Game Created!');
     e.target.removeAttribute('disabled');
     push('/user/activeGames');
   }
