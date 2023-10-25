@@ -96,6 +96,7 @@ export function roll(command) {
   const regex = [
     { pattern: /(!\w+)/g, type: 'command' },
     { pattern: /(?:\+ )?\d+d\d+(?=\s[+\-])/g, type: 'basic roll' }, // the /s may not be good
+    // { pattern: /(?:\+ )?\d+d\d+/g, type: 'basic roll' }, // the /s may not be good
   ];
 
   regex.forEach(({ pattern, type }) => {

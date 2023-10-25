@@ -124,10 +124,10 @@ function CreateFormActChapter() {
           </label>
           <div className="join center vertical w-full">
             <input type="checkbox" className="checkbox h-full join-item" value={ ui.createGame.maxActs.id }
-                   onChange={ onCheck }
-                   id={ ui.createGame.hasActs.id } defaultChecked/>
+              onChange={ onCheck }
+              id={ ui.createGame.hasActs.id } defaultChecked/>
             <input type="number" defaultValue={ 1 } className="input input-bordered w-full join-item"
-                   id={ ui.createGame.maxActs.id } min={ 1 } placeholder="Count"/>
+              id={ ui.createGame.maxActs.id } min={ 1 } placeholder="Count"/>
           </div>
         </div>
         <div className="form-control w-1/2">
@@ -136,10 +136,10 @@ function CreateFormActChapter() {
           </label>
           <div className="join center vertical w-full">
             <input type="checkbox" className="checkbox h-full join-item" value={ ui.createGame.maxChapters.id }
-                   onChange={ onCheck }
-                   id={ ui.createGame.hasChapters.id } defaultChecked/>
+              onChange={ onCheck }
+              id={ ui.createGame.hasChapters.id } defaultChecked/>
             <input type="number" defaultValue={ 1 } className="input input-bordered w-full join-item"
-                   id={ ui.createGame.maxChapters.id } min={ 1 } placeholder="Count"/>
+              id={ ui.createGame.maxChapters.id } min={ 1 } placeholder="Count"/>
           </div>
         </div>
       </div>
