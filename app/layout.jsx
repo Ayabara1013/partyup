@@ -2,7 +2,6 @@ import '../styles/globals.scss';
 import { Inter } from 'next/font/google';
 
 import NavBar from "@/components/NavBar";
-import LoadingUi from "@/components/LoadinUi";
 
 import { Application } from "@/app/ApplicationContext";
 
@@ -17,7 +16,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (<html lang="en">
-  <body className={ inter.className }>
+  <body className={inter.className}>
   <Application>
     <Toaster position="bottom-right" reverseOrder={false}/>
     <NavBar/>
@@ -25,7 +24,7 @@ export default function RootLayout({ children }) {
       {/*<div className="flex flex-col routeLoad">*/}
       {/*  <LoadingUi/>*/}
       {/*</div>*/}
-      { children }
+      {children}
     </main>
     <Footer/>
   </Application>
@@ -35,13 +34,13 @@ export default function RootLayout({ children }) {
 
 function Footer() {
   return (<div className='toast'>
-    <div className="alert alert-success alert-info alert-error alert-warning hidden" id={ ui.mainLayout.alert.id }>
+    <div className="alert alert-success alert-info alert-error alert-warning hidden" id={ui.mainLayout.alert.id}>
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
            className="stroke-current shrink-0 w-6 h-6">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
               d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
       </svg>
-      <span id={ ui.mainLayout.alertMessage.id }/>
+      <span id={ui.mainLayout.alertMessage.id}/>
     </div>
   </div>)
 }

@@ -1,1 +1,1 @@
-export {default} from './GameList.jsx';
+export { default } from './GameList.jsx';

@@ -58,10 +58,10 @@ export default function Page({ params }) {
 
     //Add all members to list for quick message lookup
     for (let member of game.members) {
-      tempList[member.id] = (member.id !== userAuth.currentUser.uid) ? `${ member.uName } (Player)` : 'You';
+      tempList[member.id] = (member.id !== userAuth.currentUser.uid) ? `${member.uName} (Player)` : 'You';
     }
     //Add DM to list
-    tempList[game.uid] = (game.uid === userAuth.currentUser.uid) ? 'You' : `${ game.uName } (DM)`;
+    tempList[game.uid] = (game.uid === userAuth.currentUser.uid) ? 'You' : `${game.uName} (DM)`;
 
     //Get messages from local storage
     let messages = messageLocalStorage.game.get(gameId);
@@ -96,12 +96,10 @@ export default function Page({ params }) {
   return (
     <div className="h-full w-full gap-4 routePage">
       <div className="h-3/4 w-full border chat-container px-4">
-        <div className="border">
-          Some Rolling Stuff
-        </div>
-        <ChatWindow window="canon" gameItems={ { game, messages, members } }/>
-        <ChatWindow window="init" gameItems={ { game, messages, members } }/>
-        <ChatWindow window="open" gameItems={ { game, messages, members } }/>
+        <ChatWindow window="rolls" gameItems={{ game, messages, members }}/>
+        <ChatWindow window="canon" gameItems={{ game, messages, members }}/>
+        <ChatWindow window="init" gameItems={{ game, messages, members }}/>
+        <ChatWindow window="open" gameItems={{ game, messages, members }}/>
       </div>
       <div className="h-1/4 w-full border gap-4 flex px-4">
       </div>

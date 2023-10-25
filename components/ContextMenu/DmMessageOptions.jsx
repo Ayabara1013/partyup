@@ -17,10 +17,10 @@ export default function PlayerMessageOptions({ message, gameId }) {
   return (
     <>
       <li/>
-      { (message.window === 'init' || message.window === 'canon')?(message.canon)
-          ? <li className="text-center btn btn-xs" onClick={ removeCanonOnClick }>Remove from Canon</li>
-          : <li className="text-center btn btn-xs" onClick={ addCanonOnClick }>Add to Canon</li>
-        :null }
+      {(message.window === 'init' || message.window === 'canon') ? (message.canon)
+          ? <li className="text-center btn btn-xs" onClick={removeCanonOnClick}>Remove from Canon</li>
+          : <li className="text-center btn btn-xs" onClick={addCanonOnClick}>Add to Canon</li>
+        : null}
     </>
   )
 }

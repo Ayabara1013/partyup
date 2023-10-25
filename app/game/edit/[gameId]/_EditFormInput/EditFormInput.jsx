@@ -5,7 +5,7 @@ export default function EditFormInput({ title, type, ...props }) {
         <div className="center w-full">
           <div className="form-control w-10/12">
             <label className="label">
-              <span className="label-text">{ title }</span>
+              <span className="label-text">{title}</span>
             </label>
             <select className="select select-bordered" {...props}>
               <option value="1">1</option>
@@ -24,7 +24,7 @@ export default function EditFormInput({ title, type, ...props }) {
         <div className="center w-full">
           <div className="form-control w-10/12">
             <label className="label">
-              <span className="label-text">{ title }</span>
+              <span className="label-text">{title}</span>
             </label>
             <input type="text" placeholder="Type here" className="input input-bordered w-full" {...props}/>
           </div>

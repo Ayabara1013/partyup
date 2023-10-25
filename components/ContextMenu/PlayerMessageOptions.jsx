@@ -10,7 +10,7 @@ export default function PlayerMessageOptions({ message }) {
 
   return (
     <>
-      <li className="text-center btn btn-xs" onClick={ copyOnClick }>
+      <li className="text-center btn btn-xs" onClick={copyOnClick}>
         Copy Message Text
       </li>
     </>

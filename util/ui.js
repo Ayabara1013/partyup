@@ -1,13 +1,13 @@
 export const ui = {
-  user:{
-    activeGames:{
-      dmTab:{
+  user: {
+    activeGames: {
+      dmTab: {
         id: 'activeGamesDmTab',
         element: () => {
           return document.getElementById('activeGamesDmTab')
         }
       },
-      playerTab:{
+      playerTab: {
         id: 'activeGamesPlayerTab',
         element: () => {
           return document.getElementById('activeGamesPlayerTab')

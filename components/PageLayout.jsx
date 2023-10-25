@@ -11,13 +11,13 @@ export default function PageLayout({ children, title, backHref }) {
     <div className="h-full w-full center routePage">
       <div className="h-full w-1/2 gap-4 border center flex-col">
         <div className="pageTitle center vertical border">
-          <h1 className="text-3xl text-center">{ title }</h1>
+          <h1 className="text-3xl text-center">{title}</h1>
         </div>
         <div className="pageContent border flex flex-col">
-          { children }
+          {children}
         </div>
         <div className="pageBack center vertical border">
-          { (backHref) && <button className="btn w-full" onClick={ backOnClick }>Back</button> }
+          {(backHref) && <button className="btn w-full" onClick={backOnClick}>Back</button>}
         </div>
       </div>
     </div>

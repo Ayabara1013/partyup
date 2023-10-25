@@ -11,6 +11,7 @@ import { ui } from "@/util/ui";
 import { fbManagement } from "@/firebase/fbManagement";
 import { useApplicationContext } from "@/app/ApplicationContext";
 import toast from "react-hot-toast";
+
 export default function Page({ params }) {
   const { push } = useRouter();
 
@@ -43,25 +44,25 @@ export default function Page({ params }) {
     let currentChapter = parseInt(ui.editGame.currentChapter.element().value);
     let maxChapters = parseInt(ui.editGame.maxChapters.element().value);
     let currentAct = parseInt(ui.editGame.currentAct.element().value);
-    let maxActs= parseInt(ui.editGame.maxActs.element().value);
+    let maxActs = parseInt(ui.editGame.maxActs.element().value);
 
     //Validate data
-    if(name === '') {
+    if (name === '') {
       errMsg = 'Game name cannot be empty';
     }
     //Validate act numbers if applicable
-    if(hasActs){
+    if (hasActs) {
       (!currentAct) && (errMsg = 'Current Act cannot be empty');
       (!maxActs) && (errMsg = 'Max Acts cannot be empty');
-      if(currentAct > maxActs){
+      if (currentAct > maxActs) {
         errMsg = 'Current Act cannot be greater than Max Acts';
       }
     }
     //Validate chapter numbers if applicable
-    if(hasChapters){
+    if (hasChapters) {
       (!currentChapter) && (errMsg = 'Current Chapter cannot be empty');
       (!maxChapters) && (errMsg = 'Max Chapters cannot be empty');
-      if(currentChapter > maxChapters){
+      if (currentChapter > maxChapters) {
         errMsg = 'Current Chapter cannot be greater than Max Chapters';
       }
     }
@@ -79,7 +80,7 @@ export default function Page({ params }) {
       ...hasActs && { maxChapters },
     }
 
-    if(errMsg !== ''){
+    if (errMsg !== '') {
       toast.error(errMsg);
       e.target.removeAttribute('disabled');
       return;
@@ -91,16 +92,16 @@ export default function Page({ params }) {
   }
 
   return (activeGames && game) && (
-    <PageLayout title={ `Edit: ${ game.name }` } backHref="/user/activeGames">
+    <PageLayout title={`Edit: ${game.name}`} backHref="/user/activeGames">
       <div className="flex flex-col">
-        <EditFormInput title={ "What is the game name" } id={ ui.editGame.name.id } defaultValue={ game.name }/>
-        <EditFormInput title={ "Game description (optional)" } id={ ui.editGame.description.id }
-                       defaultValue={ game.description }/>
-        <EditFormActChapterInput game={ game }/>
-        <EditFormInput type="players" title={ "Max Players:" } id={ ui.editGame.maxPlayers.id }
-                       defaultValue={ game.maxPlayers }/>
+        <EditFormInput title={"What is the game name"} id={ui.editGame.name.id} defaultValue={game.name}/>
+        <EditFormInput title={"Game description (optional)"} id={ui.editGame.description.id}
+                       defaultValue={game.description}/>
+        <EditFormActChapterInput game={game}/>
+        <EditFormInput type="players" title={"Max Players:"} id={ui.editGame.maxPlayers.id}
+                       defaultValue={game.maxPlayers}/>
       </div>
-      <button className="btn mt-5" onClick={ updateGameOnClick }>Update Game!</button>
+      <button className="btn mt-5" onClick={updateGameOnClick}>Update Game!</button>
     </PageLayout>
   )
 }

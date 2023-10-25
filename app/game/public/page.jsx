@@ -56,28 +56,28 @@ export default function Page() {
   const generateGameList = () => {
     return (publicGames.length > 0) ?
       publicGames.map((game) =>
-        <div key={ game.id } className="w-full h-14 center border">
+        <div key={game.id} className="w-full h-14 center border">
           <div className="w-3/4 center">
             <div className="w-1/3 center vertical border">
               <span className="w-1/3 mx-2">Name:</span>
-              <span className="w-2/3 mx-2">{ game.name }</span>
+              <span className="w-2/3 mx-2">{game.name}</span>
             </div>
             <div className="w-1/3 center vertical border">
               <span className="w-1/3 mx-2">DM:</span>
-              <span className="w-2/3 mx-2">{ game.uName }</span>
+              <span className="w-2/3 mx-2">{game.uName}</span>
             </div>
             <div className="w-1/3 center vertical border">
               <span className="w-2/3 mx-2">Player Count:</span>
-              <span className="w-1/3 mx-2">{ game.members.length }/{ game.maxPlayers }</span>
+              <span className="w-1/3 mx-2">{game.members.length}/{game.maxPlayers}</span>
             </div>
           </div>
           <>
-            { (game.userRequest === 'none') &&
-              <button className="btn w-1/4" onClick={ joinGameOnClick } value={ game.id }>Join</button> }
-            { (game.userRequest === 'pending') &&
-              <button className="btn w-1/4 publicPending" onClick={ pendingOnClick } value={ game.id }></button> }
-            { (game.userRequest === 'denied') &&
-              <button className="btn w-1/4 btn-error" value={ game.id }>Denied</button> }
+            {(game.userRequest === 'none') &&
+              <button className="btn w-1/4" onClick={joinGameOnClick} value={game.id}>Join</button>}
+            {(game.userRequest === 'pending') &&
+              <button className="btn w-1/4 publicPending" onClick={pendingOnClick} value={game.id}></button>}
+            {(game.userRequest === 'denied') &&
+              <button className="btn w-1/4 btn-error" value={game.id}>Denied</button>}
           </>
         </div>
       )
@@ -88,7 +88,7 @@ export default function Page() {
   console.log(publicGames)
   return (
     <PageLayout title="Public Games" backHref="/home">
-      { (publicGames) ? generateGameList() : <LoadingUi/> }
+      {(publicGames) ? generateGameList() : <LoadingUi/>}
     </PageLayout>
   )
 }

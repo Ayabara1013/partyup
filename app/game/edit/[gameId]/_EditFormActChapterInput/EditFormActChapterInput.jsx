@@ -6,11 +6,11 @@ export default function EditFormActChapterInput({ game }) {
   const onCheck = (e) => {
     let toggleId = e.target.value
     if (e.target.checked) {
-      ui.editGame[`max${ toggleId }s`].element().removeAttribute('disabled');
-      ui.editGame[`current${ toggleId }`].element().removeAttribute('disabled');
+      ui.editGame[`max${toggleId}s`].element().removeAttribute('disabled');
+      ui.editGame[`current${toggleId}`].element().removeAttribute('disabled');
     } else {
-      ui.editGame[`max${ toggleId }s`].element().setAttribute('disabled', true);
-      ui.editGame[`current${ toggleId }`].element().setAttribute('disabled', true);
+      ui.editGame[`max${toggleId}s`].element().setAttribute('disabled', true);
+      ui.editGame[`current${toggleId}`].element().setAttribute('disabled', true);
     }
   }
 
@@ -36,31 +36,31 @@ export default function EditFormActChapterInput({ game }) {
     <div className="center w-full">
       <div className="flex flex-col w-10/12">
         <div className="center w-full gap-4">
-          <InputWrapper label="Does your game use acts? (Max Acts)"  checked={ true }>
-            <input type="checkbox" className="checkbox h-full join-item" value="Act" onChange={ onCheck }
-                   id={ ui.editGame.hasActs.id } defaultChecked={ hasActs }/>
+          <InputWrapper label="Does your game use acts? (Max Acts)" checked={true}>
+            <input type="checkbox" className="checkbox h-full join-item" value="Act" onChange={onCheck}
+                   id={ui.editGame.hasActs.id} defaultChecked={hasActs}/>
             <input type="number" className="input input-bordered w-full join-item"
-                   id={ ui.editGame.maxActs.id } min={ 1 } onChange={ maxActOnChange } disabled={ !hasActs }
-                   placeholder="Count" defaultValue={ maxActs }/>
+                   id={ui.editGame.maxActs.id} min={1} onChange={maxActOnChange} disabled={!hasActs}
+                   placeholder="Count" defaultValue={maxActs}/>
           </InputWrapper>
-          <InputWrapper label="Does your game use chapters? (Max Chapters)" checked={ true }>
-            <input type="checkbox" className="checkbox h-full join-item" value="Chapter" onChange={ onCheck }
-                   id={ ui.editGame.hasChapters.id } defaultChecked={ hasChapters }/>
-            <input type="number" className="input input-bordered w-full join-item" id={ ui.editGame.maxChapters.id }
-                   min={ 1 } onChange={ maxChapterOnChange } disabled={ !hasChapters } placeholder="Count"
-                   defaultValue={ maxChapters }/>
+          <InputWrapper label="Does your game use chapters? (Max Chapters)" checked={true}>
+            <input type="checkbox" className="checkbox h-full join-item" value="Chapter" onChange={onCheck}
+                   id={ui.editGame.hasChapters.id} defaultChecked={hasChapters}/>
+            <input type="number" className="input input-bordered w-full join-item" id={ui.editGame.maxChapters.id}
+                   min={1} onChange={maxChapterOnChange} disabled={!hasChapters} placeholder="Count"
+                   defaultValue={maxChapters}/>
           </InputWrapper>
         </div>
         <div className="center w-full gap-4">
           <InputWrapper label="Current Act:">
-            <input type="number" placeholder="Count" defaultValue={ currentAct } className="input input-bordered w-full"
-                   id={ ui.editGame.currentAct.id } min={ 1 } max={ maxActs } onChange={ currentActOnChange }
-                   disabled={ !hasActs }/>
+            <input type="number" placeholder="Count" defaultValue={currentAct} className="input input-bordered w-full"
+                   id={ui.editGame.currentAct.id} min={1} max={maxActs} onChange={currentActOnChange}
+                   disabled={!hasActs}/>
           </InputWrapper>
           <InputWrapper label="Current Chapter:">
-            <input type="number" placeholder="Count" defaultValue={ currentChapter }
-                   className="input input-bordered w-full" id={ ui.editGame.currentChapter.id } min={ 1 }
-                   max={ maxChapters } disabled={ !hasChapters }/>
+            <input type="number" placeholder="Count" defaultValue={currentChapter}
+                   className="input input-bordered w-full" id={ui.editGame.currentChapter.id} min={1}
+                   max={maxChapters} disabled={!hasChapters}/>
           </InputWrapper>
         </div>
 
@@ -74,10 +74,10 @@ function InputWrapper({ label, checked, children }) {
 
     <div className="form-control w-1/2">
       <label className="label">
-        <span className="label-text">{ label }</span>
+        <span className="label-text">{label}</span>
       </label>
-      { checked
-        ? <div className="join center vertical w-full"> { children }</div>
+      {checked
+        ? <div className="join center vertical w-full"> {children}</div>
         : children
       }
     </div>

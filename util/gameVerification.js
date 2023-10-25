@@ -15,6 +15,6 @@ export default function verifyGameData(game) {
   let errorMessage = '';
 
   name.trim().length === 0 && (errorMessage += 'Name cannot be empty.');
-   isPublic
+  isPublic
 
 }

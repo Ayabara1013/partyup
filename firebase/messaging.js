@@ -61,7 +61,5 @@ export const messaging = {
         })
       },
   },
-  dm: {
-
-  }
+  dm: {}
 }

@@ -27,6 +27,7 @@ $nav-height: 6rem;
 textarea {
   resize: none;
 }
+
 body {
   min-height: 720px;
   min-width: 1280px;
@@ -34,12 +35,14 @@ body {
   max-height: 100vh;
   max-width: 100vw;
   @apply dark flex-col;
-  & > .header-nav{
+  & > .header-nav {
     height: 5%;
   }
+
   & > main {
     height: 87%;
   }
+
   & > .footer {
     height: 7%;
   }
@@ -58,6 +61,7 @@ body {
 
   }
 }
+
 .flex-fill {
   height: 80%;
   flex: 1 1 auto;

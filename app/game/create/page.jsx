@@ -61,12 +61,12 @@ export default function Page() {
   return (
     <PageLayout title="Create a Game!" backHref="/home">
       <div className="flex flex-col">
-        <CreateFormInput title={ "What is the game name" } id={ ui.createGame.name.id }/>
-        <CreateFormInput title={ "Game description (optional)" } id={ ui.createGame.description.id }/>
+        <CreateFormInput title={"What is the game name"} id={ui.createGame.name.id}/>
+        <CreateFormInput title={"Game description (optional)"} id={ui.createGame.description.id}/>
         <CreateFormActChapter/>
-        <CreateFormInput type="players" title={ "Max Players:" } id={ ui.createGame.maxPlayers.id }/>
+        <CreateFormInput type="players" title={"Max Players:"} id={ui.createGame.maxPlayers.id}/>
       </div>
-      <button className="btn mt-5" onClick={ createGameOnClick }>Create Game!</button>
+      <button className="btn mt-5" onClick={createGameOnClick}>Create Game!</button>
     </PageLayout>
   )
 }
@@ -78,9 +78,9 @@ function CreateFormInput({ title, id, type }) {
         <div className="center w-full">
           <div className="form-control w-10/12">
             <label className="label">
-              <span className="label-text">{ title }</span>
+              <span className="label-text">{title}</span>
             </label>
-            <select className="select select-bordered" defaultValue="4" id={ id }>
+            <select className="select select-bordered" defaultValue="4" id={id}>
               <option value="1">1</option>
               <option value='2'>2</option>
               <option value='3'>3</option>
@@ -97,9 +97,9 @@ function CreateFormInput({ title, id, type }) {
         <div className="center w-full">
           <div className="form-control w-10/12">
             <label className="label">
-              <span className="label-text">{ title }</span>
+              <span className="label-text">{title}</span>
             </label>
-            <input type="text" placeholder="Type here" className="input input-bordered w-full" id={ id }/>
+            <input type="text" placeholder="Type here" className="input input-bordered w-full" id={id}/>
           </div>
         </div>
       )
@@ -124,11 +124,11 @@ function CreateFormActChapter() {
             <span className="label-text">Does your game use acts?</span>
           </label>
           <div className="join center vertical w-full">
-            <input type="checkbox" className="checkbox h-full join-item" value={ ui.createGame.maxActs.id }
-                   onChange={ onCheck }
-                   id={ ui.createGame.hasActs.id } defaultChecked/>
-            <input type="number" defaultValue={ 1 } className="input input-bordered w-full join-item"
-                   id={ ui.createGame.maxActs.id } min={ 1 } placeholder="Count"/>
+            <input type="checkbox" className="checkbox h-full join-item" value={ui.createGame.maxActs.id}
+                   onChange={onCheck}
+                   id={ui.createGame.hasActs.id} defaultChecked/>
+            <input type="number" defaultValue={1} className="input input-bordered w-full join-item"
+                   id={ui.createGame.maxActs.id} min={1} placeholder="Count"/>
           </div>
         </div>
         <div className="form-control w-1/2">
@@ -136,11 +136,11 @@ function CreateFormActChapter() {
             <span className="label-text">Does your game use chapters?</span>
           </label>
           <div className="join center vertical w-full">
-            <input type="checkbox" className="checkbox h-full join-item" value={ ui.createGame.maxChapters.id }
-                   onChange={ onCheck }
-                   id={ ui.createGame.hasChapters.id } defaultChecked/>
-            <input type="number" defaultValue={ 1 } className="input input-bordered w-full join-item"
-                   id={ ui.createGame.maxChapters.id } min={ 1 } placeholder="Count"/>
+            <input type="checkbox" className="checkbox h-full join-item" value={ui.createGame.maxChapters.id}
+                   onChange={onCheck}
+                   id={ui.createGame.hasChapters.id} defaultChecked/>
+            <input type="number" defaultValue={1} className="input input-bordered w-full join-item"
+                   id={ui.createGame.maxChapters.id} min={1} placeholder="Count"/>
           </div>
         </div>
       </div>
