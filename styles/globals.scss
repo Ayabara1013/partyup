@@ -4,6 +4,26 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
+@import url('https://fonts.googleapis.com/css2?family=Abel&family=Barlow+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Borel&family=Major+Mono+Display&family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
+
+
+// 
+// 
+// 
+// 
+// 
+// 
+
+
+@mixin font-abel { font-family: 'Abel', sans-serif; }
+@mixin font-barlow-condensed { font-family: 'Barlow Condensed', sans-serif; }
+@mixin font-borel { font-family: 'Borel', cursive; }
+@mixin font-major { font-family: 'Major Mono Display', monospace; }
+@mixin font-montserrat-alternates { font-family: 'Montserrat Alternates', sans-serif; }
+@mixin font-roboto-condensed { font-family: 'Roboto Condensed', sans-serif; }
+
 // unified sizings
 $gap-1: 1rem;
 $nav-height: 6rem;
@@ -14,9 +34,11 @@ $nav-height: 6rem;
 }
 
 @mixin base-styles {
+  // @apply text-lg;
+  @include font-montserrat-alternates();
   box-sizing: border-box;
-  // font-family: 'Cera Round Pro', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
-  // font-weight: 500;
+  font-weight: 500;
+
 }
 
 // --- top to bottom ~ --- //
