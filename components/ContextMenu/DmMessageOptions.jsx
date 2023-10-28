@@ -1,5 +1,4 @@
-import { toastUser } from "@/util/functions";
-import { messaging } from "@/firebase/messaging";
+import { messaging } from "@/javascript/firebase/messaging";
 import toast from "react-hot-toast";
 
 export default function PlayerMessageOptions({ message, gameId }) {

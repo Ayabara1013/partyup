@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+$prompt-bg-focus: bg-primary-focus;
+
+
+
+@layer components {
+  .prompt-popup {
+    @apply bg-primary text-secondary-content;
+    
+    display: flex;
+    flex-direction: column;
+
+    gap: 0.25rem;
+
+    position: absolute;
+    bottom: 3.5rem;
+  }
+  
+  .prompt__option {
+    @apply py-1 px-1.5 bg-primary rounded-lg;
+  
+    &.--selected {
+      @apply bg-primary-focus;
+    }
+  
+    &:hover {
+      @apply bg-primary-focus;
+    }
+  }
+}

@@ -1,0 +1,14 @@
+
+
+
+.navbar__link--error {
+  @apply bg-transparent;
+
+  &:hover {
+    @apply text-error-content bg-error bg-opacity-50 transition-all;
+
+    transition-duration: 500ms;
+  }
+
+  
+}
