@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from "react";
-import { caretEventProps } from "@/chatReader/callout";
+import { caretEventProps } from "@/javascript/callout";
 
 export default function ChatCustomInput({ id }) {
   const [ memberList, setMemberList ] = useState([]);

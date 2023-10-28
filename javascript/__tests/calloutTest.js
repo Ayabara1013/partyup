@@ -1,4 +1,4 @@
-import findCallout from "@/chatReader/callout";
+import findCallout from "@/javascript/callout";
 
 export function calloutTest() {
   let text = 'hello @ma';
