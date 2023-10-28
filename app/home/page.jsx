@@ -80,9 +80,9 @@ export default function Page() {
       </div>
 
       <div className='home-discover-region flex flex-col gap-8 py-12 border'>
-        <div className='text-5xl font-medium'>check out our games!</div>
+        <div className='w-4/5 border ms-16 text-5xl font-medium'>check out some current games!</div>
 
-        <div className='game-card-gallery grid grid-cols-4 m-auto gap-8 w-4/5'>
+        <div className='game-card-gallery grid grid-cols-4 m-auto gap-8 w-4/5 border border-indigo-600'>
           <GameCard />
           <GameCard />
           <GameCard />
@@ -96,14 +96,13 @@ export default function Page() {
   )
 }
 
-
-
 function GameCard() {
 
   const randomImg = coolImages.one(800, 800);
   
   return (
-    <div className='game-card flex flex-col col-span-1 justify-center bg-neutral rounded-md overflow-clip'>
+    <div className='game-card flex flex-col col-span-1 justify-center 
+                    h-full bg-neutral rounded-md overflow-clip'>
       <div className='flex flex-col text-center bg-primary h-12 text-lg'>
         <div className='m-auto'>game name</div>
       </div>
