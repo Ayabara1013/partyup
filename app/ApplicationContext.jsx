@@ -4,9 +4,8 @@ import { createContext, useContext, useEffect, useState } from 'react';
 
 import ContextMenuBase from "@/components/ContextMenu/ContextMenuBase";
 
-import { ui } from "@/util/ui";
-import { userAuth } from "@/firebase/base";
-import { fbManagement } from "@/firebase/fbManagement";
+import { userAuth } from "@/javascript/firebase/base";
+import { fbManagement } from "@/javascript/firebase/fbManagement";
 
 const ApplicationContext = createContext(null);
 
@@ -27,8 +26,8 @@ export function Application({ children }) {
   }, [])
 
   useEffect(() => {
-    ui.mainLayout.loginButton.element().classList[(user) ? 'add' : 'remove']('hidden');
-    ui.mainLayout.logoutButton.element().classList[(!user) ? 'add' : 'remove']('hidden');
+    // ui.mainLayout.loginButton.element().classList[(user) ? 'add' : 'remove']('hidden');
+    // ui.mainLayout.logoutButton.element().classList[(!user) ? 'add' : 'remove']('hidden');
     if (user) {
       setGames();
     }
