@@ -81,11 +81,6 @@ function PromptPopup(props) {
   );
 }
 
-
-
-
-
-
 const createExampleChatComponents = (num) => {
   let elements = [];
 

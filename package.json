@@ -9,17 +9,17 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "react-hot-toast": "^2.4.1",
-    "react-firebase-hooks": "^5.1.1",
-
     "cool-images": "^1.0.3",
     "firebase": "^10.4.0",
+    "gb-temp-dnd": "^1.0.9",
+    "is-hotkey": "^0.2.0",
+    "moment": "^2.29.4",
     "next": "^14.0.0",
     "react": "^18",
     "react-dom": "^18",
+    "react-firebase-hooks": "^5.1.1",
+    "react-hot-toast": "^2.4.1",
     "sass": "^1.69.5",
-    "gb-temp-dnd": "^1.0.9",
-    "moment": "^2.29.4",
     "slate": "^0.100.0",
     "slate-react": "^0.100.0"
   },
