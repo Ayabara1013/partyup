@@ -1,8 +1,8 @@
 import { sortByKey } from "@/javascript/functions";
 
 import { ui } from "@/javascript/ui";
-import ChatMessage from "@/app/(game)/play/_ChatWindow/_ChatMessage";
-import ChatCustomInput from "@/app/(game)/play/_ChatWindow/_ChatCustomInput";
+import ChatMessage from "@/app/(game)/play/_ChatWindow/_ChatMessage/chatMessage";
+import ChatCustomInput from "@/app/(game)/play/_ChatWindow/_ChatInput/ChatCustomInput";
 
 export default function ChatWindow({ window, gameItems }) {
   let { game, messages, members } = gameItems

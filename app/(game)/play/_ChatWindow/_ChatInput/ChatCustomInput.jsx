@@ -1,8 +1,13 @@
 'use client'
+import React from "react";
 import { useEffect, useState } from "react";
-import { caretEventProps } from "@/javascript/callout";
+
+import CalloutList from "@/app/(game)/play/_ChatWindow/_ChatInput/_callout/calloutList";
+import SlateEditor from "@/app/(game)/play/_ChatWindow/_ChatInput/_slateEditor/slateEditor";
+
 
 export default function ChatCustomInput({ id }) {
+
   const [ memberList, setMemberList ] = useState([]);
   const [ calloutFragment, setCalloutFragment ] = useState('');
   const [ calloutHighlightIndex, setCalloutHighlightIndex ] = useState(0);
@@ -18,6 +23,7 @@ export default function ChatCustomInput({ id }) {
     }
   }
 
+  //Code to show callout selection popup
   useEffect(() => {
     if (memberList.length > 0) {
       for (let i in memberList) {
@@ -58,32 +64,9 @@ export default function ChatCustomInput({ id }) {
   return (
     <div className="w-full">
       <CalloutList memberList={memberList} style={style} id={id + '321'}/>
-      <textarea className="textarea w-full flex-1" id={id + '123'}
-                onKeyDown={calloutKeyDown} {...caretEventProps(calloutUpdate)}/>
-    </div>
-  )
-}
-
-
-function CalloutList({ memberList, id, ...props }) {
-  let elementList = [];
-  for (let i = 0; i < memberList.length; i++) {
-    let member = memberList[i];
-    let classes = (i === 0) ? 'border' : '';
-    elementList.push(<MemberCallout className={classes} member={member} key={id + i} id={id + i}/>)
-  }
-
-  return (
-    <div className={`w-full border absolute`} id={id} {...props}>
-      {elementList}
-    </div>
-  )
-}
-
-function MemberCallout({ member, className, ...props }) {
-  return (
-    <div className={`w-full ${className}`} {...props}>
-      {member.name}
+      <SlateEditor
+        // calloutKeyDown={calloutKeyDown} calloutUpdate={calloutUpdate}
+      />
     </div>
   )
 }

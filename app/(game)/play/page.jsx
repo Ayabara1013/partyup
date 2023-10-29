@@ -4,7 +4,7 @@ import { accountLocalStorage, messageLocalStorage } from "@/javascript/localStor
 import { useRouter } from "next/navigation";
 import { addArrayToArray, sortByKey } from "@/javascript/functions";
 import { useEffect, useState } from "react";
-import ChatWindow from "./_ChatWindow";
+import ChatWindow from "./_ChatWindow/chatWindow";
 import { fbManagement } from "@/javascript/firebase/fbManagement";
 import { userAuth } from "@/javascript/firebase/base";
 import { messaging } from "@/javascript/firebase/messaging";
