@@ -13,6 +13,7 @@ import createDndCharacter from "@/util/character/templates/dndCharacter";
 import toast from "react-hot-toast";
 import { validateCommand } from "@/util/functions";
 import { roll } from "@/app/test-page/rolls";
+import { Discover } from '../discover/page';
 
 const coolImages = require("cool-images");
 
@@ -21,53 +22,60 @@ const coolImages = require("cool-images");
 // const randomPuppy = require('random-puppy');
 
 
-export default function Page() {
-  const [ user ] = useAuthState(userAuth);
+export default function Home() {
+  const [user] = useAuthState(userAuth);
+  
   let gameId = user ? accountLocalStorage.getCurrentGame(user?.uid) : false;
   let props = {
     disabled: gameId,
     ...(!gameId) && { gameId }
   };
-  const test = () => {
-    let character = createDndCharacter(
-        {
-          strength: 15,
-        },
-        {
-          athletics: {
-            proficiency: true,
-            expertise: false,
-          },
-          sleightOfHand: {
-            proficiency: true,
-            expertise: true,
-          }
-        },
-        4);
-    let commands =[
-      '!r 1d20 fire - 2d12 acid + strength + 2',
-      '!r 3d6 psychic + 3d20 - 4d4 - athletics + 2',
-      '!r 6d4 lightning - 2d12 + intelligence - 2'
-    ]
-    let outputDice = [];
-    let rollResults = [];
-    for (const command of commands) {
-      outputDice.push(validateCommand(command, 'dnd', character).dice);
-    }
-    for (const dice of outputDice) {
-      rollResults.push(roll(dice));
-    }
 
-    for(let i = 0; i < outputDice.length; i++){
-      console.log(commands[i]);
-      console.log(outputDice[i]);
-      console.log(rollResults[i]);
-    }
-  }
+  // const test = () => {
+  //   let character = createDndCharacter(
+  //       {
+  //         strength: 15,
+  //       },
+  //       {
+  //         athletics: {
+  //           proficiency: true,
+  //           expertise: false,
+  //         },
+  //         sleightOfHand: {
+  //           proficiency: true,
+  //           expertise: true,
+  //         }
+  //       },
+  //     4
+  //   ); 
+    
+  //   let commands = [
+  //     '!r 1d20 fire - 2d12 acid + strength + 2',
+  //     '!r 3d6 psychic + 3d20 - 4d4 - athletics + 2',
+  //     '!r 6d4 lightning - 2d12 + intelligence - 2'
+  //   ];
+
+  //   let outputDice = [];
+  //   let rollResults = [];
+
+  //   for (const command of commands) {
+  //     outputDice.push(validateCommand(command, 'dnd', character).dice);
+  //   }
+
+  //   for (const dice of outputDice) {
+  //     rollResults.push(roll(dice));
+  //   }
+
+  //   for(let i = 0; i < outputDice.length; i++){
+  //     console.log(commands[i]);
+  //     console.log(outputDice[i]);
+  //     console.log(rollResults[i]);
+  //   }
+  // }
 
   return (
-    <div className='home-page w-full h-full border'>
-      <div className='border'>
+    <div className='home w-full h-full border'>
+      <div className='home__welcome border'>
         <h1 className='text-8xl font-medium'>welcome to tavern!</h1>
 
         <div>weve got this,</div>
@@ -79,19 +87,21 @@ export default function Page() {
         <div>aaand this</div>
       </div>
 
-      <div className='home-discover-region flex flex-col gap-8 py-12 border'>
+      <div className='home__examples flex flex-col gap-8 py-12 border'>
         <div className='w-4/5 border ms-16 text-5xl font-medium'>check out some current games!</div>
 
-        <div className='game-card-gallery grid grid-cols-4 m-auto gap-8 w-4/5 border border-indigo-600'>
+        {/* <div className='home__examples__card-gallery grid grid-cols-4 m-auto gap-8 w-4/5 border border-indigo-600'>
           <GameCard />
           <GameCard />
           <GameCard />
           <GameCard />
-        </div>
+        </div> */}
       </div>
 
-      <div className='border'>
+      <div className='home__some-blurb'>
       </div>
+
+      <Discover />
     </div>
   )
 }

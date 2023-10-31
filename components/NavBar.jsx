@@ -7,6 +7,7 @@ import Dir from "@/components/Dir";
 import { googleSignInPopUp, userAuth } from "@/firebase/base";
 
 import { ui } from "@/util/ui";
+import Link from 'next/link';
 
 export default function Navbar(props) {
   return (
@@ -21,6 +22,7 @@ export default function Navbar(props) {
 }
 
 
+
 function NavbarStart(props) {
   // const { item } = props;
 
@@ -33,16 +35,16 @@ function NavbarStart(props) {
         </label>
 
         <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-          <li><a>Discover</a></li>
-          <li><a>Games</a></li>
+          <li><Link href='/'>Discover</Link></li>
+          <li><Link href='/'>Games</Link></li>
           <li>
-            <a>Create</a>
+            <Link href='/'>Create</Link>
             <ul className="p-2">
-              <li><a>Character</a></li>
-              <li><a>World</a></li>
+              <li><Link href='/'>Character</Link></li>
+              <li><Link href='/'>World</Link></li>
             </ul>
           </li>
-          <li><a>Settings</a></li>
+          <li><Link href='/'>Settings</Link></li>
         </ul>
       </div>
 
@@ -57,21 +59,35 @@ function NavbarCenter(props) {
   return (
     <div className="navbar-center hidden lg:flex">
       <ul className="menu menu-horizontal px-1">
-        <li><a href='/discover'>Discover</a></li>
-        <li><a href='/play'>Play</a></li>
+
+        <li><Link href='/discover'>Discover</Link></li>
+        <li><Link href='/play'>Play</Link></li>
+
         <li tabIndex={0}>
           <details>
             <summary>Create</summary>
             <ul className="p-2 bg-accent text-accent-content">
-              <li>create a...</li>
-              <li><a className='navbar__link--error'>Character</a></li>
-              <li><a className='navbar__link--error'>World</a></li>
-              <li><a className='navbar__link--error'>Game</a></li>
-              <li><a className='navbar__link--error'>Community</a></li>
+              <li>
+                create a...
+              </li>
+              <li>
+                <Link href='/' className='navbar__link--error'>Character</Link>
+              </li>
+              <li>
+                <Link href='/' className='navbar__link--error'>World</Link>
+              </li>
+              <li>
+                <Link href='/' className='navbar__link--error'>Game</Link>
+              </li>
+              <li>
+                <Link href='/' className='navbar__link--error'>Community</Link>
+              </li>
             </ul>
           </details>
         </li>
-        <li><a>Games</a></li>
+
+        <li><Link href='/'>Games</Link></li>
+
         {/* <li><a>Community</a></li> */}
         <li tabIndex={1}>
           <details>
@@ -81,6 +97,7 @@ function NavbarCenter(props) {
             </ul>
           </details>
         </li>
+
       </ul>
     </div>
   )
@@ -100,14 +117,17 @@ export function NavbarEnd(props) {
         </label>
 
         <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+
           <li>
-            <a className="justify-between">
+            <Link href='/' className="justify-between">
               Profile
               <span className="badge">New</span>
-            </a>
+            </Link>
           </li>
-          <li><a href='/user-settings'>Settings</a></li>
-          <li><a>Logout</a></li>
+
+          <li><Link href='/user-settings'>Settings</Link></li>
+
+          <li><Link href='/'>Logout</Link></li>
         </ul>
 
       </div>

@@ -26,6 +26,7 @@
     "react-firebase-hooks": "^5.1.1",
     "react-hot-toast": "^2.4.1",
     "sass": "^1.66.1",
+    "superclamp": "^0.2.3",
     "tailwindcss": "3.3.3"
   }
 }

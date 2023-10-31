@@ -1,0 +1,52 @@
+
+$max-image-height: 12rem;
+$card-padding: 1rem;
+
+.discover-card {
+  // border-radius: 9999px 1rem 100% 999px;
+  // height: calc($max-image-height + 2 * $card-padding);
+  
+  border-radius: 10rem 2rem 2rem 10rem;
+
+  // &__left {
+  //   img {
+  //     max-height: $max-image-height;
+  //   }
+  // }
+
+  // &__middle {
+  //   &__game-name {
+  //     @apply text-center text-3xl text-primary font-bold;
+  //   }
+
+  //   &__description {
+  //     @apply text-ellipsis;
+  //     margin-bottom: 0.25rem;
+  //     line-height: 1.5rem;
+  //     text-indent: 1rem;
+  //     // white-space: nowrap;
+  //   }
+  // }
+}
+
+.discover-card-middle {
+  position: relative;
+  overflow: clip;
+
+  * {
+    z-index: 2;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-image: url('https://images.ctfassets.net/swt2dsco9mfe/1dQoOoGmRy9NMlAU2aEULd/e8a5f6134a5afba59b3a0cac3cf4f31d/tiamat-email.jpg?q=70');
+    background-size: cover;
+    // z-index: -1;
+    opacity: 40%;
+  }
+}

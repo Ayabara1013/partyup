@@ -17,10 +17,11 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" data-theme="dark" >
-      <body className={`${inter.className} flex flex-col h-screen max-h-screen `}>
+    <html lang="en" data-theme="night" >
+      <body className={`${inter.className} flex flex-col`}>
         <Navbar />
-        <div className="app-wrapper h-full">{children}</div>
+        {children}
+        {/* <div className="app-wrapper h-full">{children}</div> */}
       </body>
     </html>
   )
