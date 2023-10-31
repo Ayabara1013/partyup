@@ -1,8 +1,8 @@
 import { sortByKey } from "@/javascript/functions";
 
 import { ui } from "@/javascript/ui";
-import ChatMessage from "@/app/(game)/play/_ChatWindow/_ChatMessage/chatMessage";
-import ChatCustomInput from "@/app/(game)/play/_ChatWindow/_ChatInput/ChatCustomInput";
+import ChatMessage from "@/app/(game)/play/(chat-window)/(chatMessage)/chatMessage";
+import ChatInput from "@/app/(game)/play/(chat-window)/(chatInput)/chatInput";
 
 export default function ChatWindow({ window, gameItems }) {
   let { game, messages, members } = gameItems
@@ -67,7 +67,7 @@ export default function ChatWindow({ window, gameItems }) {
         {generateMessages()}
         <span id={ui.messaging[window].id}/>
       </div>
-      {(!noInput) && <ChatCustomInput id={window}/>}
+      {(!noInput) && <ChatInput id={window} game={game} window={window}/>}
     </div>
   )
 }

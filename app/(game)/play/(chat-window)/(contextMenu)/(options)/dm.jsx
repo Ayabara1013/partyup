@@ -1,7 +1,7 @@
 import { messaging } from "@/javascript/firebase/messaging";
 import toast from "react-hot-toast";
 
-export default function PlayerMessageOptions({ message, gameId }) {
+export default function DmMessageOptions({ message, gameId }) {
 
   async function addCanonOnClick() {
     await messaging.game.addCanon(gameId, message.id);
