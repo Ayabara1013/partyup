@@ -1,7 +1,6 @@
 import '../styles/globals.scss';
 import { Inter } from 'next/font/google';
 
-
 import { Navbar } from "@/components/Navbar/Navbar";
 
 import { Application } from "@/app/ApplicationContext";

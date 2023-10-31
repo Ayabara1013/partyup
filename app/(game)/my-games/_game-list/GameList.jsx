@@ -24,6 +24,7 @@ export default function GameList({ games }) {
           await fbManagement.dm.startGame(gameId);
         }
         accountLocalStorage.setCurrentGame(gameId);
+        console.log('gameId', gameId)
         push('/play')
       }
     }
@@ -35,9 +36,7 @@ export default function GameList({ games }) {
 
   return games.map(game =>
     <div key={game.id} className="bg-base-200 border">
-      <div className="collapse-title text-xl font-medium">
-        {game.name}
-      </div>
+      <div className="collapse-title text-xl font-medium">{game.name}</div>
 
       <div className="stats w-full overflow-hidden border">
         <GameStat title="Description:" values={[ game.description ]}/>

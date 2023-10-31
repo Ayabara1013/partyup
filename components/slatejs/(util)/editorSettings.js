@@ -34,10 +34,37 @@ const Element = props => {
   const { attributes, children, element } = props
   switch (element.type) {
     case 'badge':
-      return <BadgeComponent {...props} />
+      return <BadgeComponent {...props}>{children}</BadgeComponent>
     default:
       return <p {...attributes}>{children}</p>
   }
 }
 
-export { Element }
+const withInlines = editor => {
+  const { isInline, isElementReadOnly, isSelectable } = editor
+
+  editor.isInline = element =>
+    [ 'link', 'button', 'badge' ].includes(element.type) || isInline(element)
+
+  editor.isElementReadOnly = element =>
+    element.type === 'badge' || isElementReadOnly(element)
+
+  editor.isSelectable = element =>
+    element.type !== 'badge' && isSelectable(element)
+
+  return editor
+}
+
+const editorStyle = {
+  maxHeight: '106px',
+  padding: '5px',
+  overflowX: 'hidden',
+  overflowY: 'auto',
+}
+
+export {
+  withInlines,
+  Element,
+  editorStyle
+}
+

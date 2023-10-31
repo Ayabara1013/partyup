@@ -1,13 +1,17 @@
 import moment from "moment/moment";
+import { userAuth } from "@/javascript/firebase/base";
 
-import MessageContextMenu from "@/app/(game)/play/_ContextMenus/MessageContextMenu";
+import MessageContextMenu from "@/app/(game)/play/(chat-window)/(contextMenu)/MessageContextMenu";
 
 import { useApplicationContext } from "@/app/ApplicationContext";
-import { userAuth } from "@/javascript/firebase/base";
+import { CustomSlate, useCustomEditorHook } from "@/components/slatejs/slatejs";
 
 export default function ChatMessage({ game, message, members }) {
   const { setContextMenu } = useApplicationContext();
   const { text, uid, type, canon } = message;
+  const { editor } = useCustomEditorHook();
+
+  const textObject = JSON.parse(text);
 
   const baseChatClass = (uid === userAuth.currentUser.uid) ? 'chat-end' : 'chat-start';
 
@@ -35,17 +39,14 @@ export default function ChatMessage({ game, message, members }) {
     <div className={`chat ${baseChatClass}`}>
       <div className="chat-image avatar">
         <div className="w-10 rounded-full">
-          {/*<img src={(type.includes('icon'))?'some image source':''} alt=""/>*/}
-          <img alt=""/>
+          {(type.includes('icon')) && <img alt=""/>}
         </div>
       </div>
       <div className="chat-header opacity-50">
         {type.includes('header') && name}
       </div>
       <div className={`chat-bubble ${messageClass}`} onContextMenu={disableContextMenu}>
-        <div className="tooltip tooltip-bottom text-left" data-tip={messageTimeText}>
-          {text}
-        </div>
+        <CustomSlate editor={editor} initialValue={textObject} readOnly={true}/>
       </div>
     </div>
 

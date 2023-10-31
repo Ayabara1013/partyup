@@ -4,7 +4,7 @@ import { accountLocalStorage, messageLocalStorage } from "@/javascript/localStor
 import { useRouter } from "next/navigation";
 import { addArrayToArray, sortByKey } from "@/javascript/functions";
 import { useEffect, useState } from "react";
-import ChatWindow from "./_ChatWindow/chatWindow";
+import ChatWindow from "@/app/(game)/play/(chat-window)/chatWindow";
 import { fbManagement } from "@/javascript/firebase/fbManagement";
 import { userAuth } from "@/javascript/firebase/base";
 import { messaging } from "@/javascript/firebase/messaging";
@@ -12,33 +12,29 @@ import { ui } from "@/javascript/ui";
 
 export default function Play() {
   const { push } = useRouter();
-  let { user, activeGames } = useApplicationContext();
+  let { activeGames } = useApplicationContext();
   const [ game, setGame ] = useState(null);
   const [ gameId, setGameId ] = useState(null);
   const [ members, setMembers ] = useState(null);
   const [ messages, setMessages ] = useState(null);
 
   useEffect(() => {
-    (user) && setGameId(accountLocalStorage.getCurrentGame());
-  }, [ user ]);
-
-  useEffect(() => {
     if (activeGames) {
-      if (!gameId) {
-        push('/my-games');
-      } else {
+      let localGameId = accountLocalStorage.getCurrentGame();
+      if (localGameId) {
         let games = [];
         addArrayToArray(games, activeGames.playerGames, 'id');
         addArrayToArray(games, activeGames.dmGames, 'id');
         for (let game of games) {
-          if (game.id === gameId) {
-            setItems();
-            messaging.game.liveMessages(gameId, liveGameMessageUpdate).then();
+          if (game.id === localGameId) {
+            setGameId(localGameId);
+            setItems(localGameId).then();
+            messaging.game.liveMessages(localGameId, liveGameMessageUpdate).then();
             return;
           }
         }
-        push('/');
       }
+      push('/my-games');
     }
   }, [ activeGames ]);
 
@@ -49,34 +45,35 @@ export default function Play() {
     }
   }, [ messages ]);
 
-  const setItems = async () => {
+  const setItems = async (id = gameId) => {
     //Get game info
-    let game = await fbManagement.get.singleGame(gameId);
+    let game = await fbManagement.get.singleGame(id);
     let tempList = {};
+    let { uid } = userAuth.currentUser;
 
     //Add all members to list for quick message lookup
     for (let member of game.members) {
-      tempList[member.id] = (member.id !== userAuth.currentUser.uid) ? `${member.uName} (Player)` : 'You';
+      tempList[member.id] = (member.id !== uid) ? `${member.uName} (Player)` : 'You';
     }
     //Add DM to list
-    tempList[game.uid] = (game.uid === userAuth.currentUser.uid) ? 'You' : `${game.uName} (DM)`;
+    tempList[game.uid] = (game.uid === uid) ? 'You' : `${game.uName} (DM)`;
 
     //Get messages from local storage
-    let messages = messageLocalStorage.game.get(gameId);
+    let messages = messageLocalStorage.game.get(id);
 
     //Get messages from server if local storage is empty or if there are new messages (saves on reads)
     if (messages.length > 0) {
-      let lastTime = messageLocalStorage.game.getAccessTime(gameId);
-      let tempMessages = await messaging.game.getUpdateMessage(gameId, lastTime);
+      let lastTime = messageLocalStorage.game.getAccessTime(id);
+      let tempMessages = await messaging.game.getUpdateMessage(id, lastTime);
       addArrayToArray(messages, tempMessages, 'id');
     } else {
-      messages = await messaging.game.getMessages(gameId);
+      messages = await messaging.game.getMessages(id);
     }
 
     sortByKey(messages, 'createdAt');
 
     //Save messages to local storage and state
-    messageLocalStorage.game.set(gameId, messages);
+    messageLocalStorage.game.set(id, messages);
     setGame(game);
     setMembers(tempList);
     setMessages(messages);

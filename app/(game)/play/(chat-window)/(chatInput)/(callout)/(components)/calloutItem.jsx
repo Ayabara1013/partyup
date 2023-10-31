@@ -1,8 +1,8 @@
 // Callout item component. Takes in a member and generates a div.
 export default function MemberCallout({ member, className, ...props }) {
   return (
-    <div className={`w-full ${className}`} {...props}>
+    <button className={`w-full p-0.5 text-left ${className}`} {...props}>
       {member.name}
-    </div>
+    </button>
   )
 }
