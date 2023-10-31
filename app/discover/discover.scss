@@ -1,3 +1,5 @@
+@use '@/styles/globals.scss' as g;
+
 
 $max-image-height: 12rem;
 $card-padding: 1rem;
@@ -29,9 +31,34 @@ $card-padding: 1rem;
   // }
 }
 
+.discover-card-left {
+  // @apply border border-success;
+  // position: relative;
+
+  // &::before {
+  //   @apply border border-success;
+  //   position: absolute;
+  //   top: 0;
+  //   right: 0;
+  //   bottom: 0;
+  //   left: 0;
+  // }
+
+  .inner-wrapper {
+    @apply border border-success bg-neutral-focus;
+    width: 100%;
+    height: 100%;
+    padding: 0.5rem;
+
+    border-radius: 10rem 2rem 2rem 10rem;
+  }
+}
+
+
 .discover-card-middle {
   position: relative;
   overflow: clip;
+  // background-color: white;
 
   * {
     z-index: 2;
@@ -46,7 +73,20 @@ $card-padding: 1rem;
     left: 0;
     background-image: url('https://images.ctfassets.net/swt2dsco9mfe/1dQoOoGmRy9NMlAU2aEULd/e8a5f6134a5afba59b3a0cac3cf4f31d/tiamat-email.jpg?q=70');
     background-size: cover;
-    // z-index: -1;
     opacity: 40%;
   }
+}
+
+.text-shadow-md {
+  text-shadow: 
+  0 2px 4px rgba(0, 0, 0, 0.3),
+  0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-shadow-md {
+  @include g.font-abel();
+  font-size: 1.2em;
+  box-shadow: 
+  0 0.25rem 0.5rem -1px rgb(0, 0, 0, 0.3),
+  0 0.125rem 0.25rem -1px rgba(0, 0, 0, 0.1);
 }

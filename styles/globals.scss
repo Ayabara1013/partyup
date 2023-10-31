@@ -35,10 +35,16 @@ $nav-height: 6rem;
 
 @mixin base-styles {
   // @apply text-lg;
-  @include font-montserrat-alternates();
+  @include font-abel();
   box-sizing: border-box;
   font-weight: 500;
+  // transform: scale(1.1);
 
+
+}
+
+html {
+  // font-size: 1.1em;
 }
 
 // --- top to bottom ~ --- //
@@ -88,3 +94,4 @@ body {
   height: 80%;
   flex: 1 1 auto;
 }
+

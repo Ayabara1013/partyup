@@ -1,3 +1,5 @@
+import { pageExtensions } from '@/next.config';
+
 class User {
 	constructor(uid, name, games, characters) {
 		this.uid = uid;
@@ -41,7 +43,7 @@ class System {
 
 class Message {
 
-}
+}540910
 
 const starborne = {
 	id: 'gid-starborne-73-74-61-72',
@@ -95,49 +97,98 @@ const fallenCrown = {
 	
 }
 
+
 const usersCollection = {
-	'uid-40ce7e3b-5839-5bb6-b637-e25f83fba2fa': {
-		role: 'game master',
+	user1: {
+		uid: 'uid-40ce7e3b-5839-5bb6-b637-e25f83fba2fa',
+		username: 'Tomlite',
+		memberType: `Free`,
+		memberSince: `10/14/23`,
+		hoursPlayed: Math.ceil(Math.random() * 1000) + 1 || 0,
+		characters: [cc.character1]
 	},
-	'uid-11a0b5c7-c8ee-5d9e-9e46-f232d450cd5d': {
-		characterName: 'Cassidy Flynn',
+
+	user2: {
+		uid: 'uid-11a0b5c7-c8ee-5d9e-9e46-f232d450cd5d',
+		username: 'IceyGeography',
+		memberType: `Free`,
+		memberSince: `10/14/23`,
+		hoursPlayed: Math.ceil(Math.random() * 1000) + 1 || 0,
+		characters: [cc.character2]
 	},
-	'uid-7a666e49-1c34-5112-934e-3d9e508e4509': {
-		characterName: 'Ellis Sawyer',
+
+	user3: {
+		uid: 'uid-7a666e49-1c34-5112-934e-3d9e508e4509',
+		username: 'WorldlyMule',
+		memberType: `Free`,
+		memberSince: `10/14/23`,
+		hoursPlayed: Math.ceil(Math.random() * 1000) + 1 || 0,
+		characters: [cc.character3]
 	},
-	'uid-13a52330-a677-579c-a141-f51673f44daf': {
-		characterName: 'Bill Hayden',
+
+	user4: {
+		uid: 'uid-13a52330-a677-579c-a141-f51673f44daf',
+		username: 'BrightSlump',
+		memberType: `Free`,
+		memberSince: `10/14/23`,
+		hoursPlayed: Math.ceil(Math.random() * 1000) + 1 || 0,
+		characters: [cc.character4]
 	},
-	'uid-d692ac1b-6c33-50cd-b777-6d306869bfa9': {
-		characterName: 'Ozzie the Bestest Corgo',
-	},
+
+	user5: {
+		uid: 'uid-d692ac1b-6c33-50cd-b777-6d306869bfa9',
+		username: 'FatalCrook',
+		memberType: `Free`,
+		memberSince: `10/14/23`,
+		hoursPlayed: Math.ceil(Math.random() * 1000) + 1 || 0,
+		characters: [cc.character5]
+	}
 }
+const uc = usersCollection;
+
+
+
+
 
 const gamesCollection = {
-
-	1: new Game(
-		1, 
-		[
-			usersCollection[`uid-40ce7e3b-5839-5bb6-b637-e25f83fba2fa`],
-			usersCollection[`uid-11a0b5c7-c8ee-5d9e-9e46-f232d450cd5d`],
-			usersCollection[`uid-7a666e49-1c34-5112-934e-3d9e508e4509`],
-			usersCollection[`uid-13a52330-a677-579c-a141-f51673f44daf`],
-			usersCollection[`uid-d692ac1b-6c33-50cd-b777-6d306869bfa9`],
-		], 
-		'swade',
+	game1: new Game(
+		'gid-4a4404a0-d04c-5bde-8e5c-1cce76c10510',
+		[us.user1, uc.user2, uc.user3, uc.user5, uc.user5],
+		'SWADE',
 		'Starborne: Mercenaries',
-		usersCollection['uid-40ce7e3b-5839-5bb6-b637-e25f83fba2fa']),
+		uc.user1,
+	),
 }
+const gc = gamesCollection;
+
+
+
 
 const messagesCollection = {
 
 }
 
-const charactersCollection = {
-	'Cassidy Flynn': {
 
-	}
+
+
+const charactersCollection = {
+	character1: {
+		name: 'Kordak Felbryn'
+	},
+	character2: {
+		name: 'Cassidy Flynn'
+	},
+	character3: {
+		name: 'Ellis Sawyer'
+	},
+	character4: {
+		name: 'Bill Hayden'
+	},
+	character5: {
+		name: 'Ozzie the Bestest Corgo'
+	},
 }
+const cc = charactersCollection;
 
 
 export {

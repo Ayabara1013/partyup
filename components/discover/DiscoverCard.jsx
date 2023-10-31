@@ -5,6 +5,7 @@ import Link from 'next/link';
 // import Superclamp from 'superclamp';
 const coolImages = require("cool-images");
 
+const focusBoxClass = 'm-auto p-2  border-success whitespace-nowrap bg-neutral-focus  rounded-xl shadow-xl';
 
 export function DiscoverCard(props) {
 	const { content } = props;
@@ -28,184 +29,99 @@ export function DiscoverCard(props) {
 		return `${years}y, ${months}m, ${days}d`;
 	}
 
-	const DiscoverLeft = () => {
+	const ListItem = (props) => {
+		const { label = 'label', value = 'value' } = props;
+	
 		return (
-			<div className='discover-card-left flex border-accent'>
-				<div className='aspect-square'>
-					<img src={coolImages.one(200, 200)} alt="" className=' rounded-full h-full' />
-				</div>
+			<li className='whitespace-nowrap'>
+				<span className='font-semibold text-secondary'>{label + ': '}</span>
+				<span>{value}</span>
+			</li>
+		)
+	}
 
-				<div className=' border-success whitespace-nowrap'>
-					<div className='text-center text-primary text-lg font-bold'>Game Master</div>
-					<ul className='indent-2'>
-						<li>Tomlite</li>
-						<li>Free</li>
-						<li>Member since: 10/14/23</li>
-						<li>Hours Played: 0</li>
+	const DiscoverLeft = () => {
+		// const listItemClass = 'font-semibold text-secondary';
+
+		return (
+			<div className='discover-card-left flex border-accent gap-4'>
+				{/* <div className='inner-wrapper flex'> */}
+					<div className='aspect-square'>
+						<img src={coolImages.one(200, 200)} alt="" className=' rounded-full h-full shadow-xl' />
+					</div>
+
+					<div className={`gm-details ${focusBoxClass}`}>
+						<div className='text-center text-primary text-lg font-bold'>Game Master</div>
+					<ul>
+						<ListItem label='Username' value={content.gm.username} />
+						<ListItem label='User tier' value={content.gm.memberType} />
+						<ListItem label='Member since' value={content.gm.memberSince} />
+						<ListItem label='Hours played' value={content.gm.hoursPlayed} />
 					</ul>
-				</div>
+					</div>
+				{/* </div> */}
 			</div>
 		)
 	}
 
-	// const DiscoverMiddle = () => {
-	//   return (
-	//     <>
-	//       <div className='discover-card__middle__game-name border'>
-	//         {content.name}
-	//       </div>
-
-	//       <div className='discover-card__middle__description flex-1 border line-clamp-4'>
-	//         {content.description.split('\n').map((paragraph, i) => {
-	//           return <p key={i} className='border border-success'>{paragraph}</p>
-	//         })}
-	//       </div>
-
-	//       <div className='discover-card__middle__call-to-action flex m-auto'>
-	//         <Link href='/'>
-	//           <button className='btn btn-secondary'>read more</button>
-	//         </Link>
-	//       </div>
-	//     </>
-	//   )
-	// }
-
 	const DiscoverMiddle = ({content}) => {
 		return (
 			<div className='discover-card-middle flex flex-col justify-between p-2 border-accent overflow-clip rounded-xl shadow-xl'>
-
-				{/* <img src="https://images.ctfassets.net/swt2dsco9mfe/1dQoOoGmRy9NMlAU2aEULd/e8a5f6134a5afba59b3a0cac3cf4f31d/tiamat-email.jpg?q=70" alt="" /> */}
 				
-				<div className=' text-center text-3xl text-primary font-bold'>
-					Game Name
+				<div className=' text-center text-3xl text-primary font-bold text-shadow-md'>
+					{content.name}
 				</div>
 
-				<div className=' line-clamp-4 indent-2'>
+				<div className=' line-clamp-4 indent-4 text-shadow-md'>
 					{content.description.split('\n').map((paragraph, i) => {
-						return <p key={i} className='mb-2 leading-5 border-success'>{paragraph}</p>
+						return <p key={i} className='mb-2 leading-5 font-semibold text-shadow-default border-success'>{paragraph}</p>
 					})}
 				</div>
 
 				<div className=' flex justify-center'>
-					<Link href='/'>
-						<button className='btn btn-secondary'>read more</button>
+					<Link href='/game/info' className=''>
+						<button className='btn btn-secondary btn-shadow-md'>read more</button>
 					</Link>
 				</div>
 			</div>
 		)
 	}
 
-	const DiscoverRight = ({timeSince, startedDate}) => {
+	const DiscoverRight = (props) => {
+		const { timeSince, startedDate, content } = props;
 
-		const LineItem = (props) => {
-			const { label = 'label', value = 'value' } = props;
-		
-			return (
-				<div className='whitespace-nowrap'>
-					<span className='font-bold text-primary'>{label + ':\u00A0'}</span>
-					<span>{value}</span>
-				</div>
-			)
-		}
+		const pcur = content.meta.players.current;	// current players
+		const pmax = content.meta.players.max;			// max players
+		const prem = pmax - pcur;										// remaining players
 		
 		return (
-			<div className='discover-card-right border-accent'>
-				<LineItem label='playing' value='SWADE' />
-				<LineItem label='current players' value='5 (1 open slot)' />
-				<LineItem
-					label='ongoing since'
-					value={`${startedDate.toLocaleDateString()} ( ${timeSince(startedDate)} )`} />
-				<LineItem label='last active' value='today' />
-				<LineItem label='average frequency' value='< 2 hours' />
+			<div className={`discover-card-right ${focusBoxClass}`}>
+				<ul>
+					<ListItem label='playing' value='SWADE' />
+					<ListItem
+						label='current players'
+						value={`${pcur}/${pmax} (${prem} seat remaining)`}
+					/>
+					<ListItem
+						label='ongoing since'
+						value={`${startedDate.toLocaleDateString()} ( ${timeSince(startedDate)} )`}
+					/>
+					<ListItem label='last active' value='today' />
+					<ListItem label='average frequency' value='< 2 hours' />
+					<ListItem
+						label='total messages'
+						value={content.meta.numMessages.toLocaleString()}
+					/>
+				</ul>
 			</div>
 		)
 	}
-
-	// return (
-	//   <div className={`discover-card flex flex-row m-4 p-4 gap-4 min-w-[45%] bg-neutral`}>
-
-	//     <div className={'discover-card__left flex gap-2 border border-accent'}>
-	//       <img src={coolImages.one(200, 200)} alt="" className='rounded-[100%] h-48' />
-	//       <div className='discover-card__dm'>
-	//         <div>{content.gm}</div>
-	//         <ul>
-	//           <li>Tomlite</li>
-	//           <li>Free</li>
-	//           <li>Member since: 10/14/23</li>
-	//           <li>Hours Played: 0</li>
-	//         </ul>
-	//       </div>
-	//     </div>
-
-	//     <div className='flex-1 border border-accent'>
-	//       <div className='flex-1 line-clamp-4'>{content.description.split('\n').map((paragraph, i) => <p key={i} className='border border-success'>{paragraph}</p>)}</div>
-	//     </div>
-
-	//     {/* <DiscoverMiddle />   */}
-
-	//     <div className={'discover-card__right border border-accent'}>
-	//       {/* <div className='flex flex-wrap gap-2 w-full'>
-	//         <div className='badge badge-primary'>primary</div>
-	//         <div className='badge badge-secondary'>secondary</div>
-	//         <div className='badge badge-accent'>accent</div>
-	//         <div className='badge badge-info'>info</div>
-	//         <div className='badge badge-success'>success</div>
-	//         <div className='badge badge-warning'>warning</div>
-	//         <div className='badge badge-error'>error</div>
-	//       </div> */}
-
-	//       <div className='border flex flex-wrap'>
-	//         <div className='badge badge-primary'>badge</div>
-	//         <div className='badge badge-primary'>badge</div>
-	//         <div className='badge badge-primary'>badge</div>
-	//         <div className='badge badge-primary'>badge</div>
-	//         <div className='badge badge-primary'>badge</div>
-	//         <div className='badge badge-primary'>badge</div>
-	//         <div className='badge badge-primary'>badge</div>
-	//         <div className='badge badge-primary'>badge</div>
-	//         <div className='badge badge-primary'>badge</div>
-	//         <div className='badge badge-primary'>badge</div>
-	//         <div className='badge badge-primary'>badge</div>
-	//         <div className='badge badge-primary'>badge</div>
-	//       </div>
-
-	//       <div>
-	//         <div>
-	//           <span className='font-bold text-primary'>playing: </span>
-	//           SWADE
-	//         </div>
-
-	//         <div>
-	//           <span className="font-bold text-primary">Current Players: </span>
-	//           5, (1 open slot)
-	//         </div>
-
-	//         <div>
-	//           <span className="font-bold text-primary">ongoing since: </span>
-	//           {startedDate.toLocaleDateString()} ( {timeSince(startedDate)} )
-	//         </div>
-
-	//         <div>
-	//           <span className="font-bold text-primary">last active: </span>
-	//           today
-	//         </div>
-
-	//         <div>
-	//           <span className='text-primary font-bold'>average frequency: </span>
-	//           {` < 2 hours`}
-	//         </div>
-	//       </div>
-	//     </div>
-	//   </div>
-	// )
 
 	return (
 		<div className='discover-card flex bg-neutral m-4 p-4 gap-4 h-[16rem]'>
 			<DiscoverLeft />
 			<DiscoverMiddle content={content}/>
-			<DiscoverRight timeSince={timeSince} startedDate={startedDate} />
+			<DiscoverRight content={content} timeSince={timeSince} startedDate={startedDate} />
 		</div>
 	)
 }
-
-// {startedDate.toLocaleDateString()} ( {timeSince(startedDate)}
