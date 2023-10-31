@@ -1,18 +1,9 @@
 'use client'
 import { useAuthState } from "react-firebase-hooks/auth";
 
-import Dir from "@/components/Dir";
-import PageLayout from "@/components/PageLayout";
+import { userAuth } from "@/javascript/firebase/base";
+import { accountLocalStorage } from "@/javascript/localStorage";
 
-import { ui } from "@/util/ui";
-import { userAuth } from "@/firebase/base";
-import { accountLocalStorage } from "@/util/localStorage";
-import CharacterSheet from "@/util/character/CharacterSheet";
-import chatWindow from "@/components/ChatWindow";
-import createDndCharacter from "@/util/character/templates/dndCharacter";
-import toast from "react-hot-toast";
-import { validateCommand } from "@/util/functions";
-import { roll } from "@/app/test-page/rolls";
 import { Discover } from '../discover/page';
 
 const coolImages = require("cool-images");

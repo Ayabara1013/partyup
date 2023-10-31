@@ -15,13 +15,16 @@
     "is-hotkey": "^0.2.0",
     "moment": "^2.29.4",
     "next": "^14.0.0",
+    "random-cat-img": "^1.1.4",
+    "random-puppy": "^1.1.0",
     "react": "^18",
     "react-dom": "^18",
     "react-firebase-hooks": "^5.1.1",
     "react-hot-toast": "^2.4.1",
     "sass": "^1.69.5",
     "slate": "^0.100.0",
-    "slate-react": "^0.100.0"
+    "slate-react": "^0.100.0",
+    "superclamp": "^0.2.3"
   },
   "devDependencies": {
     "autoprefixer": "^10",

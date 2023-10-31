@@ -2,11 +2,9 @@
 
 import { useRouter } from "next/navigation";
 
-import Dir from "@/components/Dir";
+import { googleSignInPopUp, userAuth } from "@/javascript/firebase/base";
 
-import { googleSignInPopUp, userAuth } from "@/firebase/base";
-
-import { ui } from "@/util/ui";
+import { ui } from "@/javascript/ui";
 import Link from 'next/link';
 
 export default function Navbar(props) {
