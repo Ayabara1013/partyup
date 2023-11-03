@@ -41,7 +41,7 @@ export default function Play() {
   useEffect(() => {
     let windows = [ 'rolls', 'canon', 'init', 'open' ];
     for (let window of windows) {
-      (ui.messaging[window].element()) && ui.messaging[window].element().scrollIntoView({ behavior: 'smooth' });
+      (ui.messaging[`${window}End`].element()) && ui.messaging[`${window}End`].element().scrollIntoView({ behavior: 'smooth' });
     }
   }, [ messages ]);
 
@@ -89,7 +89,7 @@ export default function Play() {
   }
 
   return (game &&
-    <div className='home-page w-full h-full border'>
+    <div className='w-full h-full border'>
       <div className="h-3/4 w-full border chat-container px-4">
         <ChatWindow window="rolls" gameItems={{ game, messages, members }}/>
         <ChatWindow window="canon" gameItems={{ game, messages, members }}/>

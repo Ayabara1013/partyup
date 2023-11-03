@@ -4,7 +4,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { userAuth } from "@/javascript/firebase/base";
 import { accountLocalStorage } from "@/javascript/localStorage";
 
-import { Discover } from '../discover/page';
+import Discover from '../discover/page';
 
 const coolImages = require("cool-images");
 
@@ -14,8 +14,8 @@ const coolImages = require("cool-images");
 
 
 export default function Home() {
-  const [user] = useAuthState(userAuth);
-  
+  const [ user ] = useAuthState(userAuth);
+
   let gameId = user ? accountLocalStorage.getCurrentGame(user?.uid) : false;
   let props = {
     disabled: gameId,
@@ -39,7 +39,7 @@ export default function Home() {
   //       },
   //     4
   //   ); 
-    
+
   //   let commands = [
   //     '!r 1d20 fire - 2d12 acid + strength + 2',
   //     '!r 3d6 psychic + 3d20 - 4d4 - athletics + 2',
@@ -92,7 +92,7 @@ export default function Home() {
       <div className='home__some-blurb'>
       </div>
 
-      <Discover />
+      <Discover/>
     </div>
   )
 }
@@ -100,7 +100,7 @@ export default function Home() {
 function GameCard() {
 
   const randomImg = coolImages.one(800, 800);
-  
+
   return (
     <div className='game-card flex flex-col col-span-1 justify-center 
                     h-full bg-neutral rounded-md overflow-clip'>
@@ -112,9 +112,10 @@ function GameCard() {
         <div>hello world this is a game</div>
 
         <img className='text-center aspect-square w-full bg-red-400 rounded shadow-lg shadow-base-200'
-          src={randomImg} />
-        
-        <p className='text-sm'>height fact recall student method community private hat electricity touch single shelf name exactly depend select art official win border buried pot differ glad</p>
+             src={randomImg}/>
+
+        <p className='text-sm'>height fact recall student method community private hat electricity touch single shelf
+          name exactly depend select art official win border buried pot differ glad</p>
       </div>
     </div>
   )

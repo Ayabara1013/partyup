@@ -192,25 +192,31 @@ export const ui = {
     },
   },
   messaging: {
-    canon: {
+    canonEnd: {
       id: 'canonChatEnd',
       element: () => {
         return document.getElementById('canonChatEnd')
       }
     },
-    init: {
+    initEnd: {
       id: 'initChatEnd',
       element: () => {
         return document.getElementById('initChatEnd')
       }
     },
-    open: {
+    initOptions: {
+      id: 'initChatOptions',
+      element: (id, i = '') => {
+        return document.getElementById(id + 'initChatOptions' + i)
+      }
+    },
+    openEnd: {
       id: 'openChatEnd',
       element: () => {
         return document.getElementById('openChatEnd')
       }
     },
-    rolls: {
+    rollsEnd: {
       id: 'rollsChatEnd',
       element: () => {
         return document.getElementById('rollsChatEnd')

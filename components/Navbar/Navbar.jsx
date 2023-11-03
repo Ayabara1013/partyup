@@ -1,7 +1,7 @@
 import './Navbar.scss';
 
 
-export function Navbar(props) {
+export default function Navbar(props) {
   // const { item } = props;
 
   return (
@@ -81,7 +81,7 @@ function NavbarCenter(props) {
   )
 }
 
-export function NavbarEnd(props) {
+function NavbarEnd(props) {
   // const { item } = props;
 
   return (

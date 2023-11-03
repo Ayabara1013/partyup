@@ -39,6 +39,10 @@ const editorDefault = {
     { name: 'David', characterName: 'LocoVikingo', callouts: [ 'Loco', 'Dave' ] },
     { name: 'Jeremy', characterName: 'Doc', callouts: [ 'Doc' ] },
   ],
+
+  commands:[
+    'roll', 'mute'
+  ],
 }
 export {
   editorDefault

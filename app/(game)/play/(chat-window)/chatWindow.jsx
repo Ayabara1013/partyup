@@ -50,8 +50,6 @@ export default function ChatWindow({ window, gameItems }) {
             (msg.tags.includes('roll') && msg.uid === 'system') && newMessageList.push(structuredClone(msg));
             break;
         }
-        if (window === 'canon') {
-        }
       }
       sortByKey(newMessageList, 'createdAt');
 
@@ -65,7 +63,7 @@ export default function ChatWindow({ window, gameItems }) {
     <div className="border flex flex-col">
       <div className={`chat-box ${(noInput) && 'h-full'}`}>
         {generateMessages()}
-        <span id={ui.messaging[window].id}/>
+        <span id={ui.messaging[`${window}End`].id}/>
       </div>
       {(!noInput) && <ChatInput id={window} game={game} window={window}/>}
     </div>

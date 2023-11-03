@@ -1,4 +1,4 @@
-@use "styles/basicClasses";
+@use "basicClasses";
 
 @tailwind base;
 @tailwind components;
@@ -54,7 +54,6 @@ $nav-height: 6rem;
   @include font-montserrat-alternates();
   box-sizing: border-box;
   font-weight: 500;
-
 }
 
 // --- top to bottom ~ --- //
@@ -70,8 +69,8 @@ body {
   // min-height: 720px;
   // min-width: 1280px;
   // // height: 100vh;
-  // // max-height: 100vh;
-  // // max-width: 100vw;
+  //  max-height: 100vh;
+  //  max-width: 100vw;
   // @apply dark flex-col;
   // & > .header-nav {
   //   height: 5%;

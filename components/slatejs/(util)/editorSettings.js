@@ -12,14 +12,19 @@ const InlineChromiumBugfix = () => (
 const BadgeComponent = ({ attributes, children, element }) => {
   const selected = useSelected()
 
+  let colors = {
+    'command': 'red',
+    'callout': 'teal'
+  }
+
   return (
     <span
       {...attributes}
       contentEditable={false}
       style={{
-        backgroundColor: 'green',
+        backgroundColor: colors[element.featureType] || 'green',
         color: 'white',
-        padding: '2px 6px',
+        padding: '2px',
         borderRadius: '2px',
         fontSize: '0.9em',
       }}

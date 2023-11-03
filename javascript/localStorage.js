@@ -15,8 +15,10 @@ const messageLocalStorage = {
       return 0;
     },
     set(gameId, messages) {
-      localStorage.setItem(`${gameId}-messages`, JSON.stringify(messages));
-      localStorage.setItem(`${gameId}-messagesAccessTime`, `${Date.now()}`);
+      if(messages){
+        localStorage.setItem(`${gameId}-messages`, JSON.stringify(messages));
+        localStorage.setItem(`${gameId}-messagesAccessTime`, `${Date.now()}`);
+      }
     },
   }
 }

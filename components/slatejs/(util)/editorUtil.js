@@ -36,6 +36,12 @@ const editorFix = {
 
 const editorTools = {
   offset: {
+    findFocus: (editor, fragment) => {
+      let { path } = editor.selection.focus;
+      let focusedChild = editor.children[path[0]].children[path[1]];
+      let offset = focusedChild.text.indexOf(fragment) + fragment.length;
+      return { path, offset };
+    },
     focusedChild: (editor) => {
       let { path } = editor.selection.focus;
       return editor.children[path[0]].children[path[1]];
@@ -57,7 +63,7 @@ const editorTools = {
         return words[wordIndex - 1]
       }
       return undefined;
-    }
+    },
   },
   resetEditor: (editor) => {
     editor.children = editorSettings.value.default;
@@ -65,9 +71,9 @@ const editorTools = {
   },
   printValues: (messageObject) => {
     let text = '';
-    for(let child of messageObject) {
-      if(child.children){
-        for(let grandchild of child.children){
+    for (let child of messageObject) {
+      if (child.children) {
+        for (let grandchild of child.children) {
           text += (grandchild.type === 'badge') ? grandchild.value : `${grandchild.text}`;
         }
       }
