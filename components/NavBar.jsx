@@ -2,12 +2,13 @@
 
 import { useRouter } from "next/navigation";
 
-import Dir from "@/components/Dir";
+// import Dir from "@/components/Dir";
 
 import { googleSignInPopUp, userAuth } from "@/firebase/base";
 
 import { ui } from "@/util/ui";
 import Link from 'next/link';
+import { Coming_Soon } from 'next/font/google';
 
 export default function Navbar(props) {
   return (
@@ -19,6 +20,26 @@ export default function Navbar(props) {
       
     </div>
   )
+}
+
+const dir = {
+  discover: '/discover',
+  play: '/play',
+  create: {
+    root: '/create',
+    character: '/create/character',
+    world: '/create/world',
+    game: '/create/game',
+    community: '/create/community',
+  },
+  games: {
+    root: '/game/my-games',
+    create: '/game/create',
+    info: '/game/info',
+  },
+  community: {
+    root: '/error/coming-soon',
+  }
 }
 
 
@@ -60,8 +81,8 @@ function NavbarCenter(props) {
     <div className="navbar-center hidden lg:flex">
       <ul className="menu menu-horizontal px-1">
 
-        <li><Link href='/discover'>Discover</Link></li>
-        <li><Link href='/play'>Play</Link></li>
+        <li><Link href={dir.discover} >Discover</Link></li>
+        <li><Link href={dir.play}>Play</Link></li>
 
         <li tabIndex={0}>
           <details>

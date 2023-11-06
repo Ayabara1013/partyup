@@ -90,8 +90,8 @@ export function DiscoverCard(props) {
 	const DiscoverRight = (props) => {
 		const { timeSince, startedDate, content } = props;
 
-		const pcur = content.meta.players.current;	// current players
-		const pmax = content.meta.players.max;			// max players
+		const pcur = content.players.current;	// current players
+		const pmax = content.players.max;			// max players
 		const prem = pmax - pcur;										// remaining players
 		
 		return (
@@ -110,7 +110,7 @@ export function DiscoverCard(props) {
 					<ListItem label='average frequency' value='< 2 hours' />
 					<ListItem
 						label='total messages'
-						value={content.meta.numMessages.toLocaleString()}
+						value={content.numMessages.toLocaleString()}
 					/>
 				</ul>
 			</div>

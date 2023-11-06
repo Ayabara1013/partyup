@@ -26,7 +26,7 @@
 
 // unified sizings
 $gap-1: 1rem;
-$nav-height: 6rem;
+$nav-height: 4rem;
 
 @mixin box-wrapper {
   margin: auto;
@@ -35,7 +35,7 @@ $nav-height: 6rem;
 
 @mixin base-styles {
   // @apply text-lg;
-  @include font-abel();
+  // @include font-abel();
   box-sizing: border-box;
   font-weight: 500;
   // transform: scale(1.1);
@@ -95,3 +95,43 @@ body {
   flex: 1 1 auto;
 }
 
+
+.app-wrapper {
+  height: calc(100% - $nav-height);
+}
+
+
+
+
+.tb1 {
+  @apply border border-primary;
+}
+.tb2 {
+  @apply border border-secondary;
+}
+.tb3 {
+  @apply border border-accent;
+}
+
+
+
+/* width */
+::-webkit-scrollbar {
+  @apply w-2;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  // background: #f1f1f1;
+  @apply bg-transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  @apply bg-neutral-500 rounded-xl;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-neutral-500;
+}

@@ -98,76 +98,6 @@ const fallenCrown = {
 }
 
 
-const usersCollection = {
-	user1: {
-		uid: 'uid-40ce7e3b-5839-5bb6-b637-e25f83fba2fa',
-		username: 'Tomlite',
-		memberType: `Free`,
-		memberSince: `10/14/23`,
-		hoursPlayed: Math.ceil(Math.random() * 1000) + 1 || 0,
-		characters: [cc.character1]
-	},
-
-	user2: {
-		uid: 'uid-11a0b5c7-c8ee-5d9e-9e46-f232d450cd5d',
-		username: 'IceyGeography',
-		memberType: `Free`,
-		memberSince: `10/14/23`,
-		hoursPlayed: Math.ceil(Math.random() * 1000) + 1 || 0,
-		characters: [cc.character2]
-	},
-
-	user3: {
-		uid: 'uid-7a666e49-1c34-5112-934e-3d9e508e4509',
-		username: 'WorldlyMule',
-		memberType: `Free`,
-		memberSince: `10/14/23`,
-		hoursPlayed: Math.ceil(Math.random() * 1000) + 1 || 0,
-		characters: [cc.character3]
-	},
-
-	user4: {
-		uid: 'uid-13a52330-a677-579c-a141-f51673f44daf',
-		username: 'BrightSlump',
-		memberType: `Free`,
-		memberSince: `10/14/23`,
-		hoursPlayed: Math.ceil(Math.random() * 1000) + 1 || 0,
-		characters: [cc.character4]
-	},
-
-	user5: {
-		uid: 'uid-d692ac1b-6c33-50cd-b777-6d306869bfa9',
-		username: 'FatalCrook',
-		memberType: `Free`,
-		memberSince: `10/14/23`,
-		hoursPlayed: Math.ceil(Math.random() * 1000) + 1 || 0,
-		characters: [cc.character5]
-	}
-}
-const uc = usersCollection;
-
-
-
-
-
-const gamesCollection = {
-	game1: new Game(
-		'gid-4a4404a0-d04c-5bde-8e5c-1cce76c10510',
-		[us.user1, uc.user2, uc.user3, uc.user5, uc.user5],
-		'SWADE',
-		'Starborne: Mercenaries',
-		uc.user1,
-	),
-}
-const gc = gamesCollection;
-
-
-
-
-const messagesCollection = {
-
-}
-
 
 
 
@@ -189,6 +119,84 @@ const charactersCollection = {
 	},
 }
 const cc = charactersCollection;
+
+
+
+
+
+const usersCollection = {
+	user1: {
+		uid: 'uid-40ce7e3b-5839-5bb6-b637-e25f83fba2fa',
+		username: 'Tomlite',
+		memberType: `Free`,
+		memberSince: `10/14/23`,
+		hoursPlayed: Math.ceil(Math.random() * 1000) + 1 || 0,
+		// characters: [cc.character1]
+	},
+
+	user2: {
+		uid: 'uid-11a0b5c7-c8ee-5d9e-9e46-f232d450cd5d',
+		username: 'IceyGeography',
+		memberType: `Free`,
+		memberSince: `10/14/23`,
+		hoursPlayed: Math.ceil(Math.random() * 1000) + 1 || 0,
+		// characters: [cc.character2]
+	},
+
+	user3: {
+		uid: 'uid-7a666e49-1c34-5112-934e-3d9e508e4509',
+		username: 'WorldlyMule',
+		memberType: `Free`,
+		memberSince: `10/14/23`,
+		hoursPlayed: Math.ceil(Math.random() * 1000) + 1 || 0,
+		// characters: [cc.character3]
+	},
+
+	user4: {
+		uid: 'uid-13a52330-a677-579c-a141-f51673f44daf',
+		username: 'BrightSlump',
+		memberType: `Free`,
+		memberSince: `10/14/23`,
+		hoursPlayed: Math.ceil(Math.random() * 1000) + 1 || 0,
+		// characters: [cc.character4]
+	},
+
+	user5: {
+		uid: 'uid-d692ac1b-6c33-50cd-b777-6d306869bfa9',
+		username: 'FatalCrook',
+		memberType: `Free`,
+		memberSince: `10/14/23`,
+		hoursPlayed: Math.ceil(Math.random() * 1000) + 1 || 0,
+		// characters: [cc.character5]
+	}
+}
+const uc = usersCollection;
+for (let i = 0; i < 5; i++) {
+	let index = i + 1;
+	uc[`user${index}`].characters = [cc[`character${index}`]];
+}
+
+
+
+
+const gamesCollection = {
+	game1: new Game(
+		'gid-4a4404a0-d04c-5bde-8e5c-1cce76c10510',
+		[uc.user1, uc.user2, uc.user3, uc.user5, uc.user5],
+		'SWADE',
+		'Starborne: Mercenaries',
+		uc.user1,
+	),
+}
+const gc = gamesCollection;
+
+
+
+
+const messagesCollection = {
+
+}
+
 
 
 export {

@@ -1,0 +1,21 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.tabs {
+  * {
+    color: hsl(var(--p) / 0.5);
+    border-color: hsl(var(--p) / 0.25) !important;
+  }
+
+  .tab-active {
+    // color: hsl(var(--p));
+    border-color: hsl(var(--p)) !important;
+  }
+
+  :hover, .tab-active {
+    color: hsl(var(--p));
+  }
+}
