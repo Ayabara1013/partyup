@@ -14,3 +14,23 @@
 .details-wrapper {
   display: flex;
 }
+
+.empty-slot {
+  @apply text-primary text-center items-center border-2 border-dashed border-primary rounded-lg;
+  background-color: hsl(var(--p) / 0.1);
+  // background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='black' stroke-width='4' stroke-dasharray='2%2c 8' stroke-dashoffset='0' stroke-linecap='butt'/%3e%3c/svg%3e");
+}
+
+.player-listing {
+  @apply p-4 border-2 border-primary rounded-lg;
+
+  .player-name {
+    // @apply text-primary;
+    color: hsl(var(--nc) / 0.5);
+  }
+
+  .character-name {
+    color: hsl(var(--p));
+    // @apply text-primary;
+  }
+}

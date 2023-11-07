@@ -1,5 +1,6 @@
 import '@/app/discover/discover.scss'
 import { starborne } from '@/test/fake firestore/tavern-test-1/collections/firestoreObjects';
+import timeSince from '@/util/timeSince';
 import { Timestamp } from 'firebase/firestore';
 import Link from 'next/link';
 // import Superclamp from 'superclamp';
@@ -14,21 +15,7 @@ export function DiscoverCard(props) {
 	// Superclamp.register(document.querySelectorAll('.clamp-me'));
 	// window.addEventListener('resize', Superclamp.reclampAll);
 	/** it would be really cool to get this working, but atm, I have no idea how! */
-
-	function timeSince(date) {
-		var seconds = Math.floor((new Date() - date) / 1000);
-
-		var years = Math.floor(seconds / 31536000);
-		seconds %= 31536000;
-
-		var months = Math.floor(seconds / 2592000);
-		seconds %= 2592000;
-
-		var days = Math.floor(seconds / 86400);
-
-		return `${years}y, ${months}m, ${days}d`;
-	}
-
+	
 	const ListItem = (props) => {
 		const { label = 'label', value = 'value' } = props;
 	

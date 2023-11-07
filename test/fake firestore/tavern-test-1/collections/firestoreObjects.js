@@ -1,4 +1,15 @@
 import { pageExtensions } from '@/next.config';
+import timeSince from '@/util/timeSince';
+import { Timestamp } from 'firebase/firestore';
+
+function getRandomDate() {
+	const twoWeeksAgo = Date.now() - 14 * 24 * 60 * 60 * 1000;
+	const randomDate = new Date(twoWeeksAgo + Math.random() * 14 * 24 * 60 * 60 * 1000);
+	console.log(randomDate);
+	return randomDate;
+}
+
+getRandomDate();
 
 class User {
 	constructor(uid, name, games, characters) {
@@ -131,6 +142,7 @@ const usersCollection = {
 		memberType: `Free`,
 		memberSince: `10/14/23`,
 		hoursPlayed: Math.ceil(Math.random() * 1000) + 1 || 0,
+		lastActive: timeSince('random', 'conversational'),
 		// characters: [cc.character1]
 	},
 
@@ -140,6 +152,7 @@ const usersCollection = {
 		memberType: `Free`,
 		memberSince: `10/14/23`,
 		hoursPlayed: Math.ceil(Math.random() * 1000) + 1 || 0,
+		lastActive: timeSince('random', 'conversational'),
 		// characters: [cc.character2]
 	},
 
@@ -149,7 +162,7 @@ const usersCollection = {
 		memberType: `Free`,
 		memberSince: `10/14/23`,
 		hoursPlayed: Math.ceil(Math.random() * 1000) + 1 || 0,
-		// characters: [cc.character3]
+		lastActive: timeSince('random', 'conversational'),
 	},
 
 	user4: {
@@ -158,6 +171,7 @@ const usersCollection = {
 		memberType: `Free`,
 		memberSince: `10/14/23`,
 		hoursPlayed: Math.ceil(Math.random() * 1000) + 1 || 0,
+		lastActive: timeSince('random', 'conversational'),
 		// characters: [cc.character4]
 	},
 
@@ -167,6 +181,7 @@ const usersCollection = {
 		memberType: `Free`,
 		memberSince: `10/14/23`,
 		hoursPlayed: Math.ceil(Math.random() * 1000) + 1 || 0,
+		lastActive: timeSince('random', 'conversational'),
 		// characters: [cc.character5]
 	}
 }
