@@ -197,7 +197,7 @@ for (let i = 0; i < 5; i++) {
 const gamesCollection = {
 	game1: new Game(
 		'gid-4a4404a0-d04c-5bde-8e5c-1cce76c10510',
-		[uc.user1, uc.user2, uc.user3, uc.user5, uc.user5],
+		[uc.user1, uc.user2, uc.user3, uc.user4, uc.user5],
 		'SWADE',
 		'Starborne: Mercenaries',
 		uc.user1,

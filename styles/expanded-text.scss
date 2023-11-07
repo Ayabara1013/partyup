@@ -1,0 +1,33 @@
+
+
+
+
+@mixin text-theme-opacity ($variant: 'nc', $opacity: 1) {
+  color: hsl(var(--#{$variant}) / $opacity);
+}
+
+// $variants: 'nc', 'p', 's'; // Add more variants as needed
+$variants: 
+'p', 'pf', 'pc', 
+'s', 'sf', 'sc', 
+'a', 'af', 'ac', 
+'n', 'nf', 'nc', 
+'b1', 'b2', 'b3', 'bc', 
+'in', 'inc', 
+'su', 'suc', 
+'wa', 'wac', 
+'er', 'erc';
+
+$opacities: 0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8, 0.9, 1; // Add more opacities as needed
+
+@each $variant in $variants {
+  .text-#{$variant} {
+    @include text-theme-opacity($variant);
+  }
+
+  @each $opacity in $opacities {
+    .text-#{$variant}-op#{$opacity*100} {
+      @include text-theme-opacity($variant, $opacity);
+    }
+  }
+}

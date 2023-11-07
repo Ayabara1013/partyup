@@ -3,8 +3,16 @@
 import { starborne, usersCollection } from '@/test/fake firestore/tavern-test-1/collections/firestoreObjects';
 import './PlayerListing.scss';
 
+const coolImages = require("cool-images");
 
-export default function PlayerListing({ player }) {
+const img = ['https://unsplash.it/200/200?image=997', 'https://unsplash.it/200/200?image=547', 'https://unsplash.it/200/200?image=89'];
+
+
+const classes = ['', 'Spellslinger Gunman', 'Adult Bed-Wetter Toxicant', 'Card Battle Weeb Summoner', 'Artillerist Mech-Pilot']
+
+export default function PlayerListing({ player, index }) {
+
+  const type = starborne.players[player.uid].role === 'game master' ? 'gm' : 'player';
   
   function getUserByUid(uid) {
     for (let key in usersCollection) {
@@ -14,28 +22,11 @@ export default function PlayerListing({ player }) {
     }
     return null; // return null if no user with the given uid is found
   }
-
   const user = getUserByUid(player.uid);
 
   function NameCard() {
-    if (starborne.players[player.uid].role === 'game master') {
-      return (
-        <div className="flex justify-center items-center gap-2">
-          <div className='player-name text-lg'>
-            {player.username}
-          </div>
-
-          <div className='text-sm'>as</div>
-          
-          <div className='character-name text-lg'>
-            the Game Master
-          </div>
-        </div>
-      )
-    }
-    
     return (
-      <div className="flex justify-center items-center gap-2">
+      <div className='flex flex-wrap tb3'>
         <div className='player-name text-lg'>
           {player.username}
         </div>
@@ -43,20 +34,59 @@ export default function PlayerListing({ player }) {
         <div className='text-sm'>as</div>
         
         <div className='character-name text-lg'>
-          {starborne.players[player.uid].characterName}
+          {type === 'gm' ? 'the Game Master' : starborne.players[player.uid].characterName}
         </div>
       </div>
     )
   }
 
-  return (
-    <div className={`player-listing flex flex-col`}>
-      <NameCard />
+  // return (
+  //   <div className='player-listing flex player-listing tb1 p-2 gap-2'>
+  //     <div className='player-thumbnail h-full tb2 aspect-square'>
+  //       <img src={img[0]} alt="" className='avatar object-cover' />
+  //     </div>
 
-      <div>
-        <div className='player-status text-xs text-center'>
-          last online {player.lastActive} ago
+
+  //     <div className={`player-info flex flex-col p-2 tb2`}>
+  //       <NameCard />
+  //       <div className={`${type === 'gm' ? 'hidden' : ''} player-class m-auto text-sm`}>
+  //         the <span className='text-secondary'>{classes[index]}</span>
+  //       </div>
+  //       <div>
+  //         <div className='player-status text-xs text-center'>
+  //           last online {player.lastActive} ago
+  //         </div>
+  //       </div>
+  //     </div>
+  //   </div>
+  // )
+
+  return (
+    <div className='player-listing flex grow items-center overflow-clip shadow-lg shadow-base-100 border-primary'>
+      {/* <div className='player-thumbnail h-full'>
+        <img src='https://unsplash.it/200/200?image=997' alt="" className='player-thumbnail' />
+      </div> */}
+
+      <div className='player-thumbnail hidden md:block h-full shadow-lg shadow-base-100'>
+        <img src='https://unsplash.it/100/100?image=997' alt="" className='h-full aspect-square' />
+      </div>
+
+      {/* <img src='https://unsplash.it/100/100?image=997' alt="" className='object-fit' /> */}
+
+      <div className='player-info flex flex-col grow p-4 gap-1 text-center justify-between'>
+
+        <div className='player-info__name-card text-lg'>
+          <span className='player-name'>Jack Johnson</span> <span className='text-sm'>as</span> <span className="character-name">Trandor the Destroyer</span>
         </div>
+
+        <div className='player-info__class text-sm'>
+          the <span className="text-secondary">Basic Ass Fighter</span>
+        </div>
+
+        <div className='player-info__last-active text-sm text-nc-op50'>
+          last active 1 month, 2 days ago
+        </div>
+
       </div>
     </div>
   )

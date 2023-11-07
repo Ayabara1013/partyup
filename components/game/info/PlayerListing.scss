@@ -1,0 +1,27 @@
+@use '@/styles/expanded-text.scss' as ext;
+
+.player-listing {
+  @apply rounded-lg;
+  // width: auto;
+
+  // backdrop-filter: brightness(150%);
+}
+
+.player-name {
+  // @apply text-primary;
+  // color: hsl(var(--nc) / 0.5);
+  @include ext.text-theme-opacity('nc', 0.5);
+}
+
+.character-name {
+  // color: hsl(var(--p));
+  @include ext.text-theme-opacity('p', 1);
+  // @apply text-primary;
+}
+
+.player-thumbnail {
+  // @apply rounded-full;
+  background-image: url('https://unsplash.it/200/200?image=997');
+  // height: min-content;
+
+}
