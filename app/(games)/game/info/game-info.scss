@@ -1,10 +1,48 @@
 
-
-
+$banner-width: 20rem;
+$banner-height: 6rem;
 
 .game-info {
   display: flex;
   flex-direction: column;
+}
+
+.banner {
+  position: relative;
+  margin-bottom: calc($banner-height / 2);
+}
+
+.banner__play-button {
+  @apply flex justify-center items-center overflow-visible rounded-full;
+  position: absolute;
+  
+  width: $banner-width;
+  height: $banner-height;
+
+  bottom: calc(-1 * #{$banner-height / 2});
+  left: calc(50% - #{$banner-width / 2});
+  z-index: 10;
+
+  background-color: hsl(var(--a));
+  color: hsl(var(--ac));
+
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 900;
+  
+  // box-shadow: inset 0 0 1rem hsla(var(--af) );
+  // box-shadow: 0 0 1rem 1rem hsl(var(--a) / 0);
+  
+  &:hover {
+    // background-color: hsl(var(--a) / 0.8);
+    box-shadow: 0 0 1rem 1rem hsl(var(--a) / 0.1);
+  }
+  
+  &:active {
+    box-shadow: 0 0 1.5rem 1rem hsl(var(--a) / 0.3);
+  }
+
+  transition: 0.15s ease-in-out;
 }
 
 .page-title {
@@ -16,7 +54,41 @@
 }
 
 .empty-slot {
-  @apply text-primary text-center items-center border-2 border-dashed border-primary rounded-lg;
+  @apply text-primary text-center items-center border-2 border-dashed border-primary rounded-lg opacity-50;
   background-color: hsl(var(--p) / 0.1);
   // background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='black' stroke-width='4' stroke-dasharray='2%2c 8' stroke-dashoffset='0' stroke-linecap='butt'/%3e%3c/svg%3e");
+
+  &:hover {
+    @apply opacity-100;
+  }
+  
+  transition: 0.15s ease-in-out;
 }
+
+.story-so-far {
+  // @apply bg-neutral;
+  // width: 80%;
+  position: relative;
+  max-height: 50svh;
+  height: 50svh;
+  // overflow-y: auto;
+  // background-clip: padding-box;
+
+  article {
+    @apply bg-neutral;
+  }
+}
+
+
+
+.table-of-contents {
+  li {
+    color: hsl(var(--bc) / 0.25);
+    :hover {
+      color: hsl(var(--p));
+    }
+  }
+}
+
+
+

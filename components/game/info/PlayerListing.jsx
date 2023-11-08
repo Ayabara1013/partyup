@@ -62,10 +62,7 @@ export default function PlayerListing({ player, index }) {
   // )
 
   return (
-    <div className='player-listing flex grow items-center overflow-clip shadow-lg shadow-base-100 border-primary'>
-      {/* <div className='player-thumbnail h-full'>
-        <img src='https://unsplash.it/200/200?image=997' alt="" className='player-thumbnail' />
-      </div> */}
+    <div className='player-listing flex grow items-center overflow-clip shadow-lg bg-neutral border-primary'>
 
       <div className='player-thumbnail hidden md:block h-full shadow-lg shadow-base-100'>
         <img src='https://unsplash.it/100/100?image=997' alt="" className='h-full aspect-square' />

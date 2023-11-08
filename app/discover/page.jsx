@@ -16,9 +16,9 @@ export const content = {
   // description: `Waking up on a strange planet, you find yourself in a strange situation. You have no memory where you are, or how you got here. You are not alone, however. There are others here, and they seem to be in the same situation as you. You must work together to survive, and to find a way home. Or so you though.\nAs you quickly discover, you have been abducted along with a SIXTH of the world's population to take part in the most popular gameshow in the galaxy; the Starlight Bloodbowl.`,
   description: (
     <>
-      <p>Waking up on a strange planet, you find yourself in a strange situation. You have no memory where you are, or how you got here. You are not alone, however. There are others here, and they seem to be in the same situation as you. You must work together to survive, and to find a way home. Or so you though.</p>
-      <p>As you quickly discover, you have been abducted along with a SIXTH of the world's population to take part in the most popular gameshow in the galaxy;</p>
-      <p className='text-center'><b>The Starlight Bloodbowl.</b></p>
+      <p className='text-justify'>Waking up on a strange planet, you find yourself in a strange situation. You have no memory where you are, or how you got here. You are not alone, however. There are others here, and they seem to be in the same situation as you. You must work together to survive, and to find a way home.</p>
+      <p className='text-center'>Or so you though. You have been abducted along with a SIXTH of the world's population to take part in the most popular gameshow in the galaxy;</p>
+      <p className='text-center text-xl'><b>The Starlight Bloodbowl.</b></p>
     </>
   ),
   gm: users.user1, // this will actually be a proper ref to the gm on the db
