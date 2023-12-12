@@ -18,7 +18,7 @@ export default function Play(props) {
 
   return (
     <div className={`play-page h-full`}>
-      <div className='chat-row tb1 flex p-2 gap-2'>
+      <div className='chat-row flex p-2 gap-2'>
         <ChatWindow {...windowStateProps} index={0} name={'canon'} />
         <ChatWindow {...windowStateProps} index={1} name={'turn'} />
         <ChatWindow {...windowStateProps} index={2} name={'open'} />
@@ -33,7 +33,7 @@ export default function Play(props) {
           tracker
         </div>
       </div>
-      
+
     </div>
   )
 }

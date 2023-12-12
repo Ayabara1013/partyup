@@ -3,13 +3,15 @@
 'use client'
 
 import { useEffect, useState } from 'react';
+import { useMediaQuery } from 'react-responsive';
 
 import '@styles/play/ChatWindow.scss';
 
 
 
 export function ChatWindow({ num = 50, cols, className, windowState, setWindowState, index, name }) {
-  // const { num = 50, cols, className, windowState, setWindowState, index } = props;
+  const isMediumOrAbove = useMediaQuery({ minWidth: 768 }) // adjust the value as needed
+
   let elements = [];
   let active = windowState[index];
 
@@ -38,7 +40,7 @@ export function ChatWindow({ num = 50, cols, className, windowState, setWindowSt
           {name}
         </div>
 
-        <div className={`message-area ${active ? 'flex' : 'hidden' } flex-col flex-auto h-full overflow-y-hidden`}>
+        <div className={`message-area flex-col flex-auto h-full overflow-y-hidden`}>
           <div className='message-container flex-auto overflow-y-scroll'>
             <BunchOfElements />
             <BunchOfElements />
@@ -69,8 +71,9 @@ export function ChatWindow({ num = 50, cols, className, windowState, setWindowSt
   // i am now aware that I could probably just do a closedDiv entirely instead of a chat window with a nested closedDiv but for now Ill keep it like this
 
   return (
-    <div className={`chat-window ${active ? 'grow p-2' : 'shrink p-0'} flex flex-col gap-2 h-full min-h-0`}>
-      {active ? <MessageArea /> : <ClosedDiv />}
+    <div className={`chat-window ${active ? '--active' : '--inactive'} flex flex-col gap-2 h-full min-h-0`}>
+      {/* {active ? <MessageArea /> : <ClosedDiv />} */}
+      {isMediumOrAbove ? <MessageArea /> : active ? <MessageArea /> : <ClosedDiv />}
     </div>
   )
 }
@@ -78,7 +81,7 @@ export function ChatWindow({ num = 50, cols, className, windowState, setWindowSt
 
 
 
-function ChatInput({ active }) {
+function ChatInput(props) {
   const [value, setValue] = useState('');
   const [showPrompt, setShowPrompt] = useState(false);
 
@@ -92,7 +95,7 @@ function ChatInput({ active }) {
   }, [value])
 
   return (
-    <div className={`${active ? 'flex' : 'hidden' }`}>
+    <div className={``}>
       <PromptPopup showPrompt={showPrompt} value={value} />
 
       <input

@@ -38,11 +38,23 @@ $prompt-bg-focus: bg-primary-focus;
   flex-grow: 1;
 
   &.--active {
-    @apply flex-auto;
+    @apply grow;
   }
 
   &.--inactive {
     @apply shrink;
+  }
+
+  @media screen and (min-width: 768px) {
+    @apply p-2 gap-4;
+
+    // &.--active {
+    //   @apply grow;
+    // }
+  
+    // &.--inactive {
+    //   @apply shrink;
+    // } 
   }
 }
 

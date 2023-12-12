@@ -24,7 +24,7 @@ export default function RootLayout({ children }) {
         {/* {children} */}
         <div className="app-wrapper overflow-y-scroll">
           {children}
-          <DaisyFooter />
+          {/* <DaisyFooter /> */}
         </div>
 
 

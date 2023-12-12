@@ -2,6 +2,10 @@
 
 
 .play-page {
+
+  @media screen and (min-width: 768px) {
+    @apply p-4;
+  }
 }
 
 .chat-row {
