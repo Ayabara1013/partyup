@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import './FilterItem.scss';
+import '@styles/discover/FilterItem.scss';
 
 
 export default function FilterItem({ label, isActive = false, colour = 'secondary' }) {

@@ -24,14 +24,39 @@
 @mixin font-montserrat-alternates { font-family: 'Montserrat Alternates', sans-serif; }
 @mixin font-roboto-condensed { font-family: 'Roboto Condensed', sans-serif; }
 
-// unified sizings
-$gap-1: 1rem;
+// unified sizings ---------------------------//
+$layout-gap: 1.5rem;
 $nav-height: 4rem;
+//--------------------------------------------//
+
+@mixin layer-0 {
+  @apply bg-base-100;
+}
+@mixin layer-1 {
+  @apply bg-base-200;
+}
+@mixin layer-2 {
+  @apply bg-base-300;
+}
+
+.layer-0 {
+  @include layer-0;
+}
+.layer-1 {
+  @include layer-1;
+}
+.layer-2 {
+  @include layer-2;
+}
+
+
 
 @mixin box-wrapper {
   margin: auto;
   padding: $gap-1;
 }
+
+
 
 @mixin base-styles {
   // @apply text-lg;
@@ -50,6 +75,7 @@ html {
 // --- top to bottom ~ --- //
 * {
   @include base-styles();
+  @include font-barlow-condensed();
 }
 
 textarea {
@@ -103,14 +129,153 @@ body {
 
 
 
+// layout stuff
+
+
+
+@mixin tb1 ($opacity: 1) {
+  padding: 0.25rem;
+  border: 2px solid hsl(var(--p) / $opacity);
+}
+
+@mixin tb2 ($opacity: 1) {
+  padding: 0.25rem;
+  border: 2px solid hsl(var(--s) / $opacity);
+}
+
+@mixin tb3 ($opacity: 1) {
+  padding: 0.25rem;
+  border: 2px solid hsl(var(--a) / $opacity);
+}
+
+
+@mixin big-box($rounded: 'rounded-xl') { // option to be a string
+  @apply box-shadow-25;//  shadow-base-200;
+
+  @if $rounded =='rounded-xl' {
+    @apply rounded-xl;
+  }
+  @else if $rounded == 'rounded-full' {
+    @apply rounded-full;
+  }
+}
+
+
+
+.big-box {
+  @include big-box();
+}
+
 .tb1 {
-  @apply border border-primary;
+  @include tb1(1);
+
+  &-04 {
+    @include tb1(0.4);
+  }
 }
+
 .tb2 {
-  @apply border border-secondary;
+  @include tb2(1);
+
+  &-04 {
+    @include tb2(0.4);
+  }
 }
+
 .tb3 {
-  @apply border border-accent;
+  @include tb3(1);
+
+  &-04 {
+    @include tb3(0.4);
+  }
+}
+
+.tbl, .tt {
+  // text border - locator // test target
+  @apply border-2 border-dotted border-error;
+
+  background-color: hsl(var(--er) / 0.1);
+}
+
+
+// unifying shadows
+@mixin shadow-s() {
+  @apply shadow-md;
+}
+
+.shadow-s, .u-shadow-small-element {
+  @include shadow-s();
+}
+
+
+.flex-col-2, .flex-col-4 {
+  display: flex;
+  flex-direction: column;
+}
+.flex-col-2 {
+  gap: 0.5rem;
+}
+.flex-col-4 {
+  gap: 1rem;
+}
+
+.flex-row-2, .flex-row-4 {
+  display: flex;
+  flex-direction: row;
+}
+.flex-row-2 {
+  gap: 0.5rem;
+}
+.flex-row-4 {
+  gap: 1rem;
+}
+
+
+
+// //shadows 
+// https://getcssscan.com/css-box-shadow-examples
+
+@mixin box-shadow-20() {
+  box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+}
+@mixin box-shadow-23() {
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px;
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+}
+@mixin box-shadow-25() {
+  // box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+  box-shadow: 
+  rgba(0, 0, 0, 0.18) 0px 4px 12px, 
+  rgba(0, 0, 0, 0.22) 0px 2px 4px;// 14px 28px;
+  // box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 10px;
+}
+@mixin box-shadow-29() {
+  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+}
+@mixin box-shadow-30() {
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+}
+@mixin box-shadow-31() {
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+}
+
+.box-shadow-20 {
+  @include box-shadow-20();
+}
+.box-shadow-23 {
+  @include box-shadow-23();
+}
+.box-shadow-25 {
+  @include box-shadow-25();
+}
+.box-shadow-29 {
+  @include box-shadow-29();
+}
+.box-shadow-30 {
+  @include box-shadow-30();
+}
+.box-shadow-31 {
+  @include box-shadow-31();
 }
 
 

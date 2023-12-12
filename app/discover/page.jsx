@@ -1,6 +1,6 @@
-import { DiscoverCard } from '@/components/discover/DiscoverCard';
-import FilterItem from '@/components/discover/FilterItem';
-import FilterTabs from '@/components/discover/FilterTabs';
+import { DiscoverCard } from '@app/discover/(components)/DiscoverCard';
+import FilterItem from '@app/discover/(components)/FilterItem';
+import FilterTabs from '@app/discover/(components)/FilterTabs';
 import { gamesCollection, starborne, usersCollection } from '@/test/fake firestore/tavern-test-1/collections/firestoreObjects';
 import { getRandomInt } from '@/test/getRandomInt';
 

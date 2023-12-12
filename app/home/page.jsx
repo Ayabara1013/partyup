@@ -16,6 +16,8 @@ import { validateCommand } from "@/util/functions";
 import { roll } from "@/app/test-page/rolls";
 import Discover from '../discover/page';
 
+import '@styles/home/home.scss';
+
 
 
 const coolImages = require("cool-images");
@@ -29,9 +31,12 @@ export default function Home() {
   // const [user] = useAuthState(userAuth);
 
   return (
-    <div className='home w-full min-h-full p-2 border-2 border-dotted border-red-400'>
+    <div className='home-page flex-col-4 w-full min-h-full border-2 border-dotted border-red-400'>
       <div className='home__welcome tb1'>
-        <h1 className='text-8xl font-medium'>welcome to tavern!</h1>
+        {/* <h1 className='text-8xl font-medium'>welcome to tavern!</h1> */}
+        <h1 className='home__welcome__header text-8xl font-medium whitespace-normal'>
+          Welcome to Tavern!
+        </h1>
 
         <div>weve got this,</div>
         <div>and this</div>
@@ -39,10 +44,16 @@ export default function Home() {
         <div>aaand this</div>
       </div>
 
-      <div className='home__examples flex flex-col gap-8 py-12 tb2'>
-        <div className='w-4/5 border ms-16 text-5xl font-medium'>check out some current games!</div>
+      <div className='home__examples tb1 flex flex-col gap-8 py-8 '>
+        {/* <div className='w-4/5 border ms-16 text-5xl font-medium'>check out some current games!</div> */}
+        <div className='home__examples__call-to-action  m-auto text-4xl font-medium'>
+          check out some current games!
+        </div>
 
-        <div className='home__examples__card-gallery grid grid-cols-4 m-auto gap-8 w-4/5 border border-indigo-600'>
+        <div
+          className='home__examples card-gallery  flex flex-col px-4 gap-8 
+            md:flex-row md:px-8
+          '>
           <GameCard />
           <GameCard />
           <GameCard />
@@ -50,13 +61,14 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="home__examples__discover tb3">
+      <div className="home__examples__discover tb1">
         {/* <Discover /> */}
+        discover section
       </div>
 
-      <div className='p-8 h-96 tb1'>stuff</div>
-      <div className='p-8 h-96 tb1'>stuff</div>
-      <div className='p-8 h-96 tb1'>stuff</div>
+      <div className='p-8 h-44 tb1'>stuff</div>
+      <div className='p-8 h-44 tb1'>stuff</div>
+      <div className='p-8 h-44 tb1'>stuff</div>
     </div>
   )
 }

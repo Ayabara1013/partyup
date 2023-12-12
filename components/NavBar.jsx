@@ -12,7 +12,7 @@ import { Coming_Soon } from 'next/font/google';
 
 export default function Navbar(props) {
   return (
-    <div className="navbar bg-neutral z-10">
+    <div className="navbar bg-neutral z-10 ">
 
       <NavbarStart />
       <NavbarCenter />
@@ -23,6 +23,7 @@ export default function Navbar(props) {
 }
 
 const dir = {
+  home: '/',
   discover: '/discover',
   play: '/play',
   create: {
@@ -39,6 +40,9 @@ const dir = {
   },
   community: {
     root: '/error/coming-soon',
+  },
+  user: {
+    settings: '/user/settings',
   }
 }
 
@@ -48,7 +52,7 @@ function NavbarStart(props) {
   // const { item } = props;
 
   return (
-    <div className="navbar-start">
+    <div className="navbar-start ">
 
       <div className="dropdown">
         <label tabIndex={0} className="btn btn-ghost lg:hidden">
@@ -56,20 +60,20 @@ function NavbarStart(props) {
         </label>
 
         <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-          <li><Link href='/'>Discover</Link></li>
-          <li><Link href='/'>Games</Link></li>
+          <li><Link href={dir.home}>Discover</Link></li>
+          <li><Link href={dir.home}>Games</Link></li>
           <li>
-            <Link href='/'>Create</Link>
+            <Link href={dir.home}>Create</Link>
             <ul className="p-2">
-              <li><Link href='/'>Character</Link></li>
-              <li><Link href='/'>World</Link></li>
+              <li><Link href={dir.home}>Character</Link></li>
+              <li><Link href={dir.home}>World</Link></li>
             </ul>
           </li>
-          <li><Link href='/'>Settings</Link></li>
+          <li><Link href={dir.home}>Settings</Link></li>
         </ul>
       </div>
 
-      <a className="btn btn-ghost normal-case text-xl">daisyUI</a>
+      <Link href={dir.home} className="btn btn-ghost normal-case text-xl">PartyUp</Link>
     </div>
   )
 }
@@ -78,48 +82,49 @@ function NavbarCenter(props) {
   // const { item } = props;
 
   return (
-    <div className="navbar-center hidden lg:flex">
-      <ul className="menu menu-horizontal px-1">
+    <div className='navbar-center '>
+      <div className='lg:hidden'>
+        <button className='btn btn-secondary whitespace-nowrap'>play now</button>  
+      </div>
 
-        <li><Link href={dir.discover} >Discover</Link></li>
-        <li><Link href={dir.play}>Play</Link></li>
-
-        <li tabIndex={0}>
-          <details>
-            <summary>Create</summary>
-            <ul className="p-2 bg-accent text-accent-content">
-              <li>
-                create a...
-              </li>
-              <li>
-                <Link href='/' className='navbar__link--error'>Character</Link>
-              </li>
-              <li>
-                <Link href='/' className='navbar__link--error'>World</Link>
-              </li>
-              <li>
-                <Link href='/' className='navbar__link--error'>Game</Link>
-              </li>
-              <li>
-                <Link href='/' className='navbar__link--error'>Community</Link>
-              </li>
-            </ul>
-          </details>
-        </li>
-
-        <li><Link href='/'>Games</Link></li>
-
-        {/* <li><a>Community</a></li> */}
-        <li tabIndex={1}>
-          <details>
-            <summary>Community</summary>
-            <ul className="p-2 bg-accent text-accent-content">
-              <li className='px-4'>coming soon!</li>
-            </ul>
-          </details>
-        </li>
-
-      </ul>
+      <div className="navbar-center hidden lg:flex">
+        <ul className="menu menu-horizontal px-1">
+          <li><Link href={dir.discover} >Discover</Link></li>
+          <li><Link href={dir.play}>Play</Link></li>
+          <li tabIndex={0}>
+            <details>
+              <summary>Create</summary>
+              <ul className="p-2 bg-accent text-accent-content">
+                <li>
+                  create a...
+                </li>
+                <li>
+                  <Link href='/' className='navbar__link--error'>Character</Link>
+                </li>
+                <li>
+                  <Link href='/' className='navbar__link--error'>World</Link>
+                </li>
+                <li>
+                  <Link href='/' className='navbar__link--error'>Game</Link>
+                </li>
+                <li>
+                  <Link href='/' className='navbar__link--error'>Community</Link>
+                </li>
+              </ul>
+            </details>
+          </li>
+          <li><Link href='/'>Games</Link></li>
+          {/* <li><a>Community</a></li> */}
+          <li tabIndex={1}>
+            <details>
+              <summary>Community</summary>
+              <ul className="p-2 bg-accent text-accent-content">
+                <li className='px-4'>coming soon!</li>
+              </ul>
+            </details>
+          </li>
+        </ul>
+      </div>
     </div>
   )
 }
@@ -128,7 +133,7 @@ export function NavbarEnd(props) {
   // const { item } = props;
 
   return (
-    <div className="navbar-end">
+    <div className="navbar-end ">
       {/* <a className="btn">Button</a> */}
       <div className="dropdown dropdown-end">
         <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
@@ -140,15 +145,15 @@ export function NavbarEnd(props) {
         <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
 
           <li>
-            <Link href='/' className="justify-between">
+            <Link href={dir.home} className="justify-between">
               Profile
               <span className="badge">New</span>
             </Link>
           </li>
 
-          <li><Link href='/user-settings'>Settings</Link></li>
+          <li><Link href={dir.user.settings}>Settings</Link></li>
 
-          <li><Link href='/'>Logout</Link></li>
+          <li><Link href={dir.home}>Logout</Link></li>
         </ul>
 
       </div>

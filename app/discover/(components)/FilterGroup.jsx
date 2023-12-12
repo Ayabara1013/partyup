@@ -1,5 +1,5 @@
 
-import './FilterGroup.scss';
+import '@styles/discover/filterGroup.scss';
 
 
 export default function FilterGroup({ label, options, active }) {

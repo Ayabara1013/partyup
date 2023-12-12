@@ -2,7 +2,7 @@
 
 
 import { useState } from 'react';
-import './FilterTabs.scss';
+import '@styles/discover/FilterTabs.scss';
 
 
 /**

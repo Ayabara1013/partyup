@@ -1,4 +1,4 @@
-import '@app/discover/discover.scss'
+import '@styles/discover/discover.scss'
 import { starborne } from '@/test/fake firestore/tavern-test-1/collections/firestoreObjects';
 import timeSince from '@/util/timeSince';
 import { Timestamp } from 'firebase/firestore';

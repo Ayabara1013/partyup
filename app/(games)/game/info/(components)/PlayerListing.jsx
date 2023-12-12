@@ -26,7 +26,7 @@ export default function PlayerListing({ player, index }) {
 
   function NameCard() {
     return (
-      <div className='flex flex-wrap tb3'>
+      <div className='flex flex-wrap '>
         <div className='player-name text-lg'>
           {player.username}
         </div>
@@ -41,13 +41,13 @@ export default function PlayerListing({ player, index }) {
   }
 
   // return (
-  //   <div className='player-listing flex player-listing tb1 p-2 gap-2'>
-  //     <div className='player-thumbnail h-full tb2 aspect-square'>
+  //   <div className='player-listing flex player-listing  p-2 gap-2'>
+  //     <div className='player-thumbnail h-full  aspect-square'>
   //       <img src={img[0]} alt="" className='avatar object-cover' />
   //     </div>
 
 
-  //     <div className={`player-info flex flex-col p-2 tb2`}>
+  //     <div className={`player-info flex flex-col p-2 `}>
   //       <NameCard />
   //       <div className={`${type === 'gm' ? 'hidden' : ''} player-class m-auto text-sm`}>
   //         the <span className='text-secondary'>{classes[index]}</span>
