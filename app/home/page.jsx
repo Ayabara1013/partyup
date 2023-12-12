@@ -17,6 +17,7 @@ import { roll } from "@/app/test-page/rolls";
 import Discover from '../discover/page';
 
 import '@styles/home/home.scss';
+import { ExampleHome } from './(components)/ExampleHome';
 
 
 
@@ -32,7 +33,7 @@ export default function Home() {
 
   return (
     <div className='home-page flex-col-4 w-full min-h-full border-2 border-dotted border-red-400'>
-      <div className='home__welcome tb1'>
+      <div className='home__welcome '>
         {/* <h1 className='text-8xl font-medium'>welcome to tavern!</h1> */}
         <h1 className='home__welcome__header text-8xl font-medium whitespace-normal'>
           Welcome to Tavern!
@@ -44,7 +45,9 @@ export default function Home() {
         <div>aaand this</div>
       </div>
 
-      <div className='home__examples tb1 flex flex-col gap-8 py-8 '>
+      <ExampleHome />
+
+      <div className='home__examples  flex flex-col gap-8 py-8 '>
         {/* <div className='w-4/5 border ms-16 text-5xl font-medium'>check out some current games!</div> */}
         <div className='home__examples__call-to-action  m-auto text-4xl font-medium'>
           check out some current games!
@@ -61,14 +64,18 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="home__examples__discover tb1">
+      <div className="home__examples__discover ">
         {/* <Discover /> */}
         discover section
       </div>
 
-      <div className='p-8 h-44 tb1'>stuff</div>
-      <div className='p-8 h-44 tb1'>stuff</div>
-      <div className='p-8 h-44 tb1'>stuff</div>
+      <div className='p-8 h-44 '>Reviews</div>
+      <div className='p-8 h-44 '>marketing</div>
+      <div className='p-8 h-44 '>features</div>
+      <div className='p-8 h-44 '>up</div>
+      <div className='p-8 h-44 '>stuff</div>
+      <div className='p-8 h-44 '>stuff</div>
+
     </div>
   )
 }

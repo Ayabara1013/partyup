@@ -207,16 +207,23 @@ textarea {
   @include shadow-s();
 }
 
+@mixin flex-col-n($n: 2) {
+  display: flex;
+  flex-direction: column;
+  gap: $n * 0.25rem;
+}
 
 .flex-col-2, .flex-col-4 {
   display: flex;
   flex-direction: column;
 }
 .flex-col-2 {
-  gap: 0.5rem;
+  @include flex-col-n(2);
+  // gap: 0.5rem;
 }
 .flex-col-4 {
-  gap: 1rem;
+  @include flex-col-n(4);
+  // gap: 1rem;
 }
 
 .flex-row-2, .flex-row-4 {
