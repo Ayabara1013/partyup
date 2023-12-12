@@ -8,33 +8,77 @@ import '@styles/play/ChatWindow.scss';
 
 
 
-export function ChatWindow(props) {
-  const { num = 50, cols, className } = props;
+export function ChatWindow({ num = 50, cols, className, windowState, setWindowState, index, name }) {
+  // const { num = 50, cols, className, windowState, setWindowState, index } = props;
   let elements = [];
+  let active = windowState[index];
 
   for (let i = 0; i < num; i++) {
     elements.push(<li>text {i}</li>);
   }
 
-  return (
-    <div className={`chat-window flex flex-col gap-2 h-full col-span-${cols} min-h-0`}>
-      <div className='chat-window__header'>name</div>
+  const toggleActive = () => {
+    let newState = [...windowState];
 
-      <div className='message-area flex flex-col flex-auto h-full overflow-y-hidden'>
-        <div className='message-container flex-auto overflow-y-scroll'>
-          <BunchOfElements />
-          <BunchOfElements />
+    for (let i = 0; i < newState.length; i++) {
+      i === index ?
+        !newState[i] ?
+          newState[i] = true
+          : null
+        : newState[i] = false;
+    }
+
+    setWindowState(newState);
+  }
+
+  const MessageArea = () => {
+    return (
+      <>
+        <div className={`chat-window__header uppercase`} onClick={toggleActive}>
+          {name}
         </div>
-      </div>
-      {/* NOTE!!! using the message area wrapper outside the container stops the input from being squished */}
 
-      <ChatInput />
+        <div className={`message-area ${active ? 'flex' : 'hidden' } flex-col flex-auto h-full overflow-y-hidden`}>
+          <div className='message-container flex-auto overflow-y-scroll'>
+            <BunchOfElements />
+            <BunchOfElements />
+          </div>
+        </div>
+        {/* NOTE!!! using the message area wrapper outside the container stops the input from being squished */}
+        <ChatInput active={active} />
+      </>
+    )
+  }
+
+  const ClosedDiv = () => {
+    const text = () => {
+      if (index === 0) return 'canon';
+      if (index === 1) return 'turn';
+      if (index === 2) return 'open';
+    }
+
+    return (
+      <button className='closed-window btn btn-primary w-4 h-full text-xl font-semibold text-primary break-all leading-5' onClick={toggleActive}>
+        {/* {active.toString()} */}
+        {/* {text()} */}
+        {name}
+      </button>
+    )
+  }
+
+  // i am now aware that I could probably just do a closedDiv entirely instead of a chat window with a nested closedDiv but for now Ill keep it like this
+
+  return (
+    <div className={`chat-window ${active ? 'grow p-2' : 'shrink p-0'} flex flex-col gap-2 h-full min-h-0`}>
+      {active ? <MessageArea /> : <ClosedDiv />}
     </div>
   )
 }
 
 
-function ChatInput() {
+
+
+function ChatInput({ active }) {
   const [value, setValue] = useState('');
   const [showPrompt, setShowPrompt] = useState(false);
 
@@ -48,7 +92,7 @@ function ChatInput() {
   }, [value])
 
   return (
-    <div className='relative'>
+    <div className={`${active ? 'flex' : 'hidden' }`}>
       <PromptPopup showPrompt={showPrompt} value={value} />
 
       <input

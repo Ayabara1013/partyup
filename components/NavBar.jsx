@@ -84,7 +84,7 @@ function NavbarCenter(props) {
   return (
     <div className='navbar-center '>
       <div className='lg:hidden'>
-        <button className='btn btn-secondary whitespace-nowrap'>play now</button>  
+        <button className='btn btn-secondary whitespace-nowrap'><Link href={dir.play}>play now</Link></button>  
       </div>
 
       <div className="navbar-center hidden lg:flex">
