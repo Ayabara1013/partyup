@@ -1,4 +1,4 @@
-import { ChatWindow } from '@/components/play/ChatWindow'
+import { ChatWindow } from '@/app/(games)/play/(components)/ChatWindow'
 import './play.scss'
 
 

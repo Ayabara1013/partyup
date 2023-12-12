@@ -1,4 +1,4 @@
-import '@/app/discover/discover.scss'
+import '@app/discover/discover.scss'
 import { starborne } from '@/test/fake firestore/tavern-test-1/collections/firestoreObjects';
 import timeSince from '@/util/timeSince';
 import { Timestamp } from 'firebase/firestore';
@@ -60,9 +60,10 @@ export function DiscoverCard(props) {
 				</div>
 
 				<div className=' line-clamp-4 indent-4 text-shadow-md'>
-					{content.description.split('\n').map((paragraph, i) => {
+					{/* {content.description.split('\n').map((paragraph, i) => {
 						return <p key={i} className='mb-2 leading-5 font-semibold text-shadow-default border-success'>{paragraph}</p>
-					})}
+					})} */}
+					{content.description}
 				</div>
 
 				<div className=' flex justify-center'>

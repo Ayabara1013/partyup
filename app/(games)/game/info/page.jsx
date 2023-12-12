@@ -3,7 +3,7 @@
 import './game-info.scss';
 
 import { content } from '@/app/discover/page';
-import PlayerListing from '@/components/game/info/PlayerListing';
+import PlayerListing from '@/app/(games)/game/info/(components)/PlayerListing';
 import { useState } from 'react';
 
 

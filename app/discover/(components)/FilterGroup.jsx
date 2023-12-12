@@ -4,7 +4,7 @@ import './FilterGroup.scss';
 
 export default function FilterGroup({ label, options, active }) {
   return (
-    <div className='search__filters__filter tb2 grow m-auto tb3'>
+    <div className='search__filters__filter grow m-auto tb'>
       <div className='search__filters__filter__label'>{label}</div>
       <ul className='search__filters__filter__content'>
         {options.map((option, i) => {
