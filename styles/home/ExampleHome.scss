@@ -1,10 +1,10 @@
 
-@use '~styles/globals.scss' as g;
+@use '~styles/globals.scss' as *;
 
 
 .home__section {
   
-}
+}d
 
 .system-example-display {
   // @include g.flex-col-n(2);
@@ -31,4 +31,18 @@
   img {
     @apply bg-slate-300;
   }
+}
+
+
+.call-to-action {
+
+}
+
+.sub-header-1 {
+  @include font-abel();
+  @apply text-3xl text-primary;
+}
+
+h1 {
+  @include font-abel();
 }

@@ -61,8 +61,8 @@ $nav-height: 4rem;
 @mixin base-styles {
   // @apply text-lg;
   // @include font-abel();
-  box-sizing: border-box;
-  font-weight: 500;
+  // box-sizing: border-box;
+  // font-weight: 500;
   // transform: scale(1.1);
 
 
@@ -76,6 +76,7 @@ html {
 * {
   @include base-styles();
   @include font-barlow-condensed();
+  box-sizing: border-box;
 }
 
 textarea {

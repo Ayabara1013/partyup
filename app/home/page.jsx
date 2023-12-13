@@ -18,11 +18,11 @@ import Discover from '../discover/page';
 
 import '@styles/home/home.scss';
 import { ExampleHome } from './(components)/ExampleHome';
+import Link from 'next/link';
 
 
 
 const coolImages = require("cool-images");
-
 
 // const getRandomCat = require('random-cat-img'); // this is broken for some reason
 // const randomPuppy = require('random-puppy');
@@ -33,7 +33,38 @@ export default function Home() {
 
   return (
     <div className='home-page flex-col-4 w-full min-h-full border-2 border-dotted border-red-400'>
-      <div className='home__welcome '>
+      
+      <div className='flex flex-col absolute top-[5rem] z-10 self-end p-2 gap-1 w-fit'>
+        <Link href='/home' className='btn btn-sm btn-neutral'>
+          back to top
+        </Link>
+
+        <Link href='#call-to-action' className='btn btn-sm btn-neutral'>
+          call to action
+        </Link>
+
+        <Link href='#big-landing-thing' className='btn btn-sm btn-neutral'>
+          big landing thing
+        </Link>
+
+        <Link href='#features' className='btn btn-sm btn-neutral'>
+          features
+        </Link>
+
+        <Link href='#actions' className='btn btn-sm btn-neutral'>
+          actions
+        </Link>
+
+        <Link href='#features-2' className='btn btn-sm btn-neutral'>
+          features-2
+        </Link>
+
+        <Link href='#community' className='btn btn-sm btn-neutral'>
+          community
+        </Link>
+      </div>
+
+      <div id='top' className='home__welcome '>
         {/* <h1 className='text-8xl font-medium'>welcome to tavern!</h1> */}
         <h1 className='home__welcome__header text-8xl font-medium whitespace-normal'>
           Welcome to Tavern!

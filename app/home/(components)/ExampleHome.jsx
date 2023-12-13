@@ -9,74 +9,49 @@ import Link from 'next/link';
 
 export function ExampleHome({ className = '' }) {
   return (
-    <div className={`${className} example-home-layout flex flex-col p-8 gap-4 min-h-44 `}>
+    <div className={`${className} example-home-layout relative flex flex-col p-8 gap-4 min-h-44 `}>
       
-      <div className='flex sticky top-0 justify-evenly p-2 bg-base-100'>
-        <Link href='#call-to-action' className='btn btn-sm btn-neutral'>
-          call to action
-        </Link>
-
-        <Link href='#big-landing-thing' className='btn btn-sm btn-neutral'>
-          big landing thing
-        </Link>
-
-        <Link href='#features' className='btn btn-sm btn-neutral'>
-          features
-        </Link>
-
-        <Link href='#actions' className='btn btn-sm btn-neutral'>
-          actions
-        </Link>
-
-        <Link href='#features-2' className='btn btn-sm btn-neutral'>
-          features-2
-        </Link>
-
-        <Link href='#community' className='btn btn-sm btn-neutral'>
-          community
-        </Link>
-      </div>
+      
 
       
 
       {/* call to action */}
-      <Home.Section id={`call-to-action`} className={`justify-start`} header={'{call to action}'}>
-        <p>we set the table, you play the game. <span className='text-error opacity-75'>{'<ps a lot of this is stolen from roll20 & dndbeyond as templates>'}</span></p>
-
-        <button className='btn btn-primary w-fit'>create free account</button>
-
-        <p>Easily create characters, organize games, purchase content, find players, and customize your story for your group - all in your browser.</p>
+      <Home.Section id={`call-to-action`} className={`call-to-action text-4xl text-medium text-center`}>
+        <div>Play <span className="text-primary">your</span> way.</div>
+        <div>Any time, <span className="text-primary underline uppercase">Any</span> place.</div>
       </Home.Section>
 
       {/* big landing thing */}
-      <Home.Section id={`big-landing-thing`} className={`justify-center`} header={`big landing thing`}>
+      <Home.Section id={`big-landing-thing`} className={`justify-center`}>
         <Home.ImgPlaceholder />
 
-        <div className='home__section __subsection system-example-display  flex justify-center'>
-          <img src={'https://roll20.net/v3/assets/img/logos/dungeons-dragons.png'} alt="Dungeons and Dragons logo" className='' />
-          <img src={'https://roll20.net/v3/assets/img/logos/pathfinder2.png'} alt="Dungeons and Dragons logo" className='' />
-          <img src={'https://roll20.net/v3/assets/img/logos/call-of-cthulhu.png'} alt="Dungeons and Dragons logo" className='' />
-          <img src={'https://roll20.net/v3/assets/img/logos/vampire-logo.png'} alt="Dungeons and Dragons logo" className='' />
-        </div>
+        <Home.Header className='font-borel lowercase'>System Agnostic, <span className="underline font-borel">Life</span> Agnostic</Home.Header>
 
-        <div className='home__section __subsection system-example-display '>
+        {/* <div className='home__section __subsection system-example-display '>
           <div className='system-example -1'>dinguns an dwaguns</div>
           <div className='system-example -4 md:row-span-2'>literally anything my dude</div>
           <div className='system-example -2'>paffinga</div>
           <div className='system-example -3'>caww of cafoofoo</div>
           <div className='system-example -5'>vamepiya te maskewade</div>
-        </div>
+        </div> */}
 
-        <div>
-          <p>JOIN OVER 10 MILLION PLAYERS AND GMS PLAYING DUNGEONS AND DRAGONS (AND HUNDREDS MORE SYSTEMS) ONLINE</p>
+        <div className='text-center'>
+          
+          <p>Join anyone, from anywhere, and play on YOUR schedule.</p>
+          <p>play any system, and only be restricted by your imagination</p>
         </div>
       </Home.Section>
 
       {/* features */}
-      <Home.Section id={`features`} className={`justify-center`} header={`features`}>
+      <Home.Section id={`features`} className={`justify-center`}>
+        <Home.Header className='text-2xl font-major font-semibold text-center'>The <span className="underline font-major">Premiere</span> Play-by-Post TTRPG Platform</Home.Header>
+        <Home.Header className='capitalize'><span className="underline">the</span> play-by-post platform</Home.Header>
+
         <div className=''>
           <div className='text-2xl font-bold text-secondary'>the complete virtual tabletop</div>
+
           <p>Roll20® is the most complete solution for digital play. Access character sheets, tokens, rulebooks, dice, and more - with powerful tools to automate the tedious stuff.</p>
+
           <button className='text-primary'>create an account {`{fontawesome arrow ->}`}</button>
         </div>
 
@@ -93,7 +68,8 @@ export function ExampleHome({ className = '' }) {
         </div>
       </Home.Section>
 
-      <Home.Section id={`actions`} className={`justify-center`} header={`actions`}>
+      {/* actions */}
+      <Home.Section id={`actions`} className={`justify-center`}>
         <div className=' action-display flex flex-wrap gap-4'>
           <Home.Actions.Card header={'sign up'}></Home.Actions.Card>
           <Home.Actions.Card header={'choose a game'}></Home.Actions.Card>
@@ -104,13 +80,15 @@ export function ExampleHome({ className = '' }) {
         <button className='btn btn-primary m-auto'>create a free account</button>
       </Home.Section>
 
-      <Home.Section id={`features-2`} className={`justify-center`} header={`features`}>
+      {/* features-2 */}
+      <Home.Section id={`features-2`} className={`justify-center`}>
         <div>
           <FeatureAccordion />
         </div>
       </Home.Section>
 
-      <Home.Section id={`community`} className={`justify-center`} header={`community`}>
+      {/* community */}
+      <Home.Section id={`community`} className={`justify-center`}>
 
       </Home.Section>
 
@@ -121,20 +99,23 @@ export function ExampleHome({ className = '' }) {
 }
 
 export const Home = {
-  Section: function ({ id, className = '', children, header, ...props }) {
+  Section: function ({ id, className = '', children, ...props }) {
     return (
-      <div id={id} className={`${className} home__section border border-primary flex ${!className.includes('flex-row') && 'flex-col'} gap-4`}>
-        {header && <Home.Header>{header}</Home.Header>}
+      <div id={id} className={`${className} home__section border border-primary py-4 flex ${!className.includes('flex-row') && 'flex-col'} gap-4`}>
+        {/* {header && <Home.Header>{header}</Home.Header>} */}
         {children}
       </div>
     )
   },
 
-  Header: function({ className = '', children, title }) {
+  Header: function ({ className = '', children, title }) {
+    const sizes = ['text-sm', 'text-md', 'text-lg', 'text-xl', 'text-2xl', 'text-3xl', 'text-4xl', 'text-5xl', 'text-6xl', 'text-7xl', 'text-8xl'];
+    const hasSize = sizes.some(size => className.includes(size));
+
     return (
-      <div className={`${className} home__header tb2 text-primary text-3xl font-bold`}>
+      <h1 className={`${className} home__header tb2 text-primary ${!hasSize && 'text-3xl'} text-center font-bold`}>
         {children || title}
-      </div>
+      </h1>
     )
   },
 
@@ -150,7 +131,7 @@ export const Home = {
   Actions: {
     Card: function ({ className = '', children, header, text, ...props }) {
       return (
-        <div className={`${className} action-card flex-col-2 justify-center m-auto px-4 py-8 items-center max-w-md min-h-16 bg-neutral`}>
+        <div className={`${className} action-card ${!className.includes('flex-row') && 'flex-col'} justify-center m-auto px-4 py-8 items-center max-w-md min-h-16 bg-neutral`}>
           {/* {children} */}
           <img src="https://roll20.net/v3/assets/img/icons/icon-sign-up.png" alt=""
             className='action-card__img w-20' />
