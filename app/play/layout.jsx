@@ -1,4 +1,4 @@
-import { PlayProvider } from "@/app/(games)/play/PlayContext";
+import { PlayProvider } from "@/app/play/PlayContext";
 
 export default function Layout({children}) {
   return (

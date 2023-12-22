@@ -9,7 +9,7 @@ import { ui } from "@/util/ui";
 import { userAuth } from "@/firebase/base";
 import { accountLocalStorage } from "@/util/localStorage";
 import CharacterSheet from "@/util/character/CharacterSheet";
-import chatWindow from "@/app/(games)/play/(components)/ChatWindow";
+import chatWindow from "@/app/play/(components)/ChatWindow";
 import createDndCharacter from "@/util/character/templates/dndCharacter";
 import toast from "react-hot-toast";
 import { validateCommand } from "@/util/functions";

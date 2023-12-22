@@ -27,6 +27,7 @@
 // unified sizings ---------------------------//
 $layout-gap: 1.5rem;
 $nav-height: 4rem;
+$footer-min-height: 4rem;
 //--------------------------------------------//
 
 @mixin layer-0 {
@@ -83,25 +84,9 @@ textarea {
   resize: none;
 }
 
-// body {
-//   // min-height: 720px;
-//   // min-width: 1280px;
-//   // // height: 100vh;
-//   // // max-height: 100vh;
-//   // // max-width: 100vw;
-//   // @apply dark flex-col;
-//   // & > .header-nav {
-//   //   height: 5%;
-//   // }
-
-//   // & > main {
-//   //   height: 87%;
-//   // }
-
-//   // & > .footer {
-//   //   height: 7%;
-//   // }
-// }
+.just-some-big-ass-text {
+  @apply text-warning text-center text-6xl font-extrabold;
+}
 
 .dark {
   @layer components {
@@ -126,8 +111,13 @@ textarea {
 .app-wrapper {
   height: calc(100% - $nav-height);
 }
+.page-wrapper {
+  min-height: calc(100% - $footer-min-height);
+}
 
-
+.footer {
+  min-height: $footer-min-height;
+}
 
 
 // layout stuff

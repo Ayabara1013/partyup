@@ -3,6 +3,8 @@ import FilterItem from '@app/discover/(components)/FilterItem';
 import FilterTabs from '@app/discover/(components)/FilterTabs';
 import { gamesCollection, starborne, usersCollection } from '@/test/fake firestore/tavern-test-1/collections/firestoreObjects';
 import { getRandomInt } from '@/test/getRandomInt';
+import { Blocks } from '@/components/templates/Blocks';
+import '@styles/blocks.scss';
 
 
 
@@ -44,9 +46,88 @@ const filters = {
 }
 
 export default function Discover(props) {
+  // return (
+  //   <div className='page-wrapper'>
+      // <Blocks.Section>
+      //   <input type="text" placeholder="search" className="input input-bordered input-primary w-full" />
+
+      //   <ol className='b2 flex flex-wrap gap-6 list-decimal list-inside'>
+      //     <Blocks.SearchFilter>player count</Blocks.SearchFilter>
+      //     <Blocks.SearchFilter>system</Blocks.SearchFilter>
+      //     <Blocks.SearchFilter className='btn-accent'>genre</Blocks.SearchFilter>
+      //     <Blocks.SearchFilter>open</Blocks.SearchFilter>
+      //     <Blocks.SearchFilter>locked</Blocks.SearchFilter>
+      //     <Blocks.SearchFilter>accessibility</Blocks.SearchFilter>
+      //     <Blocks.SearchFilter>tags</Blocks.SearchFilter>
+      //     <Blocks.SearchFilter>things</Blocks.SearchFilter>
+      //   </ol>
+
+      //   <ol>
+      //     <ol className='b2 flex flex-wrap gap-6 list-decimal list-inside'>
+      //       <Blocks.SearchFilter className=''>5th Edition D&D</Blocks.SearchFilter>
+      //       <Blocks.SearchFilter className='btn-accent'>Fate Core</Blocks.SearchFilter>
+      //       <Blocks.SearchFilter className=''>Pathfinder 1st Edition</Blocks.SearchFilter>
+      //       <Blocks.SearchFilter className='btn-accent'>Savage Worlds (SWADE)</Blocks.SearchFilter>
+      //     </ol>
+      //   </ol>
+      // </Blocks.Section>
+
+      // <Blocks.Section>
+      //   <div className='tb1 flex gap-2 h-[12rem]'>
+      //     <div className='tb2'>game picture</div>
+      //     <div className='tb2 flex-auto'>game details</div>
+      //     <div className='tb2'>game description</div>
+      //   </div>
+      //   <div className='tb1 flex gap-2 h-[12rem]'>
+      //     <div className='tb2'>game picture</div>
+      //     <div className='tb2 flex-auto'>game details</div>
+      //     <div className='tb2'>game description</div>
+      //   </div>
+      // </Blocks.Section>
+  //   </div>
+  // )
 
   return (
-    <div className={`discover-page h-full`}>
+    <div className={`discover-page page-wrapper`}>
+      <Blocks.Section>
+        <input type="text" placeholder="search" className="input input-bordered input-primary mb-2 w-full " />
+
+        <ol className='b2 flex flex-wrap gap-6 list-decimal list-inside'>
+          <Blocks.SearchFilter>player count</Blocks.SearchFilter>
+          <Blocks.SearchFilter>system</Blocks.SearchFilter>
+          <Blocks.SearchFilter className='btn-accent'>genre</Blocks.SearchFilter>
+          <Blocks.SearchFilter>open</Blocks.SearchFilter>
+          <Blocks.SearchFilter>locked</Blocks.SearchFilter>
+          <Blocks.SearchFilter>accessibility</Blocks.SearchFilter>
+          <Blocks.SearchFilter>tags</Blocks.SearchFilter>
+          <Blocks.SearchFilter>things</Blocks.SearchFilter>
+        </ol>
+
+        <ol>
+          <ol className='b2 flex flex-wrap gap-6 list-decimal list-inside'>
+            <Blocks.SearchFilter className=''>5th Edition D&D</Blocks.SearchFilter>
+            <Blocks.SearchFilter className='btn-accent'>Fate Core</Blocks.SearchFilter>
+            <Blocks.SearchFilter className=''>Pathfinder 1st Edition</Blocks.SearchFilter>
+            <Blocks.SearchFilter className='btn-accent'>Savage Worlds (SWADE)</Blocks.SearchFilter>
+          </ol>
+        </ol>
+      </Blocks.Section>
+
+      <Blocks.Section className='gap-2'>
+        <div className='tb1 flex gap-2 h-[12rem]'>
+          <div className='tb2'>game picture</div>
+          <div className='tb2 flex-auto'>game details</div>
+          <div className='tb2'>game description</div>
+        </div>
+        <div className='tb1 flex gap-2 h-[12rem]'>
+          <div className='tb2'>game picture</div>
+          <div className='tb2 flex-auto'>game details</div>
+          <div className='tb2'>game description</div>
+        </div>
+      </Blocks.Section>
+
+      <div className="text-center text-6xl text-warning font-extrabold">or this</div>
+      
       <div className='search border-b w-full p-4'>
         <div className='search__bar mb-4 px-4'>
           <input type="text" placeholder="Type here" className="input input-bordered input-primary w-full" />

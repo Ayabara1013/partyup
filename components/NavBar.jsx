@@ -23,9 +23,9 @@ export default function Navbar(props) {
 }
 
 const dir = {
-  home: '/',
-  discover: '/discover',
-  play: '/play',
+  community: {
+    root: '/error/coming-soon',
+  },
   create: {
     root: '/create',
     character: '/create/character',
@@ -33,14 +33,17 @@ const dir = {
     game: '/create/game',
     community: '/create/community',
   },
+  discover: '/discover',
+  error: '/error',
   games: {
-    root: '/game/my-games',
-    create: '/game/create',
-    info: '/game/info',
+    root: '/games',
+    create: 'games/create',
+    info: '/games/info',
+    myGames: '/games/my-games',
   },
-  community: {
-    root: '/error/coming-soon',
-  },
+  home: '/',
+  library: '/library',
+  play: '/play',
   user: {
     settings: '/user/settings',
   }
@@ -88,10 +91,43 @@ function NavbarCenter(props) {
       </div>
 
       <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1">
-          <li><Link href={dir.discover} >Discover</Link></li>
-          <li><Link href={dir.play}>Play</Link></li>
-          <li tabIndex={0}>
+        <ul className="menu menu-horizontal px-1 flex flex-row flex-wrap">
+          <li className='flex flex-row border'>
+            <Link className={`btn btn-xs btn-success`} href={dir.discover}>Discover</Link>
+          </li>
+
+          <li className='flex flex-row border'>
+            <Link className={`btn btn-xs btn-success`} href={dir.play}>Play</Link>
+          </li>
+
+          <li className='flex flex-row border'>
+            <Link className={`btn btn-xs btn-success`} href={dir.create.root}>create</Link>
+            <Link className={`btn btn-xs btn-success`} href={dir.create.character}>character</Link>
+            <Link className={`btn btn-xs btn-accent`} href={dir.create.world}>world</Link>
+            <Link className={`btn btn-xs btn-accent`} href={dir.create.game}>game</Link>
+            <Link className={`btn btn-xs btn-accent`} href={dir.create.community}>community</Link>
+          </li>
+
+          <li className='flex flex-row border'>
+            <Link className={`btn btn-xs btn-accent`} href={dir.user.settings}>user</Link>
+            <Link className={`btn btn-xs btn-accent`} href={dir.user.settings}>user/settings</Link>
+          </li>
+
+          <li className='flex flex-row border'>
+            <Link className={`btn btn-xs btn-primary`} href={dir.games.root}>games</Link>
+            <Link className={`btn btn-xs btn-primary`} href={dir.games.info}>games/info</Link>
+            <Link className={`btn btn-xs btn-primary`} href={dir.games.create}>games/create</Link>
+            <Link className={`btn btn-xs btn-primary`} href={dir.games.myGames}>games/my-games</Link>
+          </li>
+
+          <li className='flex flex-row border'>
+            <Link className={`btn btn-xs btn-primary`} href={dir.library}>library</Link>
+          </li>
+          
+          <li className='flex flex-row border'>
+            <Link className={`btn btn-xs btn-primary`} href={dir.community}>community</Link>
+          </li>
+          {/* <li tabIndex={0}>
             <details>
               <summary>Create</summary>
               <ul className="p-2 bg-accent text-accent-content">
@@ -114,7 +150,6 @@ function NavbarCenter(props) {
             </details>
           </li>
           <li><Link href='/'>Games</Link></li>
-          {/* <li><a>Community</a></li> */}
           <li tabIndex={1}>
             <details>
               <summary>Community</summary>
@@ -122,7 +157,7 @@ function NavbarCenter(props) {
                 <li className='px-4'>coming soon!</li>
               </ul>
             </details>
-          </li>
+          </li> */}
         </ul>
       </div>
     </div>
