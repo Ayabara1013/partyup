@@ -350,3 +350,9 @@ textarea {
 
   transition: 0.2s ease-in-out;
 }
+
+
+// --------------------------- //
+.small-title-1, .title-semi-large {
+  @apply text-lg font-semibold;
+}

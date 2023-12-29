@@ -101,16 +101,16 @@ function NavbarCenter(props) {
           </li>
 
           <li className='flex flex-row border'>
-            <Link className={`btn btn-xs btn-success`} href={dir.create.root}>create</Link>
-            <Link className={`btn btn-xs btn-success`} href={dir.create.character}>character</Link>
-            <Link className={`btn btn-xs btn-accent`} href={dir.create.world}>world</Link>
-            <Link className={`btn btn-xs btn-accent`} href={dir.create.game}>game</Link>
-            <Link className={`btn btn-xs btn-accent`} href={dir.create.community}>community</Link>
+            <Link className={`btn btn-xs btn-warning`} href={dir.create.root}>create</Link>
+            <Link className={`btn btn-xs btn-warning`} href={dir.create.character}>character</Link>
+            <Link className={`btn btn-xs btn-warning`} href={dir.create.world}>world</Link>
+            <Link className={`btn btn-xs btn-warning`} href={dir.create.game}>game</Link>
+            <Link className={`btn btn-xs btn-warning`} href={dir.create.community}>community</Link>
           </li>
 
           <li className='flex flex-row border'>
-            <Link className={`btn btn-xs btn-accent`} href={dir.user.settings}>user</Link>
-            <Link className={`btn btn-xs btn-accent`} href={dir.user.settings}>user/settings</Link>
+            <Link className={`btn btn-xs btn-success`} href={dir.user.settings}>user</Link>
+            <Link className={`btn btn-xs btn-success`} href={dir.user.settings}>user/settings</Link>
           </li>
 
           <li className='flex flex-row border'>

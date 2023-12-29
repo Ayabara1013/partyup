@@ -1,6 +1,9 @@
 import '@styles/fonts.scss'
 
-export function DaisyTextInputLabelled({ className = '',formControlClass = '', labelClass = '', labelAltClass = '', topLeft, topRight, bottomLeft, bottomRight,children, placeholder, ...props }) {
+export function DaisyTextInputLabelled({ className = '', formControlClass = '', labelClass = '', labelAltClass = '', buttonClass = '', preLabelClass = '',
+  topLeft, topRight, bottomLeft, bottomRight,
+  button, preLabel,
+  children, placeholder, ...props }) {
   return (
     <label className={`${formControlClass} form-control w-full`}>
       {(topLeft || topRight) &&
@@ -9,7 +12,17 @@ export function DaisyTextInputLabelled({ className = '',formControlClass = '', l
           {topRight && <span className={`${labelAltClass} label-text-alt`}>{topRight || 'fix'}</span>}
         </div>
       }
-      <input type="text" placeholder={children || placeholder} className={`input input-bordered ${className} w-full`} />
+
+      <div className='flex gap-2'>
+        {preLabel && <div className={`m-auto whitespace-nowrap capitalize ${preLabelClass}`}>
+          {preLabel}
+        </div>}
+
+        <input type="text" placeholder={children || placeholder} className={`input input-bordered ${className} w-full`} />
+
+        {button && <button className={`btn ${buttonClass}`}>{button}</button>}
+      </div>
+
       {(bottomLeft || bottomRight) &&
         <div className="label">
           {bottomLeft && <span className={`${labelAltClass} label-text-alt`}>{bottomLeft || 'this'}</span>}
