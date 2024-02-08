@@ -1,7 +1,7 @@
 'use client'
 
 import { starborne, usersCollection } from '@/test/fake firestore/tavern-test-1/collections/firestoreObjects';
-import './PlayerListing.scss';
+import '@styles/games/info/PlayerListing.scss';
 
 const coolImages = require("cool-images");
 

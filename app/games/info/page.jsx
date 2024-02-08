@@ -1,9 +1,9 @@
 'use client'
 
-import './game-info.scss';
+import '@styles/games/info/game-info.scss';
 
 import { content } from '@/app/discover/page';
-import PlayerListing from '@/app/(games)/game/info/(components)/PlayerListing';
+import PlayerListing from '@/app/games/info/(components)/PlayerListing';
 import { useState } from 'react';
 
 
@@ -36,6 +36,54 @@ export default function GameInfo(props) {
       )
     }
   }
+
+  return (
+    <div className='game-info page-wrapper'>
+      <div className='banner'>
+        <img src={content.imageUrl} alt="" className='w-full' />
+        <div className='banner__play-button'>PLAY</div>
+      </div>
+
+      <div className='details-wrapper flex flex-col border p-4'>
+        <div className='text-xl text-primary'>game name</div>
+        <div className='flex justify-between'>
+          <div>
+            <div>system - dnd 5re</div>
+            <div>players - 4/5</div>
+            <div>dm - @name</div>
+          </div>
+
+          <button className='btn btn-primary'>edit</button>
+        </div>
+
+        <div className='divider'></div>
+
+        <div>
+          forth earth score small inch cold send take information branch rich simple rocky division slight underline attempt ride health rate heard require film certain
+        </div>
+
+        <div className='divider'></div>
+
+        <div className='flex flex-col gap-4'>
+          <div className='text-xl text-primary'>players</div>
+
+          <div className='border'>
+            <div className='text-lg'>active players</div>
+            <div className='flex gap-2 justify-center'>
+              <button className='btn btn-sm btn-primary'>@KateAdkins</button>
+              <button className='btn btn-sm btn-neutral text-primary'>@xXKittenLoverXx</button>
+              <button className='btn btn-sm btn-neutral text-primary'>@JohnCena</button>
+            </div>
+          </div>
+
+          <ExamplePlayerCard />
+          <ExamplePlayerCard playerName='@xXKittenLoverXx'/>
+          <ExamplePlayerCard playerName="@JohnCena" />
+        </div>
+
+      </div>
+    </div>
+  )
 
   return (
     <div className={`game-info `}>
@@ -85,6 +133,25 @@ export default function GameInfo(props) {
             </ul>
           </div>
         </div>
+      </div>
+    </div>
+  )
+}
+
+function ExamplePlayerCard({playerName = "KateAdkins", characterName = '"Cloud" Mountain Tree', characterRace = 'Tabaxi', characterClass = 'Bard', ...props}) {
+  return (
+    <div className='flex p-4 bg-neutral rounded items-center'>
+      <div>
+        <div>
+          <span className='text-primary hover:underline'>{playerName}</span> as <span className='text-primary hover:underline'>{characterName}</span> the <span className='text-primary hover:underline'>{characterRace} {characterClass}</span>
+        </div>
+
+        <div>Role: Player</div>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <button className='btn btn-sm btn-primary'>edit</button>
+        <button className='btn btn-sm btn-primary'>active</button>
       </div>
     </div>
   )

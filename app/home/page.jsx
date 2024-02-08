@@ -34,7 +34,7 @@ export default function Home() {
   return (
     <div className='home-page flex-col-4 w-full min-h-full border-2 border-dotted border-red-400'>
       
-      <div className='flex flex-col absolute top-[5rem] z-10 self-end p-2 gap-1 w-fit'>
+      {/* <div className='flex flex-col absolute top-[5rem] z-10 self-end p-2 gap-1 w-fit'>
         <Link href='/home' className='btn btn-sm btn-neutral'>
           back to top
         </Link>
@@ -62,7 +62,7 @@ export default function Home() {
         <Link href='#community' className='btn btn-sm btn-neutral'>
           community
         </Link>
-      </div>
+      </div> */}
 
       <div id='top' className='home__welcome '>
         {/* <h1 className='text-8xl font-medium'>welcome to tavern!</h1> */}

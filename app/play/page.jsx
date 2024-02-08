@@ -1,7 +1,7 @@
 'use client';
 
 
-import { ChatWindow } from '@app/(games)/play/(components)/ChatWindow'
+import { ChatWindow } from '@app/play/(components)/ChatWindow'
 import '@styles/play/play.scss'
 import { usePlayContext } from './PlayContext';
 

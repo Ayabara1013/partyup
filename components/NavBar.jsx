@@ -64,7 +64,7 @@ function NavbarStart(props) {
 
         <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
           <li><Link href={dir.home}>Discover</Link></li>
-          <li><Link href={dir.home}>Games</Link></li>
+          <li><Link href={dir.games.root}>Games</Link></li>
           <li>
             <Link href={dir.home}>Create</Link>
             <ul className="p-2">

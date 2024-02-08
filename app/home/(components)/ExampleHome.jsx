@@ -8,6 +8,8 @@ import { FeatureAccordion } from './FeatureAccordion';
 import Link from 'next/link';
 
 export function ExampleHome({ className = '' }) {
+  const sectionStyles = 'bg-neutral rounded-lg p-4';
+
   return (
     <div className={`${className} example-home-layout relative flex flex-col p-8 gap-4 min-h-44 `}>
       
@@ -16,13 +18,13 @@ export function ExampleHome({ className = '' }) {
       
 
       {/* call to action */}
-      <Home.Section id={`call-to-action`} className={`call-to-action text-4xl text-medium text-center`}>
+      <Home.Section id={`call-to-action`} className={`call-to-action ${sectionStyles} text-4xl text-medium text-center`}>
         <div>Play <span className="text-primary">your</span> way.</div>
         <div>Any time, <span className="text-primary underline uppercase">Any</span> place.</div>
       </Home.Section>
 
       {/* big landing thing */}
-      <Home.Section id={`big-landing-thing`} className={`justify-center`}>
+      <Home.Section id={`big-landing-thing`} className={`justify-center ${sectionStyles}`}>
         <Home.ImgPlaceholder />
 
         <Home.Header className='font-borel lowercase'>System Agnostic, <span className="underline font-borel">Life</span> Agnostic</Home.Header>
@@ -43,7 +45,7 @@ export function ExampleHome({ className = '' }) {
       </Home.Section>
 
       {/* features */}
-      <Home.Section id={`features`} className={`justify-center`}>
+      <Home.Section id={`features`} className={`justify-center ${sectionStyles}`}>
         <Home.Header className='text-2xl font-major font-semibold text-center'>The <span className="underline font-major">Premiere</span> Play-by-Post TTRPG Platform</Home.Header>
         <Home.Header className='capitalize'><span className="underline">the</span> play-by-post platform</Home.Header>
 
@@ -101,7 +103,7 @@ export function ExampleHome({ className = '' }) {
 export const Home = {
   Section: function ({ id, className = '', children, ...props }) {
     return (
-      <div id={id} className={`${className} home__section border border-primary py-4 flex ${!className.includes('flex-row') && 'flex-col'} gap-4`}>
+      <div id={id} className={`${className} home__section py-4 flex ${!className.includes('flex-row') && 'flex-col'} gap-4`}>
         {/* {header && <Home.Header>{header}</Home.Header>} */}
         {children}
       </div>
@@ -113,7 +115,7 @@ export const Home = {
     const hasSize = sizes.some(size => className.includes(size));
 
     return (
-      <h1 className={`${className} home__header tb2 text-primary ${!hasSize && 'text-3xl'} text-center font-bold`}>
+      <h1 className={`${className} home__header text-primary ${!hasSize && 'text-3xl'} text-center font-bold`}>
         {children || title}
       </h1>
     )
@@ -131,7 +133,7 @@ export const Home = {
   Actions: {
     Card: function ({ className = '', children, header, text, ...props }) {
       return (
-        <div className={`${className} action-card ${!className.includes('flex-row') && 'flex-col'} justify-center m-auto px-4 py-8 items-center max-w-md min-h-16 bg-neutral`}>
+        <div className={`${className} action-card ${!className.includes('flex-row') && 'flex-col'} justify-center m-auto px-4 py-8 items-center max-w-md min-h-16 bg-neutral rounded-lg`}>
           {/* {children} */}
           <img src="https://roll20.net/v3/assets/img/icons/icon-sign-up.png" alt=""
             className='action-card__img w-20' />
