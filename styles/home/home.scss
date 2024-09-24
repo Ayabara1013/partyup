@@ -31,3 +31,7 @@
     @apply flex;
   }
 }
+
+.home-section--padding {
+  @apply p-2 md:p-8;
+}

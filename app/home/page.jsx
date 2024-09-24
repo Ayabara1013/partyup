@@ -19,6 +19,7 @@ import Discover from '../discover/page';
 import '@styles/home/home.scss';
 import { ExampleHome } from './(components)/ExampleHome';
 import Link from 'next/link';
+import { HomeWelcome } from './(components)/HomeWelcome';
 
 
 
@@ -74,14 +75,17 @@ export default function Home() {
         <div>and this</div>
         <div>aand this</div>
         <div>aaand this</div> */}
-      </div>
 
-      <div className='home__cta flex flex-col-4 justify-center'>
-        <div className='border text-[3rem] m-auto'>
+        <div className='border text-4xl m-auto'>
           tavern brings you together with you're gaming group, new or old, no matter <span className='text-primary font-bold'>where</span> or <span className='text-primary font-bold uppercase'>when</span> you are
         </div>
+      </div>
 
-        <div className='tb1 flex justify-evenly'>
+      
+      <HomeWelcome />
+
+      <div className='home__cta flex flex-col-4 justify-center'>
+        <div className='flex justify-evenly gap-4 px-4'>
           <div className='home__cta__blocks'>
             <div className='__block-header'>games</div>
             <div className='__image-block-placeholder'>image goes here</div>
@@ -107,9 +111,8 @@ export default function Home() {
 
       
 
-      <div></div>
 
-      {/* <ExampleHome /> */}
+      <ExampleHome />
 
       {/* <div className='home__examples  flex flex-col gap-8 py-8 '>
         <div className='home__examples__call-to-action  m-auto text-4xl font-medium'>
@@ -132,44 +135,44 @@ export default function Home() {
         {/* discover section */}
       </div>
 
-      <div className='placeholder-remove-warning'>
+      <div className='prw'>
         this is the feed below here
       </div>
 
       <div className="home__feed">
-        
+
         <div className='home__feed__section'>
-          <div className='placeholder-remove-warning m-auto'>
+          <div className='prw'>
             reviews -- element to be manualy populated 
           </div>
         </div>
 
         <div className='home__feed__section'>
-          <div className='placeholder-remove-warning'>
+          <div className='prw'>
             marketing -- element to auto populate 
           </div>
         </div>
 
         <div className='home__feed__section'>
-          <div className='placeholder-remove-warning'>
+          <div className='prw'>
             features -- element to auto populate
           </div>
         </div>
 
         <div className='home__feed__section'>
-          <div className='placeholder-remove-warning'>
+          <div className='prw'>
             updates -- element to auto populate
           </div>
         </div>
 
         <div className='home__feed__section'>
-          <div className='placeholder-remove-warning'>
+          <div className='prw'>
             stuff -- element to auto populate
           </div>
         </div>
 
         <div className='home__feed__section'>
-          <div className='placeholder-remove-warning'>
+          <div className='prw'>
             stuff -- element to auto populate
           </div>
         </div>

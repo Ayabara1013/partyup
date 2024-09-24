@@ -9,3 +9,11 @@
   @apply border border-secondary p-2;
 }
 
+.prw {
+  @apply text-error border-2 border-dotted border-error;
+
+  &.--large {
+    @apply text-2xl;
+  }
+}
+

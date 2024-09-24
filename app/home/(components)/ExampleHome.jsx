@@ -6,6 +6,9 @@ import dndlogo from '@/public/images/dungeons-dragons.png';
 import Image from 'next/image';
 import { FeatureAccordion } from './FeatureAccordion';
 import Link from 'next/link';
+import { Home } from './HomeElements';
+
+Home
 
 export function ExampleHome({ className = '' }) {
   const sectionStyles = 'bg-neutral rounded-lg p-4';
@@ -46,13 +49,13 @@ export function ExampleHome({ className = '' }) {
 
       {/* features */}
       <Home.Section id={`features`} className={`justify-center ${sectionStyles}`}>
-        <Home.Header className='text-2xl font-major font-semibold text-center'>The <span className="underline font-major">Premiere</span> Play-by-Post TTRPG Platform</Home.Header>
+        {/* <Home.Header className='text-2xl font-major font-semibold text-center'>The <span className="underline font-major">Premiere</span> Play-by-Post TTRPG Platform</Home.Header> */}
         <Home.Header className='capitalize'><span className="underline">the</span> play-by-post platform</Home.Header>
 
         <div className=''>
           <div className='text-2xl font-bold text-secondary'>the complete virtual tabletop</div>
 
-          <p>Roll20® is the most complete solution for digital play. Access character sheets, tokens, rulebooks, dice, and more - with powerful tools to automate the tedious stuff.</p>
+          <p className='prw'>Roll20® is the most complete solution for digital play. Access character sheets, tokens, rulebooks, dice, and more - with powerful tools to automate the tedious stuff.</p>
 
           <button className='text-primary'>create an account {`{fontawesome arrow ->}`}</button>
         </div>
@@ -100,51 +103,52 @@ export function ExampleHome({ className = '' }) {
   )
 }
 
-export const Home = {
-  Section: function ({ id, className = '', children, ...props }) {
-    return (
-      <div id={id} className={`${className} home__section py-4 flex ${!className.includes('flex-row') && 'flex-col'} gap-4`}>
-        {/* {header && <Home.Header>{header}</Home.Header>} */}
-        {children}
-      </div>
-    )
-  },
+// // ----- moved all this stuff to HomeElements.jsx ----- //
+// export const Home = {
+//   Section: function ({ id, className = '', children, ...props }) {
+//     return (
+//       <div id={id} className={`${className} home__section py-4 flex ${!className.includes('flex-row') && 'flex-col'} gap-4`}>
+//         {/* {header && <Home.Header>{header}</Home.Header>} */}
+//         {children}
+//       </div>
+//     )
+//   },
 
-  Header: function ({ className = '', children, title }) {
-    const sizes = ['text-sm', 'text-md', 'text-lg', 'text-xl', 'text-2xl', 'text-3xl', 'text-4xl', 'text-5xl', 'text-6xl', 'text-7xl', 'text-8xl'];
-    const hasSize = sizes.some(size => className.includes(size));
+//   Header: function ({ className = '', children, title }) {
+//     const sizes = ['text-sm', 'text-md', 'text-lg', 'text-xl', 'text-2xl', 'text-3xl', 'text-4xl', 'text-5xl', 'text-6xl', 'text-7xl', 'text-8xl'];
+//     const hasSize = sizes.some(size => className.includes(size));
 
-    return (
-      <h1 className={`${className} home__header text-primary ${!hasSize && 'text-3xl'} text-center font-bold`}>
-        {children || title}
-      </h1>
-    )
-  },
+//     return (
+//       <h1 className={`${className} home__header text-primary ${!hasSize && 'text-3xl'} text-center font-bold`}>
+//         {children || title}
+//       </h1>
+//     )
+//   },
 
-  ImgPlaceholder: function ({ className = '', children, mdWidth = 'w-3/5', mdHeight, aspectRatio = 'aspect-[2/1]', text, ...props }) {
+//   ImgPlaceholder: function ({ className = '', children, mdWidth = 'w-3/5', mdHeight, aspectRatio = 'aspect-[2/1]', text, ...props }) {
 
-    return (
-      <div className={`${className} flex justify-center items-center m-auto p-4 w-full ${aspectRatio} bg-info tb-3 md:m-auto md:${mdWidth}`}>
-        <span className=''>{text || 'big picture thing'}</span>
-      </div>
-    )
-  },
+//     return (
+//       <div className={`${className} flex justify-center items-center m-auto p-4 w-full ${aspectRatio} bg-info tb-3 md:m-auto md:${mdWidth}`}>
+//         <span className=''>{text || 'big picture thing'}</span>
+//       </div>
+//     )
+//   },
 
-  Actions: {
-    Card: function ({ className = '', children, header, text, ...props }) {
-      return (
-        <div className={`${className} action-card ${!className.includes('flex-row') && 'flex-col'} justify-center m-auto px-4 py-8 items-center max-w-md min-h-16 bg-neutral rounded-lg`}>
-          {/* {children} */}
-          <img src="https://roll20.net/v3/assets/img/icons/icon-sign-up.png" alt=""
-            className='action-card__img w-20' />
+//   Actions: {
+//     Card: function ({ className = '', children, header, text, ...props }) {
+//       return (
+//         <div className={`${className} action-card ${!className.includes('flex-row') && 'flex-col'} justify-center m-auto px-4 py-8 items-center max-w-md min-h-16 bg-neutral rounded-lg`}>
+//           {/* {children} */}
+//           <img src="https://roll20.net/v3/assets/img/icons/icon-sign-up.png" alt=""
+//             className='action-card__img w-20' />
           
-          <div className='action-card__header w-fit'>{header || '{header}'}</div>
+//           <div className='action-card__header w-fit'>{header || '{header}'}</div>
 
-          <p className='action-card__text text-center'>
-            {text || 'chest meat order biggest seems reason frighten tent electric season fence guard belt chair cloud famous structure women thank income log ten parts careful'}
-          </p>
-        </div>
-      )
-    }
-  }
-}
+//           <p className='action-card__text text-center'>
+//             {text || 'chest meat order biggest seems reason frighten tent electric season fence guard belt chair cloud famous structure women thank income log ten parts careful'}
+//           </p>
+//         </div>
+//       )
+//     }
+//   }
+// }
