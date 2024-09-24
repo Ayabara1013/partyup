@@ -53,7 +53,7 @@ export default function GameInfo(props) {
             <div>dm - @name</div>
           </div>
 
-          <button className='btn btn-primary'>edit</button>
+          <button className='btn btn-primary'>edit game details</button>
         </div>
 
         <div className='divider'></div>

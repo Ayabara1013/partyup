@@ -1,6 +1,33 @@
-
+@use "@styles/globals.scss" as g;
 
 
 .home-page {
   
+}
+
+.home__cta {
+  &__blocks {
+    @include g.tb2;
+    @apply flex-1;
+  }
+
+  .__block-header {
+    @apply text-3xl text-primary font-bold;
+  }
+
+  .__image-block-placeholder {
+    @apply m-auto bg-neutral text-secondary border border-secondary;
+  }
+}
+
+.home__discover {
+
+}
+
+.home__feed {
+  @apply flex flex-col-4 gap-4;
+
+  &__section {
+    @apply flex;
+  }
 }

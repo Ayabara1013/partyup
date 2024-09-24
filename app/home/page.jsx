@@ -64,22 +64,54 @@ export default function Home() {
         </Link>
       </div> */}
 
-      <div id='top' className='home__welcome '>
+      <div id='top' className='home__welcome'>
         {/* <h1 className='text-8xl font-medium'>welcome to tavern!</h1> */}
         <h1 className='home__welcome__header text-8xl font-medium whitespace-normal'>
           Welcome to Tavern!
         </h1>
 
-        <div>weve got this,</div>
+        {/* <div>weve got this,</div>
         <div>and this</div>
         <div>aand this</div>
-        <div>aaand this</div>
+        <div>aaand this</div> */}
       </div>
 
-      <ExampleHome />
+      <div className='home__cta flex flex-col-4 justify-center'>
+        <div className='border text-[3rem] m-auto'>
+          tavern brings you together with you're gaming group, new or old, no matter <span className='text-primary font-bold'>where</span> or <span className='text-primary font-bold uppercase'>when</span> you are
+        </div>
 
-      <div className='home__examples  flex flex-col gap-8 py-8 '>
-        {/* <div className='w-4/5 border ms-16 text-5xl font-medium'>check out some current games!</div> */}
+        <div className='tb1 flex justify-evenly'>
+          <div className='home__cta__blocks'>
+            <div className='__block-header'>games</div>
+            <div className='__image-block-placeholder'>image goes here</div>
+          </div>
+
+          <div className='home__cta__blocks'>
+            <div className="__block-header">stories</div>
+            <div className='__image-block-placeholder'>image goes here</div>
+          </div>
+
+          <div className='home__cta__blocks'>
+            <div className="__block-header">community</div>
+            <div className='__image-block-placeholder'>image goes here</div>
+          </div>
+
+          <div className='home__cta__blocks'>
+            <div className="__block-header">time</div>
+            <div className='__image-block-placeholder'>image goes here</div>
+          </div>
+        </div>
+
+      </div>
+
+      
+
+      <div></div>
+
+      {/* <ExampleHome /> */}
+
+      {/* <div className='home__examples  flex flex-col gap-8 py-8 '>
         <div className='home__examples__call-to-action  m-auto text-4xl font-medium'>
           check out some current games!
         </div>
@@ -93,19 +125,56 @@ export default function Home() {
           <GameCard />
           <GameCard />
         </div>
-      </div>
+      </div> */}
 
-      <div className="home__examples__discover ">
+      <div className="">
         {/* <Discover /> */}
-        discover section
+        {/* discover section */}
       </div>
 
-      <div className='p-8 h-44 '>Reviews</div>
-      <div className='p-8 h-44 '>marketing</div>
-      <div className='p-8 h-44 '>features</div>
-      <div className='p-8 h-44 '>up</div>
-      <div className='p-8 h-44 '>stuff</div>
-      <div className='p-8 h-44 '>stuff</div>
+      <div className='placeholder-remove-warning'>
+        this is the feed below here
+      </div>
+
+      <div className="home__feed">
+        
+        <div className='home__feed__section'>
+          <div className='placeholder-remove-warning m-auto'>
+            reviews -- element to be manualy populated 
+          </div>
+        </div>
+
+        <div className='home__feed__section'>
+          <div className='placeholder-remove-warning'>
+            marketing -- element to auto populate 
+          </div>
+        </div>
+
+        <div className='home__feed__section'>
+          <div className='placeholder-remove-warning'>
+            features -- element to auto populate
+          </div>
+        </div>
+
+        <div className='home__feed__section'>
+          <div className='placeholder-remove-warning'>
+            updates -- element to auto populate
+          </div>
+        </div>
+
+        <div className='home__feed__section'>
+          <div className='placeholder-remove-warning'>
+            stuff -- element to auto populate
+          </div>
+        </div>
+
+        <div className='home__feed__section'>
+          <div className='placeholder-remove-warning'>
+            stuff -- element to auto populate
+          </div>
+        </div>
+
+      </div>
 
     </div>
   )
