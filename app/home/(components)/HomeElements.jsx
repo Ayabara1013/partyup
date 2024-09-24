@@ -38,7 +38,7 @@ export const Home = {
         <div className={`relative ${className} action-card ${!className.includes('flex-row') && 'flex-col'} justify-center m-auto px-4 py-8 items-center max-w-md min-h-16 bg-neutral rounded-lg`}>
           {/* {children} */}
 
-          <RearImage />
+          {/* <RearImage /> */}
 
           {/* {first === 'img' && (
             <img

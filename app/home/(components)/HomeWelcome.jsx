@@ -30,8 +30,8 @@ export function HomeWelcome({ className = '' }) {
           <Home.Actions.Card
             className='bg-neutral'
             header={'games'}
-            img={images.games}
-            first='img'
+            // img={images.games}
+            // first='img'
           >
             {/* card */}
           </Home.Actions.Card>
@@ -39,7 +39,7 @@ export function HomeWelcome({ className = '' }) {
           <Home.Actions.Card
             className='bg-neutral'
             header={'stories'}
-            img={images.stories}
+            // img={images.stories}
             // first='img'
           >
             {/* card */}
@@ -48,7 +48,7 @@ export function HomeWelcome({ className = '' }) {
           <Home.Actions.Card
             className='bg-neutral'
             header={'community'}
-            img={images.community}
+            // img={images.community}
             // first='img'
           >
             {/* card */}
@@ -57,7 +57,7 @@ export function HomeWelcome({ className = '' }) {
           <Home.Actions.Card
             className='bg-neutral'
             header={'time'}
-            img={images.time}
+            // img={images.time}
             // first='img'
           >
             {/* card */}
