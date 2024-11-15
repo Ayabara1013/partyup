@@ -44,7 +44,8 @@ export default function Home() {
       {/* <div className='pt-8 px-12 flex flex-col justify-center align-center'>
         <div className='text-center bg-secondary p-4 text-2xl font-bold text-secondary-content rounded-xl'>cta completed</div>
       </div> */}
-      <ChooseYourAdventure />
+      {/* <ChooseYourAdventure /> */}
+      <CYACarousel />
 
     </div>
   )
@@ -210,7 +211,7 @@ function CallToAction(props) {
         <div className='cta-subheader'>no scheduling conflicts, <span className="cta-subheader__accent">ever</span> again</div>
       </div>
 
-      <div className='flex gap-2'>
+      <div className='flex flex-col md:flex-row gap-2'>
         <div className='flex flex-col flex-auto gap-4 m-auto text-center'>
           <div className='m-auto text-[3rem] font-bold max-w-[75%]'>{alltxt.home.cta_txt_1}</div>
           <button className='btn btn-lg px-12 btn-primary m-auto'>{alltxt.home.cta_btn_1}</button>
@@ -227,7 +228,7 @@ function CallToAction(props) {
 
 function ChooseYourAdventure(props) {
   return (
-    <div className='flex gap-12 justify-center'>
+    <div className='carousel flex gap-12 justify-center'>
       <CYACard header={alltxt.home.cya_card_1.header} img="/images/008-spellbook-1.png">
         {alltxt.home.cya_card_1.sub}
       </CYACard>
@@ -240,6 +241,59 @@ function ChooseYourAdventure(props) {
       <CYACard header={alltxt.home.cya_card_4.header} img="/images/058-watching-tv.png">
         {alltxt.home.cya_card_4.sub}
       </CYACard>
+    </div>
+  )
+}
+
+
+function CYACarousel(props) {
+  const btnClass = 'btn btn-circle btn-ghost hover:btn-secondary text-primary-content text-2xl font-bold'
+  const btnContainerClass = "absolute flex left-1 right-1 top-[65%] -translate-y-1/2 transform justify-between"
+
+  return (
+    <div className='p-8'>
+      <div className="carousel w-full gap-4">
+        <div id="slide1" className="carousel-item relative w-full">
+          <CYACard header={alltxt.home.cya_card_1.header} img="/images/008-spellbook-1.png">
+            {alltxt.home.cya_card_1.sub}
+          </CYACard>
+          <div className={btnContainerClass}>
+            <a href="#slide4" className={btnClass}>❮</a>
+            <a href="#slide2" className={btnClass}>❯</a>
+          </div>
+        </div>
+
+        <div id="slide2" className="carousel-item relative w-full">
+          <CYACard header={alltxt.home.cya_card_2.header} img="/images/038-adventure-1.png">
+            {alltxt.home.cya_card_2.sub}
+          </CYACard>
+          <div className={btnContainerClass}>
+            <a href="#slide1" className={btnClass}>❮</a>
+            <a href="#slide3" className={btnClass}>❯</a>
+          </div>
+        </div>
+
+        <div id="slide3" className="carousel-item relative w-full">
+          <CYACard header={alltxt.home.cya_card_3.header} img="/images/042-epidemiology.png">
+            {alltxt.home.cya_card_3.sub}
+          </CYACard>
+          <div className={btnContainerClass}>
+            <a href="#slide2" className={btnClass}>❮</a>
+            <a href="#slide4" className={btnClass}>❯</a>
+          </div>
+        </div>
+        
+        <div id="slide4" className="carousel-item relative w-full">
+          <CYACard header={alltxt.home.cya_card_4.header} img="/images/058-watching-tv.png">
+            {alltxt.home.cya_card_4.sub}
+          </CYACard>
+          <div className={btnContainerClass}>
+            <a href="#slide3" className={btnClass}>❮</a>
+            <a href="#slide1" className={btnClass}>❯</a>
+          </div>
+        </div>
+
+      </div>
     </div>
   )
 }
