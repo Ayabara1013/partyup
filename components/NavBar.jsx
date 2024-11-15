@@ -9,46 +9,58 @@ import { googleSignInPopUp, userAuth } from "@/firebase/base";
 import { ui } from "@/util/ui";
 import Link from 'next/link';
 import { Coming_Soon } from 'next/font/google';
+import { useState } from 'react';
+
+import alltxt from '@/assets/all_text';
+import dir from '@/assets/directory';
 
 export default function Navbar(props) {
+  const [loggedInState, setLoggedInState] = useState(true); // this can be removed / modified when the proper tools or contexts are set up to replace it
+
   return (
     <div className="navbar bg-neutral z-10 ">
 
       <NavbarStart />
-      <NavbarCenter />
+      <NavbarCenter loggedInState={loggedInState} />
       <NavbarEnd />
       
     </div>
   )
 }
 
-const dir = {
-  community: {
-    root: '/error/coming-soon',
-  },
-  create: {
-    root: '/create',
-    character: '/create/character',
-    world: '/create/world',
-    game: '/create/game',
-    community: '/create/community',
-  },
-  discover: '/discover',
-  error: '/error',
-  games: {
-    root: '/games',
-    create: 'games/create',
-    info: '/games/info',
-    myGames: '/games/my-games',
-  },
-  home: '/',
-  library: '/library',
-  play: '/play',
-  user: {
-    settings: '/user/settings',
-  }
-}
 
+// const dir = {
+//   community: {
+//     root: '/error/coming-soon',
+//   },
+//   create: {
+//     root: '/create',
+//     character: '/create/character',
+//     world: '/create/world',
+//     game: '/create/game',
+//     community: '/create/community',
+//   },
+//   discover: '/discover',
+//   error: '/error',
+//   games: {
+//     root: '/games',
+//     create: 'games/create',
+//     info: '/games/info',
+//     myGames: '/games/my-games',
+//   },
+//   home: '/',
+//   library: '/library',
+//   play: '/play',
+//   user: {
+//     settings: '/user/settings',
+//   }
+// }
+
+const styles = {
+  // navbar: '',
+  // navlist: 'gap-4',
+  navitem: '',
+}
 
 
 function NavbarStart(props) {
@@ -81,88 +93,126 @@ function NavbarStart(props) {
   )
 }
 
-function NavbarCenter(props) {
-  // const { item } = props;
+function NavLink({ buttonClasses, linkClasses, text, href='dir.error', children, ...props}) {
 
   return (
-    <div className='navbar-center '>
+    <div className='p-0'>
+      <button className={`btn btn-secondary whitespace-nowrap min-w-[6rem]`}><Link href={href}>{text || children || 'BANANA'}</Link></button>
+    </div>
+  )
+}
+
+function NavbarCenter(props) {
+  return (
+    <div className='navbar-center'>
       <div className='lg:hidden'>
-        <button className='btn btn-secondary whitespace-nowrap'><Link href={dir.play}>play now</Link></button>  
+        <button className='btn btn-secondary whitespace-nowrap'><Link href={dir.play}>play now</Link></button>
       </div>
-
-      <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1 flex flex-row flex-wrap">
-          <li className='flex flex-row border'>
-            <Link className={`btn btn-xs btn-success`} href={dir.discover}>Discover</Link>
+      
+      <div className='navbar-center hidden lg:flex'>
+        <ul className='menu menu-horizontal px-1 flex flex-row flex-wrap gap-4'>
+          <li className={styles.navitem}>
+            <NavLink href={dir.play}>play</NavLink>
           </li>
 
-          <li className='flex flex-row border'>
-            <Link className={`btn btn-xs btn-success`} href={dir.play}>Play</Link>
+          <li className={styles.navitem}>
+            <NavLink href={dir.discover}>discover</NavLink>
           </li>
 
-          <li className='flex flex-row border'>
-            <Link className={`btn btn-xs btn-warning`} href={dir.create.root}>create</Link>
-            <Link className={`btn btn-xs btn-warning`} href={dir.create.character}>character</Link>
-            <Link className={`btn btn-xs btn-warning`} href={dir.create.world}>world</Link>
-            <Link className={`btn btn-xs btn-warning`} href={dir.create.game}>game</Link>
-            <Link className={`btn btn-xs btn-warning`} href={dir.create.community}>community</Link>
+          <li className={styles.navitem}>
+            <NavLink href={dir.user.settings}>tools</NavLink>
           </li>
-
-          <li className='flex flex-row border'>
-            <Link className={`btn btn-xs btn-success`} href={dir.user.settings}>user</Link>
-            <Link className={`btn btn-xs btn-success`} href={dir.user.settings}>user/settings</Link>
-          </li>
-
-          <li className='flex flex-row border'>
-            <Link className={`btn btn-xs btn-primary`} href={dir.games.root}>games</Link>
-            <Link className={`btn btn-xs btn-primary`} href={dir.games.info}>games/info</Link>
-            <Link className={`btn btn-xs btn-primary`} href={dir.games.create}>games/create</Link>
-            <Link className={`btn btn-xs btn-primary`} href={dir.games.myGames}>games/my-games</Link>
-          </li>
-
-          <li className='flex flex-row border'>
-            <Link className={`btn btn-xs btn-primary`} href={dir.library}>library</Link>
-          </li>
-          
-          <li className='flex flex-row border'>
-            <Link className={`btn btn-xs btn-primary`} href={dir.community}>community</Link>
-          </li>
-          {/* <li tabIndex={0}>
-            <details>
-              <summary>Create</summary>
-              <ul className="p-2 bg-accent text-accent-content">
-                <li>
-                  create a...
-                </li>
-                <li>
-                  <Link href='/' className='navbar__link--error'>Character</Link>
-                </li>
-                <li>
-                  <Link href='/' className='navbar__link--error'>World</Link>
-                </li>
-                <li>
-                  <Link href='/' className='navbar__link--error'>Game</Link>
-                </li>
-                <li>
-                  <Link href='/' className='navbar__link--error'>Community</Link>
-                </li>
-              </ul>
-            </details>
-          </li>
-          <li><Link href='/'>Games</Link></li>
-          <li tabIndex={1}>
-            <details>
-              <summary>Community</summary>
-              <ul className="p-2 bg-accent text-accent-content">
-                <li className='px-4'>coming soon!</li>
-              </ul>
-            </details>
-          </li> */}
         </ul>
       </div>
     </div>
   )
 }
+
+// function NavbarCenter(props) {
+//   // const { item } = props;
+
+//   return (
+//     <div className='navbar-center '>
+//       <div className='lg:hidden'>
+//         <button className='btn btn-secondary whitespace-nowrap'><Link href={dir.play}>play now</Link></button>
+//       </div>
+
+//       <div className="navbar-center hidden lg:flex">
+//         <ul className="menu menu-horizontal px-1 flex flex-row flex-wrap">
+//           <li className='flex flex-row border'>
+//             <Link className={`btn btn-xs btn-success`} href={dir.discover}>Discover</Link>
+//             <NavLink href={dir.discover}>navlink test</NavLink>
+//           </li>
+
+//           <li className='flex flex-row border'>
+//             <Link className={`btn btn-xs btn-success`} href={dir.play}>Play</Link>
+//           </li>
+
+//           <li className='flex flex-row border'>
+//             <Link className={`btn btn-xs btn-warning`} href={dir.create.root}>create</Link>
+//             <Link className={`btn btn-xs btn-warning`} href={dir.create.character}>character</Link>
+//             <Link className={`btn btn-xs btn-warning`} href={dir.create.world}>world</Link>
+//             <Link className={`btn btn-xs btn-warning`} href={dir.create.game}>game</Link>
+//             <Link className={`btn btn-xs btn-warning`} href={dir.create.community}>community</Link>
+//           </li>
+
+//           <li className='flex flex-row border'>
+//             <Link className={`btn btn-xs btn-success`} href={dir.user.settings}>user</Link>
+//             <Link className={`btn btn-xs btn-success`} href={dir.user.settings}>user/settings</Link>
+//           </li>
+
+//           <li className='flex flex-row border'>
+//             <Link className={`btn btn-xs btn-primary`} href={dir.games.root}>games</Link>
+//             <Link className={`btn btn-xs btn-primary`} href={dir.games.info}>games/info</Link>
+//             <Link className={`btn btn-xs btn-primary`} href={dir.games.create}>games/create</Link>
+//             <Link className={`btn btn-xs btn-primary`} href={dir.games.myGames}>games/my-games</Link>
+//           </li>
+
+//           <li className='flex flex-row border'>
+//             <Link className={`btn btn-xs btn-primary`} href={dir.library}>library</Link>
+//           </li>
+          
+//           <li className='flex flex-row border'>
+//             <Link className={`btn btn-xs btn-primary`} href={dir.community}>community</Link>
+//           </li>
+//           {/* <li tabIndex={0}>
+//             <details>
+//               <summary>Create</summary>
+//               <ul className="p-2 bg-accent text-accent-content">
+//                 <li>
+//                   create a...
+//                 </li>
+//                 <li>
+//                   <Link href='/' className='navbar__link--error'>Character</Link>
+//                 </li>
+//                 <li>
+//                   <Link href='/' className='navbar__link--error'>World</Link>
+//                 </li>
+//                 <li>
+//                   <Link href='/' className='navbar__link--error'>Game</Link>
+//                 </li>
+//                 <li>
+//                   <Link href='/' className='navbar__link--error'>Community</Link>
+//                 </li>
+//               </ul>
+//             </details>
+//           </li>
+//           <li><Link href='/'>Games</Link></li>
+//           <li tabIndex={1}>
+//             <details>
+//               <summary>Community</summary>
+//               <ul className="p-2 bg-accent text-accent-content">
+//                 <li className='px-4'>coming soon!</li>
+//               </ul>
+//             </details>
+//           </li> */}
+//         </ul>
+//       </div>
+//     </div>
+//   )
+// }
+
+
 
 export function NavbarEnd(props) {
   // const { item } = props;

@@ -1,0 +1,17 @@
+
+.cta-banner {
+  @apply text-center
+}
+
+.cta-header {
+  @apply text-primary font-semibold;
+  font-size: 4rem;
+}
+
+.cta-subheader {
+  font-size: 2rem;
+}
+
+.cta-subheader__accent {
+  @apply text-accent;
+}
