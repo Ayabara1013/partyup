@@ -120,6 +120,10 @@ function NavbarCenter(props) {
           </li>
 
           <li className={styles.navitem}>
+            <NavLink href={dir.games.info}>info</NavLink>
+          </li>
+
+          <li className={styles.navitem}>
             <NavLink href={dir.user.settings}>tools</NavLink>
           </li>
         </ul>

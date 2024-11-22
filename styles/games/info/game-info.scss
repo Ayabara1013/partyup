@@ -92,3 +92,16 @@ $banner-height: 6rem;
 
 
 
+
+.game-details {
+  &__players {
+    @apply flex gap-4;
+    &__player-card {
+      @apply px-4 py-2 bg-primary rounded-md text-primary-content text-lg font-normal;
+
+      & .--username, .--character-name {
+        @apply text-secondary-content font-semibold;
+      }
+    }
+  }
+}

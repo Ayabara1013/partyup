@@ -4,7 +4,8 @@ import '@styles/games/info/game-info.scss';
 
 import { content } from '@/app/discover/page';
 import PlayerListing from '@/app/games/info/(components)/PlayerListing';
-import { useState } from 'react';
+import { use, useState } from 'react';
+import timeSince from '@/util/timeSince';
 
 
 export default function GameInfo(props) {
@@ -36,54 +37,6 @@ export default function GameInfo(props) {
       )
     }
   }
-
-  return (
-    <div className='game-info page-wrapper'>
-      <div className='banner'>
-        <img src={content.imageUrl} alt="" className='w-full' />
-        <div className='banner__play-button'>PLAY</div>
-      </div>
-
-      <div className='details-wrapper flex flex-col border p-4'>
-        <div className='text-xl text-primary'>game name</div>
-        <div className='flex justify-between'>
-          <div>
-            <div>system - dnd 5re</div>
-            <div>players - 4/5</div>
-            <div>dm - @name</div>
-          </div>
-
-          <button className='btn btn-primary'>edit game details</button>
-        </div>
-
-        <div className='divider'></div>
-
-        <div>
-          forth earth score small inch cold send take information branch rich simple rocky division slight underline attempt ride health rate heard require film certain
-        </div>
-
-        <div className='divider'></div>
-
-        <div className='flex flex-col gap-4'>
-          <div className='text-xl text-primary'>players</div>
-
-          <div className='border'>
-            <div className='text-lg'>active players</div>
-            <div className='flex gap-2 justify-center'>
-              <button className='btn btn-sm btn-primary'>@KateAdkins</button>
-              <button className='btn btn-sm btn-neutral text-primary'>@xXKittenLoverXx</button>
-              <button className='btn btn-sm btn-neutral text-primary'>@JohnCena</button>
-            </div>
-          </div>
-
-          <ExamplePlayerCard />
-          <ExamplePlayerCard playerName='@xXKittenLoverXx'/>
-          <ExamplePlayerCard playerName="@JohnCena" />
-        </div>
-
-      </div>
-    </div>
-  )
 
   return (
     <div className={`game-info `}>
@@ -129,6 +82,10 @@ export default function GameInfo(props) {
                 <li><a href="#junker-town">junker town</a></li>
                 <li><a href="#the-myconids">the myconids</a></li>
               </ul>
+              
+              {/* IMPORTANT ERROR!
+                  I found an error where if you click on one of the list links for the scrolling text box, it will push the page down past it's scroll limit, and you cant get back up
+              */}
 
             </ul>
           </div>
@@ -138,24 +95,24 @@ export default function GameInfo(props) {
   )
 }
 
-function ExamplePlayerCard({playerName = "KateAdkins", characterName = '"Cloud" Mountain Tree', characterRace = 'Tabaxi', characterClass = 'Bard', ...props}) {
-  return (
-    <div className='flex p-4 bg-neutral rounded items-center'>
-      <div>
-        <div>
-          <span className='text-primary hover:underline'>{playerName}</span> as <span className='text-primary hover:underline'>{characterName}</span> the <span className='text-primary hover:underline'>{characterRace} {characterClass}</span>
-        </div>
+// function ExamplePlayerCard({playerName = "KateAdkins", characterName = '"Cloud" Mountain Tree', characterRace = 'Tabaxi', characterClass = 'Bard', ...props}) {
+//   return (
+//     <div className='flex p-4 bg-neutral rounded items-center'>
+//       <div>
+//         <div>
+//           <span className='text-primary hover:underline'>{playerName}</span> as <span className='text-primary hover:underline'>{characterName}</span> the <span className='text-primary hover:underline'>{characterRace} {characterClass}</span>
+//         </div>
 
-        <div>Role: Player</div>
-      </div>
+//         <div>Role: Player</div>
+//       </div>
 
-      <div className="flex flex-col gap-2">
-        <button className='btn btn-sm btn-primary'>edit</button>
-        <button className='btn btn-sm btn-primary'>active</button>
-      </div>
-    </div>
-  )
-}
+//       <div className="flex flex-col gap-2">
+//         <button className='btn btn-sm btn-primary'>edit</button>
+//         <button className='btn btn-sm btn-primary'>active</button>
+//       </div>
+//     </div>
+//   )
+// }
 
 
 function PageTitle(props) {
@@ -201,6 +158,113 @@ function PlayersCard({ content, playersRemaining, displayPlayers, displayEmptySl
     </div>
   )
 }
+
+// function ActivePlayerBadge(playerName, lastActive) {
+//   const lastActiveFormatted = () => {
+//     const string = '2h'
+//     return string;
+//   } 
+
+//   /**
+//    * this of course could be done with {player} as a prop, and then player.username and player.lastactive could be extracted through that
+//    */
+
+//   return (
+//     <div className='px-4 py-2'>
+//       <div>{playerName}</div>
+//       <div>{lastActiveFormatted}</div>
+//     </div>
+//   )
+// }
+
+
+// const why_was_this_element_here = () => {
+  
+
+//   // return (
+//   //   <div className='game-info page-wrapper'>
+
+//   //     {/* <div className='tb1 broad-page-wrapper-thing h-screen flex flex-col gap-4'>
+//   //       <div className='tb2 flex-col-4 content-wrapper justify-center w-2/3 mx-auto'>
+//   //         <div className='w-full bg-primary rounded text-center text-primary-content text-2xl font-semibold'>
+//   //           Age of Ashes
+//   //         </div>
+
+//   //         <img className='border m-auto object-none rounded' src='https://cdn.paizo.com/d960ad1b-9967-00f9-1158-72274b18312d/1c3193bf-95fe-4b36-baae-180ba2cfc13f/AgeofAshesLogo_717x250.png' />
+
+//   //         <div className='game-details bg-neutral p-4 rounded-lg'>
+//   //           <div className='game-details__title'>
+//   //             <span className="text-primary">Age of Ashes</span>: a <span className="text-primary">Pathfinder 2nd Edition</span> Adventure by <span className="text-primary">Timbo_Slice</span>
+//   //           </div>
+
+//   //           <div className='game-details__players'>
+//   //             <div>players:</div>
+//   //             <div className='game-details__players__player-card'>
+//   //               <span className="--character-name">john smith</span> as <span className="--username">john smith</span>
+//   //             </div>
+//   //             <div className='game-details__players__player-card'>
+//   //               <span className="--character-name">janice joplin</span> as <span className="--username">ruth bader ginsburg</span>
+//   //             </div>
+//   //             <div className='game-details__players__player-card'>
+//   //               <span className="--character-name">vladimir putin</span> as <span className="--username">ru paul's drag race</span>
+//   //             </div>
+//   //             <div className='game-details__players__player-card'>
+//   //               <span className="--character-name">gimblebop bramblesnarch</span> as <span className="--username">dave</span>
+//   //             </div>
+//   //           </div>
+//   //         </div>
+//   //       </div>
+//   //     </div> */}
+
+
+//   //     <div className='banner'>
+//   //       <img src={content.imageUrl} alt="" className='w-full' />
+//   //       <div className='banner__play-button'>PLAY</div>
+//   //     </div>
+
+//   //     <div className='details-wrapper flex flex-col border p-4'>
+//   //       <div className='text-xl text-primary'>game name</div>
+//   //       <div className='flex justify-between'>
+//   //         <div>
+//   //           <div>system - dnd 5re</div>
+//   //           <div>players - 4/5</div>
+//   //           <div>dm - @name</div>
+//   //         </div>
+
+//   //         <button className='btn btn-primary'>edit game details</button>
+//   //       </div>
+
+//   //       <div className='divider'></div>
+
+//   //       <div>
+//   //         forth earth score small inch cold send take information branch rich simple rocky division slight underline attempt ride health rate heard require film certain
+//   //       </div>
+
+//   //       <div className='divider'></div>
+
+//   //       <div className='flex flex-col gap-4'>
+//   //         <div className='text-xl text-primary'>players</div>
+
+//   //         <div className='border'>
+//   //           <div className='text-lg'>active players</div>
+//   //           <div className='flex gap-2 justify-center'>
+//   //             {/* <ActivePlayerBadge playerName='@xXKittenLoverXx' /> */}
+
+//   //             <button className='btn btn-sm btn-primary'>@KateAdkins</button>
+//   //             <button className='btn btn-sm btn-neutral text-primary'>@xXKittenLoverXx</button>
+//   //             <button className='btn btn-sm btn-neutral text-primary'>@JohnCena</button>
+//   //           </div>
+//   //         </div>
+
+//   //         <ExamplePlayerCard />
+//   //         <ExamplePlayerCard playerName='@xXKittenLoverXx'/>
+//   //         <ExamplePlayerCard playerName="@JohnCena" />
+//   //       </div>
+
+//   //     </div>
+//   //   </div>
+//   // )
+// }
 
 const FakeArticle = () => {
   return (

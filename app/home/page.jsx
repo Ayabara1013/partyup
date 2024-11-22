@@ -27,6 +27,7 @@ import alltxt from '@/assets/all_text';
 
 import exampleMobile1 from '../../public/images/example-play-screens-mobile-1x.png';
 import CYACard from './(components)/CYACard';
+import { DaisyFooter } from '@/components/footer/Footer';
 
 const coolImages = require("cool-images");
 
@@ -44,8 +45,8 @@ export default function Home() {
       {/* <div className='pt-8 px-12 flex flex-col justify-center align-center'>
         <div className='text-center bg-secondary p-4 text-2xl font-bold text-secondary-content rounded-xl'>cta completed</div>
       </div> */}
-      {/* <ChooseYourAdventure /> */}
-      <CYACarousel />
+      <ChooseYourAdventure />
+      {/* <CYACarousel /> */}
 
     </div>
   )
@@ -228,7 +229,7 @@ function CallToAction(props) {
 
 function ChooseYourAdventure(props) {
   return (
-    <div className='carousel flex gap-12 justify-center'>
+    <div className='carousel flex flex-col md:flex-row gap-12 justify-center'>
       <CYACard header={alltxt.home.cya_card_1.header} img="/images/008-spellbook-1.png">
         {alltxt.home.cya_card_1.sub}
       </CYACard>
