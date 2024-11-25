@@ -113,20 +113,37 @@ const fallenCrown = {
 
 
 const charactersCollection = {
-	character1: {
-		name: 'Kordak Felbryn'
+	'cid-001': {
+		name: 'Cassidy Flynn',
+		userId: 'uid-40ce7e3b-5839-5bb6-b637-e25f83fba2fa',
+		characterId: 'cid-001',
+		gameId: 'gid-4a4404a0-d04c-5bde-8e5c-1cce76c10510',
 	},
-	character2: {
-		name: 'Cassidy Flynn'
+	'cid-002': {
+		name: 'Kordak Felbryn',
+		userId: 'uid-11a0b5c7-c8ee-5d9e-9e46-f232d450cd5d',
+		characterId: 'cid-002',
+		gameId: 'gid-4a4404a0-d04c-5bde-8e5c-1cce76c10510',
 	},
-	character3: {
-		name: 'Ellis Sawyer'
+	'cid-003': {
+		name: 'Ellis Sawyer',
+		userId: 'uid-7a666e49-1c34-5112-934e-3d9e508e4509',
+		characterId: 'cid-003',
+		gameId: 'gid-4a4404a0-d04c-5bde-8e5c-1cce76c10510',
 	},
-	character4: {
-		name: 'Bill Hayden'
+	'cid-004': {
+		name: 'Bill Hayden',
+		userId: 'uid-13a52330-a677-579c-a141-f51673f44daf',
+		characterId: 'cid-004',
+		gameId: 'gid-4a4404a0-d04c-5bde-8e5c-1cce76c10510',
+
 	},
-	character5: {
-		name: 'Ozzie the Bestest Corgo'
+	'cid-005': {
+		// name: 'Ollie the Bestest Corgo',
+		name: 'Ozzie the Bestest Corgo',
+		userId: 'uid-d692ac1b-6c33-50cd-b777-6d306869bfa9',
+		characterId: 'cid-005',
+		gameId: 'gid-4a4404a0-d04c-5bde-8e5c-1cce76c10510',
 	},
 }
 const cc = charactersCollection;
@@ -192,8 +209,13 @@ for (let i = 0; i < 5; i++) {
 }
 
 
-
-
+/**
+ * game id
+ * users array
+ * game system
+ * game name
+ * game master
+ */
 const gamesCollection = {
 	game1: new Game(
 		'gid-4a4404a0-d04c-5bde-8e5c-1cce76c10510',
@@ -218,4 +240,5 @@ export {
 	starborne,
 	gamesCollection,
 	usersCollection,
+	charactersCollection,
 }
