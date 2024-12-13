@@ -39,12 +39,13 @@ class Character {
 }
 
 class Game {
-	constructor(gid, players, system, name, gm) {
+	constructor(gid, players, system, name, gm, totalSeats) {
 		this.gid = gid;
 		this.players = players || [];
 		this.system = system;
 		this.name = name;
 		this.gm = gm;
+		this.totalSeats = totalSeats;
 	}
 }
 

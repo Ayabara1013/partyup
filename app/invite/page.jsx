@@ -9,11 +9,34 @@ import { useState } from 'react';
 
 let numberOfMissingPlayers = 2;
 let targetGame = gamesCollection.game1;
+let totalSeats = 5;
+
+
+// I dont know why there may be an occasion to use the number of open seats to check the game, but thats what im doing atm now so shush
+const getSeats = (numberOfMissingPlayers, targetGame, totalSeats) => {
+  let seats = [];
+
+  for (let i = 0; i < totalSeats; i++) {
+    if (i < totalSeats - numberOfMissingPlayers) {
+      seats.push(targetGame.players[i]);
+      console.log(seats);
+    }
+  }
+}
 
 
 
 export default function Invite(props) {
   const [slotState, setSlotState] = useState([true, true, true, true, false])
+
+  // const [seats, setSeats] = useState((totalSeats, slotState, numberOfMissingPlayers) => {
+  //   let seats = [];
+  //   for (i = 0; i < totalSeats; i++) {
+  //     if (i =)
+  //   }
+  // })
+
+  const [seats, setSeats] = useState(getSeats(numberOfMissingPlayers, targetGame, totalSeats))
 
 
   return (
@@ -23,7 +46,12 @@ export default function Invite(props) {
           invite a player
         </div>
 
-        <div className='border border-primary p-2 rounded-lg text-center text-opacity-50'>enter email</div>
+        {/* <div className='input border border-primary rounded-lg text-center text-opacity-50'>enter email, this is not an actual text box rn</div> */}
+
+        <input
+          type="text"
+          placeholder="enter email or username"
+          className="input input-bordered input-info w-full max-w-xs" />
 
         <div className='flex flex-col gap-4'>
           <div className='font-medium'>current players</div>
@@ -33,30 +61,10 @@ export default function Invite(props) {
 
               // console.log(user);
               if (index < targetGame.players.length - numberOfMissingPlayers) {
-                return (
-                  // <div className='invite-panel__player-listing flex px-2 py-1 gap-2 bg-neutral-content bg-opacity-20 rounded-lg'>
-                  //   <div className='text-primary'>
-                  //     {index + 1}/{targetGame.players.length}
-                  //   </div>
-
-                  //   <div>
-                  //     <span className="font-semibold">{user.username}</span>{' as '}
-                  //     <span className="font-semibold">{playerCharacter.name}</span>
-                  //   </div>
-                  // </div>
-
-                  <FilledSlot user={user} playerCharacter={playerCharacter} targetGame={targetGame} index={index} />
-                )
+                return <FilledSlot user={user} playerCharacter={playerCharacter} targetGame={targetGame} index={index} />
               }
               else {
-                return (
-                  // <div className='p-2 text-primary-content rounded-lg text-opacity-50'>
-                  //   <span className='p-1 bg-neutral-content bg-opacity-40 rounded-lg'>{`${index + 1}/${targetGame.players.length}`}</span>{' '}
-                  //   <span>unfilled</span>
-                  // </div>
-
-                  <EmptySlot targetGame={targetGame} index={index} slotState={slotState} />
-                )
+                return <EmptySlot targetGame={targetGame} index={index} slotState={slotState} />
               }
             })
           }
@@ -79,15 +87,17 @@ export default function Invite(props) {
  */
 function FilledSlot({ user, playerCharacter, targetGame, index }) {
   return (
-    <div key={index} className='invite-panel__player-listing flex px-2 py-1 gap-2 bg-neutral-content bg-opacity-20 rounded-lg'>
-      <div className='text-primary'>
+    <div key={index} className='invite-panel__player-listing flex p-1 gap-2 bg-neutral-content bg-opacity-20 rounded-lg'>
+      <div className='text-primary m-auto ps-1'>
         {index + 1}/{targetGame.players.length}
       </div>
 
-      <div>
+      <div className='flex-1 m-auto'>
         <span className="font-semibold">{user.username}</span>{' as '}
         <span className="font-semibold">{playerCharacter.name}</span>
       </div>
+
+      {/* <button className='btn btn-primary btn-sm p-1 h-auto hover:btn-accent text-xs'>remove</button> */}
     </div>
   )
 }
@@ -101,13 +111,23 @@ function EmptySlot({ targetGame, index, slotState }) {
   // ^ confirmed by me putting in the text-primary and text-opacity-50 classes
 
   return (
-    <div key={index} className={`${borderStyle} ${textStyle} invite-panel__player-listing flex px-2 py-1 gap-2 bg-neutral-content bg-opacity-20 rounded-lg`}>
-      <div>{index + 1}/{targetGame.players.length}</div>
-      <div>{slotState[index] ? "that dude's email" : 'unfilled' }</div>
+    <div key={index} className={`${borderStyle} ${textStyle} invite-panel__player-listing flex p-1 gap-2 bg-neutral-content bg-opacity-20 rounded-lg`}>
+      <div className='m-auto ps-1'>
+        {index + 1}/{targetGame.players.length}
+      </div>
+
+      <div className='flex-1 m-auto'>
+        {slotState[index] ? "that dude's email" : 'unfilled'}
+      </div>
+
+      {slotState[index] ? <UndoInviteButton slotState={slotState} index={index} /> : null}
     </div>
-    // <div className='p-2 text-primary-content rounded-lg text-opacity-50'>
-    //   <span className='p-1 bg-neutral-content bg-opacity-40 rounded-lg'>{`${index + 1}/${targetGame.players.length}`}</span>{' '}
-    //   <span>unfilled</span>
-    // </div>
+  )
+}
+
+// theres the option of just passing in the bool of the slot, but its also quite possible that more data will be needed, eg, it will very likely need a function to remove that user
+function UndoInviteButton(slotState, index) {
+  return (
+    <button className={`${slotState[index] == false ? 'display-none' : ''} btn btn-ghost btn-xs hover:btn-accent`}>x</button>
   )
 }
