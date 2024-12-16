@@ -3,7 +3,10 @@
 
 import { charactersCollection, gamesCollection, usersCollection } from '@/test/fake firestore/tavern-test-1/collections/firestoreObjects';
 import findCharacterByUserId from '@/util/findCharacterByUserId';
+// import validateEmail from '@/util/validateEmail';
 import { useState } from 'react';
+
+import { validate } from 'email-validator';
 
 
 
@@ -31,6 +34,9 @@ let numberOfMissingPlayers = targetGame.totalSeats - targetGame.players.length;
 // let numberOfMissingPlayers = 2;
 let totalSeats = targetGame.totalSeats;
 
+const validEmailClass = 'text-success border-success';
+const invalidEmailClass = 'text-error border-error';
+
 console.clear();
 console.log(targetGame.name, totalSeats, numberOfMissingPlayers)
 
@@ -46,7 +52,7 @@ export default function Invite(props) {
       else seats.push('empty')
     }
 
-    // console.clear();
+    console.clear();
     console.log('current seat array');
     console.log(seats);
     console.log('------------------------------------------');  
@@ -54,56 +60,94 @@ export default function Invite(props) {
     return seats;
   })
 
+  // text box input value
+  const [inputValue, setInputValue] = useState('');
+
+  const [emailValidity, setEmailvalidity] = useState('');
+
+  // update box
+  const handleChange = (e) => {
+    setInputValue(e.target.value);
+
+    if (validate(inputValue) === false) {
+      setEmailvalidity(invalidEmailClass);
+    }
+    else {
+      setEmailvalidity(validEmailClass);
+    }
+
+    // if (!validateEmail(inputValue)) setEmailvalidity(invalidEmailClass);
+    // else setEmailvalidity(validEmailClass);
+  }
+
+  // add the text boxz value to the last empty seats in the array
+  const handleAddInvite = () => {
+    setSeatState((prevSeatState) => {
+      let updatedSeatState = [...prevSeatState];
+      const newInvite = inputValue;
+      const emptySeatIndex = updatedSeatState.indexOf('empty');
+
+      if (validate(inputvalue) === false) return console.error(`this email is invalid`);
+      ;
+
+      if (emptySeatIndex !== -1) {
+        updatedSeatState[emptySeatIndex] = newInvite;
+      }
+
+      console.log(updatedSeatState);
+      return updatedSeatState;
+    })
+  }
+
+  const handleRemoveInvite = (index) => {
+    setSeatState((prevSeatState) => {
+      let updatedSeatState = [...prevSeatState];
+      
+      console.log(`you are removing the invite for: ${index}`)
+      updatedSeatState[index] = 'empty';
+
+      console.log(updatedSeatState);
+      return updatedSeatState;
+    })
+  }
+
+
   return (
     <div className={`invite-page tb1 h-full flex`}>
-      <div className='border border-secondary flex flex-col m-auto p-4 gap-4 w-1/2 bg-neutral rounded-xl'>
+      <div className='border border-secondary flex flex-col m-auto p-4 gap-4 w-1/3 bg-neutral rounded-xl'>
         <div className='text-center uppercase text-xl text-primary font-bold'>
           invite a player
         </div>
 
-        {/* <div className='input border border-primary rounded-lg text-center text-opacity-50'>enter email, this is not an actual text box rn</div> */}
-
         <input
-          type="text"
+          type="email"
           placeholder="enter email or username"
-          className="input input-bordered input-info w-full max-w-xs" />
+          className={`input input-bordered input-info ${emailValidity} w-full`}
+          value={inputValue}
+          onChange={handleChange}
+          onKeyUp={(e) => {
+            if (e.key === 'Enter') {
+              handleAddInvite();
+            }
+          }}
+        />
 
         <div className='flex flex-col gap-4'>
           <div className='font-medium'>current players</div>
-          {/* {
-            Object.values(usersCollection).map((user, index) => {
-              let playerCharacter = findCharacterByUserId(user.uid);
 
-              // console.log(user);
-              if (index < targetGame.players.length - numberOfMissingPlayers) {
-                return <FilledSlot user={user} playerCharacter={playerCharacter} targetGame={targetGame} index={index} key={index} />
-              }
-              else {
-                return <EmptySlot targetGame={targetGame} index={index} seatState={seatState} key={index} />
-              }
-            })
-          }
-
-          {
-            seats.map {
-            
-            }
-          } */}
-
-          {/* <p>there are {seatState.length} total seats</p>
-          <p>there are {} open seats</p> */}
-
-          <SeatsList targetGame={targetGame} seatState={seatState} />
+          <SeatsList className={'flex-col-2'} targetGame={targetGame} seatState={seatState} handleRemoveInvite={handleRemoveInvite} />
         </div>
 
-        <button className='btn btn-primary m-auto px-6'>confirm</button>
+        <button className='btn btn-primary m-auto px-6' onClick={() => validate(inputValue)}>confirm</button>
 
       </div>
     </div>
   )
 }
-// console.log(seatState);
-function SeatsList({targetGame, seatState}) {
+
+
+
+function SeatsList({className, targetGame, seatState, handleRemoveInvite}) {
 
   let seats = [];
 
@@ -111,22 +155,17 @@ function SeatsList({targetGame, seatState}) {
     if (seatState[i] === 'empty') {
       seats.push(<EmptySlot targetGame={targetGame} seatState={seatState} index={i} key={i} />)
     }
+    else if (typeof seatState[i] === 'string') {
+      seats.push(<EmptySlot targetGame={targetGame} seatState={seatState} index={i} key={i} handleRemoveInvite={handleRemoveInvite} />)
+    }
     else {
-      let user = seatState[i];
-
-      console.log(`user: `, user)
-
-      console.log(`--find by user id------------------------------------`)
-      console.log(findCharacterByUserId(user.uid))
-      console.log(findCharacterByUserId(user.uid).name)
-      
+      let user = seatState[i];      
       seats.push(<FilledSlot user={user} playerCharacter={findCharacterByUserId(user.uid)} targetGame={targetGame} index={i} key={i} />)
     }
   }
 
-
   return (
-    <div className='flex gap-2'>
+    <div className={className}>
       {seats}
     </div>
   )
@@ -157,8 +196,7 @@ function FilledSlot({ user, playerCharacter, targetGame, index }) {
   )
 }
 
-function EmptySlot({ targetGame, index, seatState }) {
-  // console.log(seatState[index])
+function EmptySlot({ targetGame, index, seatState, handleRemoveInvite }) {
 
   let borderStyle = seatState[index] !== 'empty' ? 'border border-primary' : '';
   let textStyle = seatState[index] !== 'empty' ? 'text-primary' : 'text-neutral-content  text-opacity-50';
@@ -172,17 +210,28 @@ function EmptySlot({ targetGame, index, seatState }) {
       </div>
 
       <div className='flex-1 m-auto'>
-        {seatState[index] !== 'empty' ? "that dude's email" : 'unfilled'}
+        {seatState[index] !== 'empty' ? seatState[index] : 'unfilled'}
       </div>
 
-      {seatState[index] ? <UndoInviteButton seatState={seatState} index={index} /> : null}
+      {seatState[index] ? <UndoInviteButton seatState={seatState} index={index} handleRemoveInvite={handleRemoveInvite} /> : null}
     </div>
   )
 }
 
 // theres the option of just passing in the bool of the slot, but its also quite possible that more data will be needed, eg, it will very likely need a function to remove that user
-function UndoInviteButton(seatState, index) {
+function UndoInviteButton({seatState, index, handleRemoveInvite}) {
   return (
-    <button className={`${seatState[index] == false ? 'display-none' : ''} btn btn-ghost btn-xs hover:btn-accent`}>x</button>
+    <button className={`${seatState[index] == false ? 'display-none' : ''} btn btn-ghost btn-xs hover:btn-accent`} onClick={() => handleRemoveInvite(index)}>x</button>
   )
 }
+
+// const handleRemoveInvite = (index) => {
+//   setSeatState((prevSeatState) => {
+//     let updatedSeatState = [...prevSeatState];
+    
+//     updatedSeatState[index] = 'empty';
+
+//     console.log(updatedSeatState);
+//     return updatedSeatState;
+//   })
+// }
