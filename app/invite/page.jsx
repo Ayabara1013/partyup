@@ -87,7 +87,7 @@ export default function Invite(props) {
       const newInvite = inputValue;
       const emptySeatIndex = updatedSeatState.indexOf('empty');
 
-      if (validate(inputvalue) === false) return console.error(`this email is invalid`);
+      if (validate(inputValue) === false) return console.error(`this email is invalid`);
       ;
 
       if (emptySeatIndex !== -1) {
@@ -138,7 +138,9 @@ export default function Invite(props) {
           <SeatsList className={'flex-col-2'} targetGame={targetGame} seatState={seatState} handleRemoveInvite={handleRemoveInvite} />
         </div>
 
-        <button className='btn btn-primary m-auto px-6' onClick={() => validate(inputValue)}>confirm</button>
+        <button className='btn btn-primary m-auto px-6' onClick={() => {
+          if (validate(inputValue) === false) console.error('invalid email entry');
+        }}>confirm</button>
 
       </div>
     </div>
