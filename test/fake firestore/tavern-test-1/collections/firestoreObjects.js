@@ -224,6 +224,7 @@ const gamesCollection = {
 		'SWADE',
 		'Starborne: Mercenaries',
 		uc.user1,
+		7
 	),
 }
 const gc = gamesCollection;

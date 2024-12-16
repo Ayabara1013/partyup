@@ -24,7 +24,7 @@ export default function findCharacterByUserId(userId, gameId=gamesCollection.gam
     return character;
   })
 
-  const target = list.find(character => character.userId === userId)
+  const target = list.find((character) => character.userId === userId)
 
   return target;
 }
