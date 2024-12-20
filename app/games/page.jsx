@@ -1,17 +1,14 @@
 'use client'
 
-import Link from 'next/link';
-import Page from '../page';
+// import Link from 'next/link';
+// import Page from '../page';
 
 import toast from 'react-hot-toast';
 
 import '@styles/games/games.scss'
 import { gamesCollection, usersCollection } from '@/test/fake firestore/tavern-test-1/collections/firestoreObjects';
-import { Seaweed_Script } from 'next/font/google';
 
 export default function Games({ className }) {
-  // console.clear();
-
   // obvious placeholders lol (trying to make things as plug and play while also easy for my testing!)
   const user = usersCollection.user1; 
   const userTotalGames = 3;
@@ -26,27 +23,21 @@ export default function Games({ className }) {
   }
   let canMakeGame = checkCanMakeGame();
 
-
-  
-  console.clear();
-  // console.log(`%ccan make game? ${canMakeGame}`, 'background-color: indianRed');
-
   let create_game_button_style = !isUserPremium && (userTotalGames > freeAllowedGames) ? 'btn-error' : ''; // for invalid numbers
 
-  const handleCreateGameClick = (success) => {
-    if (success) toast.success('hello!')
-    else toast.error(`you have too many games!`);
-  }
+  // const handleCreateGameClick = (success) => {
+  //   if (success) toast.success('hello!')
+  //   else toast.error(`you have too many games!`);
+  // }
 
   const MyGamesList = () => {
     let list = Object.values(gamesCollection);
-    console.log(list);
+    // console.log(list);
 
     return (
       <ul className='games-page__games-list'>
         {
           list.map((game, index) => {
-            // console.log(`\nscanning list of games >> ${index}: [${list[index].name}]`);
             let playerCount = game.players.length;
             let totalSeats = game.totalSeats;
             let minSeats = game.minSeats;
@@ -61,26 +52,15 @@ export default function Games({ className }) {
                     : '';
             
             if (game.players.includes(user)) {
-              // console.log(
-                // `%c[SUCCESS] user is in game [${game.name}]\n`,
-              // 'color: lightGreen');
-
               return (
                 <li className='games-page__games-list__item' key={index}>
                   <GameName game={game} system={true} />
-
-                  {/* <SystemName game={game} /> */}
-                  
-                  {/* <SeatCount style={players_count_style} playerCount={playerCount} totalSeats={totalSeats}  version={1} /> */}
 
                   <PlayersList game={game} scStyle={players_count_style} playerCount={playerCount} totalSeats={totalSeats} version={1}  />
                   
                 </li>
               )
             }
-            // else console.log(
-            //   `%c[FAILURE] user is not in game [${game.name}]\n`,
-            //   'color: indianRed');
           })
         }
       </ul>
@@ -114,9 +94,9 @@ export default function Games({ className }) {
 
 function GameName({ game, ...props }) {
   return (
-    <div className="__game-name">
-      <div className='__game-name__name'>{game.name}</div>
-      <div className={`${!props.system && 'hidden'} __game-name__system`}>{game.system}</div>
+    <div className="games-page__games-list __item__header flex">
+      <div className='games-page__games-list __item__header__name my-auto text-2xl font-semibold text-primary'>{game.name}</div>
+      <div className={`${!props.system && 'hidden'} games-page__games-list __item__header__system my-auto`}>{game.system}</div>
     </div>
   )
 }
@@ -129,45 +109,50 @@ function SystemName({ game }) {
   )
 }
 
-function SeatCount({ style, playerCount, totalSeats, version }) {
+function SeatCount({ className, style, playerCount, totalSeats, version }) {
   return (
-    <div className='__seats-count'>
-      <p className={`${style}`}>players: {playerCount} / {totalSeats}</p>
-      <p className={`${style} ${version === 1 && 'hidden'}`}>current players: {playerCount}</p>
+    <div className={`__seats-count ${className}`}>
+      <p className={`${style}`}>{version !== 1 && 'players: '}{playerCount} / {totalSeats}</p>
+      {/* <p className={`${style} ${version === 1 && 'hidden'}`}>current players: {playerCount}</p>
       <p className={`${style} ${version === 1 && 'hidden'}`}>total seats: {totalSeats}</p>
-      <p className={`${style} ${version === 1 && 'hidden'}`}>remaining seats: {totalSeats - playerCount} </p>
+      <p className={`${style} ${version === 1 && 'hidden'}`}>remaining seats: {totalSeats - playerCount} </p> */}
     </div>
   )
 }
 
 function PlayersList({ game, scStyle, playerCount, totalSeats, version }) {
+  let remainingSeats = totalSeats - playerCount;
+
   const RemainingSeats = () => {
     let seats = [];
-    for (let i = 0; i < totalSeats - playerCount; i++) {
+
+    for (let i = 0; i < remainingSeats; i++) {
+
       seats.push(
-        <li key={i+playerCount+1} className={`__players-list__item --empty`}>open</li>
-      )  
+        <li key={i + playerCount + 1} className={`__players-list__item ${i + 1 + playerCount > totalSeats ? '--error' : '--empty'}`}>
+          open
+        </li>
+      )
     }
+
     return seats;
-  }
-
-  if (game.name === 'Whispers of the Forgotten') {
-    console.clear()
-
-    console.log(game);
   }
 
   return (
     <div className='__players-list'>
       <SeatCount version={version} style={scStyle} playerCount={playerCount} totalSeats={totalSeats} />
 
-      <ul>
+      <div className='__players-list__list'>
         {game.players.map((player, index) => {
-          return <li key={index} className={`__players-list__item --filled`}>{player.username}</li>
+          return (
+            <div key={index} className={`__players-list__item ${index + 1 > totalSeats ? '--error' : '--filled'}`}>
+              {player.username}
+            </div>
+          )
         })}
 
-        {playerCount > totalSeats && <RemainingSeats />}
-      </ul>
+        <RemainingSeats />
+      </div>
     </div>
   )
 }

@@ -423,7 +423,7 @@ assignGamesToUsers();
 assignCharactersToUsers();
 
 
-console.log(uc.user1, 'color: yellow');
+// console.log(uc.user1, 'color: yellow');
 
 
 

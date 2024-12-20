@@ -16,62 +16,60 @@
   @apply flex flex-col gap-4;
 
   &__item {
-    @apply p-4 bg-neutral rounded-lg shadow;
+    @apply flex-col-2 p-4 bg-neutral rounded-lg shadow;
 
-    .__game-name {
-      // @include g.tb2;
-      @apply flex m-auto gap-4 justify-start;
+    // .__game-name {
+    //   @apply flex p-2 gap-2 justify-start align-middle border;
 
-      &__name {
-        // @include g.tb3;
-        @apply text-primary text-lg font-semibold;
-      }
+    //   // &__name {
+    //   //   // @include g.tb3;
+    //   //   @apply m-auto h-auto text-primary text-2xl font-semibold border;
+    //   // }
 
-      &__system {
-        // @include g.tb3;
-        @apply m-auto font-light text-opacity-50;
-      }
-    }
+    //   // &__system {
+    //   //   // @include g.tb3;
+    //   //   @apply m-auto w-fit h-full border text-lg font-light text-opacity-50 text-;
+    //   // }
+    // }
     
     .__seats-count {
-      // @include g.tb1;
-      @apply flex gap-4;
+      // @include g.tb3;
+      @apply flex m-auto gap-4 text-2xl font-bold;
     }
 
-    .__game-system {
-      // @include g.tb1;
-    }
+    // .__game-system {
+    //   // @include g.tb1;
+    // }
 
     .__players-list {
+      // @include g.tb2;
       @apply flex gap-4;
 
-      ul {
-        // @include g.tb1;
-        @apply flex gap-2;
+      &__list {
+        // @include g.tb3;
+        @apply flex flex-1 gap-2;
       }
-
-      // &__item--filled{
-      //   @apply px-2 bg-base-100 font-medium rounded-md;
-      // }
-
-      // &__item--empty{
-      //   @apply px-2 bg-base-100 font-medium rounded-md;
-      // }
     }
   }
 }
 
 
+// min-w-24 is the equivalent of max-w-sm (value wise)
+  // for some reason min-w-24 isnt working
+
 .__players-list__item {
-  @apply px-2 bg-base-100 font-medium rounded-md;
+  @apply px-2 w-full m-auto bg-base-100 text-center font-medium rounded-md;
+  min-width: 3rem;
 
-  // Modifier for filled items
-  // .--filled {
-  //   @apply bg-primary text-primary-content;
-  // }
+  &.--filled {
+    @apply bg-primary text-primary-content;
+  }
 
-  // // Modifier for empty items
-  // .--empty {
-  //   @apply bg-neutral text-neutral-content;
-  // }
+  &.--empty {
+    @apply text-neutral-content;
+  }
+
+  &.--error {
+    @apply bg-error text-error-content;
+  }
 }
