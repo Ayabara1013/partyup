@@ -201,7 +201,7 @@ function FilledSlot({ user, playerCharacter, targetGame, index }) {
 function EmptySlot({ targetGame, index, seatState, handleRemoveInvite }) {
 
   let borderStyle = seatState[index] !== 'empty' ? 'border border-primary' : '';
-  let textStyle = seatState[index] !== 'empty' ? 'text-primary' : 'text-neutral-content  text-opacity-50';
+  let textStyle = seatState[index] !== 'empty' ? 'text-primary' : 'text-neutral-content text-opacity-50';
   // im separating these into 2 different variables in case theres ever a need to do something separate with them in the future, 
   // ^ confirmed by me putting in the text-primary and text-opacity-50 classes
 

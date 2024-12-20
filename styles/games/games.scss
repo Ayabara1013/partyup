@@ -1,0 +1,17 @@
+@use '@styles/globals.scss' as g;
+
+.games-page {
+  @apply border;
+}
+
+.games-page__section {
+  @include g.tb1;
+
+  .section-header {
+    @apply text-2xl font-bold;
+  }
+}
+
+.games-page__games-list__item {
+  @apply bg-neutral rounded-lg shadow;
+}

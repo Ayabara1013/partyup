@@ -1,8 +1,7 @@
 "use client"
 
 
-import { useEffect, useState } from 'react'
-
+import { useState } from 'react'
 
 
 
@@ -10,9 +9,6 @@ const parameterLimits = {
   systems: [],
   maxAllowedPlayers: 4,
 }
-
-
-
 
 export default function GameCreate({ className }) {
   const [params, setParams] = useState({
@@ -125,8 +121,6 @@ function ValidCheck({ itemCheck, itemLimit }) {
 
 
 function SafetyChecks({ safetyChecks, className }) {
-  let list = [];
-  // console.log(safetyChecks);
 
   Object.keys(safetyChecks).map((item, index) => {
     return (
@@ -136,7 +130,6 @@ function SafetyChecks({ safetyChecks, className }) {
 
   return (
     <div className='flex gap-2'>
-      {/* {list} */}
       {
         Object.values(safetyChecks).map((item, index) => {
           return (

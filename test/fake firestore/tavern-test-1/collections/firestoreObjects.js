@@ -12,11 +12,13 @@ function getRandomDate() {
 getRandomDate();
 
 class User {
-	constructor(uid, name, games, characters) {
+	constructor(uid, name, games, characters, hoursPlayed, lastActive) {
 		this.uid = uid;
 		this.name = name;
 		this.games = games || [];
 		this.characters = characters || [];
+		this.hoursPlayed = hoursPlayed || 0;
+		this.lastActive = lastActive || null;
 	}
 }
 
@@ -201,7 +203,19 @@ const usersCollection = {
 		hoursPlayed: Math.ceil(Math.random() * 1000) + 1 || 0,
 		lastActive: timeSince('random', 'conversational'),
 		// characters: [cc.character5]
-	}
+	},
+
+	user6: new User('uid-98765432-aaaa-bbbb-cccc-1234567890ab', 'ShadowWalker', [], []),	
+	user7: new User('uid-12345678-abcd-efgh-ijkl-9876543210dc', 'MysticFox', [], []),
+	user8: new User('uid-abcdef12-3456-7890-abcd-efghijklmnop', 'IronCladPaladin', [], []),
+	user9: new User('uid-0a1b2c3d-4e5f-6789-abcd-ef1234567890', 'StormSinger', [], []),
+	user10: new User('uid-10', 'CrimsonVoyager', [], []),
+
+	user11: new User('uid-11', 'EchoHunter', [], []),
+  user12: new User('uid-12', 'SilentSpecter', [], []),
+  user13: new User('uid-13', 'NebulaForge', [], []),
+  user14: new User('uid-14', 'IronTide', [], []),
+  user15: new User('uid-15', 'ShadowCircuit', [], []),
 }
 const uc = usersCollection;
 for (let i = 0; i < 5; i++) {
@@ -218,15 +232,49 @@ for (let i = 0; i < 5; i++) {
  * game master
  */
 const gamesCollection = {
-	game1: new Game(
-		'gid-4a4404a0-d04c-5bde-8e5c-1cce76c10510',
-		[uc.user1, uc.user2, uc.user3, uc.user4, uc.user5],
-		'SWADE',
-		'Starborne: Mercenaries',
-		uc.user1,
-		7
+  game1: new Game(
+    'gid-4a4404a0-d04c-5bde-8e5c-1cce76c10510',
+    [uc.user1, uc.user2, uc.user3, uc.user4, uc.user5],
+    'starfinder 2e',
+    'Starborne: Mercenaries',
+    uc.user1,
+    7
+  ),
+  game2: new Game(
+    'gid-fd21f907-e0f4-5bbc-8bc6-898398cf0bc6',
+    [uc.user1, uc.user2, uc.user3, uc.user4, uc.user5],
+    'dungeons & dragons 5e',
+    'Realm of the Silver Flame',
+    uc.user1,
+    6
+  ),
+  game3: new Game(
+    'gid-8369cb0a-15ab-5a7a-a529-a9c4fdc7988b',
+    [uc.user1, uc.user2, uc.user3, uc.user4, uc.user5],
+    'cyberpunk red',
+    'Neon City Chronicles',
+    uc.user1,
+    5
+  ),
+  game4: new Game(
+    'gid-ff19187f-e5b6-584a-8345-2601bf47194d',
+    [uc.user1, uc.user2, uc.user3, uc.user4, uc.user5],
+    'pathfinder 2e',
+    'Shadows Over Eldarion',
+    uc.user1,
+    8
+  ),
+  game5: new Game(
+    'gid-d2fbf9fc-bfdc-5f36-94fe-3e10d5f9e5b8',
+    [uc.user1, uc.user2, uc.user3, uc.user4, uc.user5],
+    'call of cthulhu',
+    'Whispers of the Forgotten',
+    uc.user1,
+    6
 	),
-}
+	
+	
+};
 const gc = gamesCollection;
 
 
@@ -243,4 +291,6 @@ export {
 	gamesCollection,
 	usersCollection,
 	charactersCollection,
+	User, Player, Character, Game, System, Message,
+
 }
