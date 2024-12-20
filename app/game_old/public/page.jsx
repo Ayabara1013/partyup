@@ -85,7 +85,7 @@ export default function Page() {
         <span className="text-center mt-5">No public games available</span>
       </div>;
   }
-  console.log(publicGames)
+  // console.log(publicGames)
   return (
     <PageLayout title="Public Games" backHref="/home">
       {(publicGames) ? generateGameList() : <LoadingUi/>}

@@ -33,7 +33,7 @@ export default function Page({ params }) {
       let games = [];
       addArrayToArray(games, activeGames.playerGames, 'id');
       addArrayToArray(games, activeGames.dmGames, 'id');
-      console.log(games, gameId);
+      // console.log(games, gameId);
       for (let game of games) {
         if (game.id === gameId) {
           setItems();

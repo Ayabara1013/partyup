@@ -1,7 +1,7 @@
 @use '@styles/globals.scss' as g;
 
 .games-page {
-  @apply border;
+  @apply p-4 border;
 }
 
 .games-page__section {
@@ -12,6 +12,66 @@
   }
 }
 
-.games-page__games-list__item {
-  @apply bg-neutral rounded-lg shadow;
+.games-page__games-list {
+  @apply flex flex-col gap-4;
+
+  &__item {
+    @apply p-4 bg-neutral rounded-lg shadow;
+
+    .__game-name {
+      // @include g.tb2;
+      @apply flex m-auto gap-4 justify-start;
+
+      &__name {
+        // @include g.tb3;
+        @apply text-primary text-lg font-semibold;
+      }
+
+      &__system {
+        // @include g.tb3;
+        @apply m-auto font-light text-opacity-50;
+      }
+    }
+    
+    .__seats-count {
+      // @include g.tb1;
+      @apply flex gap-4;
+    }
+
+    .__game-system {
+      // @include g.tb1;
+    }
+
+    .__players-list {
+      @apply flex gap-4;
+
+      ul {
+        // @include g.tb1;
+        @apply flex gap-2;
+      }
+
+      // &__item--filled{
+      //   @apply px-2 bg-base-100 font-medium rounded-md;
+      // }
+
+      // &__item--empty{
+      //   @apply px-2 bg-base-100 font-medium rounded-md;
+      // }
+    }
+  }
+}
+
+
+.__players-list__item {
+  @apply px-2 bg-base-100 font-medium rounded-md;
+
+  // Modifier for filled items
+  // .--filled {
+  //   @apply bg-primary text-primary-content;
+  // }
+
+  // // Modifier for empty items
+  // .--empty {
+  //   @apply bg-neutral text-neutral-content;
+  // }
 }

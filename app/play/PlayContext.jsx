@@ -9,7 +9,7 @@ export function PlayProvider({ children }) {
   const [windowState, setWindowState] = useState([false, true, false]);
 
   useEffect(() => {
-    console.log(windowState);
+    // console.log(windowState);
   }, [windowState])
 
   return (

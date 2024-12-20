@@ -1,35 +1,86 @@
-
+'use client'
 
 import Link from 'next/link';
 import Page from '../page';
 
+import toast from 'react-hot-toast';
+
 import '@styles/games/games.scss'
 import { gamesCollection, usersCollection } from '@/test/fake firestore/tavern-test-1/collections/firestoreObjects';
+import { Seaweed_Script } from 'next/font/google';
 
 export default function Games({ className }) {
+  // console.clear();
 
+  // obvious placeholders lol (trying to make things as plug and play while also easy for my testing!)
   const user = usersCollection.user1; 
-  // obvious placeholder lol (trying to make things as plug and play while also easy for my testing!)
+  const userTotalGames = 3;
+  const freeAllowedGames = 1;
+  const isUserPremium = false;
+
+
+  let checkCanMakeGame = () => {
+    if (isUserPremium) return true;
+    else if (userTotalGames < freeAllowedGames) return true;
+    else return false;
+  }
+  let canMakeGame = checkCanMakeGame();
+
+
+  
+  console.clear();
+  // console.log(`%ccan make game? ${canMakeGame}`, 'background-color: indianRed');
+
+  let create_game_button_style = !isUserPremium && (userTotalGames > freeAllowedGames) ? 'btn-error' : ''; // for invalid numbers
+
+  const handleCreateGameClick = (success) => {
+    if (success) toast.success('hello!')
+    else toast.error(`you have too many games!`);
+  }
 
   const MyGamesList = () => {
     let list = Object.values(gamesCollection);
+    console.log(list);
 
     return (
-      <ul>
+      <ul className='games-page__games-list'>
         {
           list.map((game, index) => {
-            console.clear();
-            console.log(`\niterating through list of game > item ${index}`);
+            // console.log(`\nscanning list of games >> ${index}: [${list[index].name}]`);
+            let playerCount = game.players.length;
+            let totalSeats = game.totalSeats;
+            let minSeats = game.minSeats;
 
+            let players_count_style =
+            playerCount === totalSeats
+                ? 'text-success'
+                : playerCount > totalSeats
+                  ? 'text-error'
+                  : playerCount < minSeats
+                    ? 'text-warning'
+                    : '';
+            
             if (game.players.includes(user)) {
-              console.log(` player is in game [${game.name}]`);
+              // console.log(
+                // `%c[SUCCESS] user is in game [${game.name}]\n`,
+              // 'color: lightGreen');
+
               return (
                 <li className='games-page__games-list__item' key={index}>
-                  <p>{game.name}</p>
+                  <GameName game={game} system={true} />
+
+                  {/* <SystemName game={game} /> */}
+                  
+                  {/* <SeatCount style={players_count_style} playerCount={playerCount} totalSeats={totalSeats}  version={1} /> */}
+
+                  <PlayersList game={game} scStyle={players_count_style} playerCount={playerCount} totalSeats={totalSeats} version={1}  />
+                  
                 </li>
               )
             }
-            else console.error(`user is not in game [${game.name}]\n`);
+            // else console.log(
+            //   `%c[FAILURE] user is not in game [${game.name}]\n`,
+            //   'color: indianRed');
           })
         }
       </ul>
@@ -43,7 +94,9 @@ export default function Games({ className }) {
       <div className='games-page__section'>
         <p className='section-header'>create a game</p>
 
-        <button className='btn btn-primary'>create a game</button>
+        <button className={`btn ${create_game_button_style}`} onClick={() => {canMakeGame ? toast.success('permission true') : toast.error('you do not have permission to make a new game')}}>create a game</button>
+
+        <button disabled={true} className='btn btn-primary' onClick={() =>toast(`hello world`)}>toast</button>
       </div>
 
       <div className='games-page__section'>
@@ -58,6 +111,67 @@ export default function Games({ className }) {
     </div>
   )
 }
+
+function GameName({ game, ...props }) {
+  return (
+    <div className="__game-name">
+      <div className='__game-name__name'>{game.name}</div>
+      <div className={`${!props.system && 'hidden'} __game-name__system`}>{game.system}</div>
+    </div>
+  )
+}
+
+function SystemName({ game }) {
+  return (
+    <div className='__game-system'>
+      <p>system: {game.system}</p>
+    </div>
+  )
+}
+
+function SeatCount({ style, playerCount, totalSeats, version }) {
+  return (
+    <div className='__seats-count'>
+      <p className={`${style}`}>players: {playerCount} / {totalSeats}</p>
+      <p className={`${style} ${version === 1 && 'hidden'}`}>current players: {playerCount}</p>
+      <p className={`${style} ${version === 1 && 'hidden'}`}>total seats: {totalSeats}</p>
+      <p className={`${style} ${version === 1 && 'hidden'}`}>remaining seats: {totalSeats - playerCount} </p>
+    </div>
+  )
+}
+
+function PlayersList({ game, scStyle, playerCount, totalSeats, version }) {
+  const RemainingSeats = () => {
+    let seats = [];
+    for (let i = 0; i < totalSeats - playerCount; i++) {
+      seats.push(
+        <li key={i+playerCount+1} className={`__players-list__item --empty`}>open</li>
+      )  
+    }
+    return seats;
+  }
+
+  if (game.name === 'Whispers of the Forgotten') {
+    console.clear()
+
+    console.log(game);
+  }
+
+  return (
+    <div className='__players-list'>
+      <SeatCount version={version} style={scStyle} playerCount={playerCount} totalSeats={totalSeats} />
+
+      <ul>
+        {game.players.map((player, index) => {
+          return <li key={index} className={`__players-list__item --filled`}>{player.username}</li>
+        })}
+
+        {playerCount > totalSeats && <RemainingSeats />}
+      </ul>
+    </div>
+  )
+}
+
 
 
 

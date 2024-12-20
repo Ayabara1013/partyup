@@ -37,8 +37,8 @@ let totalSeats = targetGame.totalSeats;
 const validEmailClass = 'text-success border-success';
 const invalidEmailClass = 'text-error border-error';
 
-console.clear();
-console.log(targetGame.name, totalSeats, numberOfMissingPlayers)
+// console.clear();
+// console.log(targetGame.name, totalSeats, numberOfMissingPlayers)
 
 
 export default function Invite(props) {
@@ -52,10 +52,10 @@ export default function Invite(props) {
       else seats.push('empty')
     }
 
-    console.clear();
-    console.log('current seat array');
-    console.log(seats);
-    console.log('------------------------------------------');  
+    // console.clear();
+    // console.log('current seat array');
+    // console.log(seats);
+    // console.log('------------------------------------------');  
 
     return seats;
   })
@@ -94,7 +94,7 @@ export default function Invite(props) {
         updatedSeatState[emptySeatIndex] = newInvite;
       }
 
-      console.log(updatedSeatState);
+      // console.log(updatedSeatState);
       return updatedSeatState;
     })
   }
@@ -103,10 +103,10 @@ export default function Invite(props) {
     setSeatState((prevSeatState) => {
       let updatedSeatState = [...prevSeatState];
       
-      console.log(`you are removing the invite for: ${index}`)
+      // console.log(`you are removing the invite for: ${index}`)
       updatedSeatState[index] = 'empty';
 
-      console.log(updatedSeatState);
+      // console.log(updatedSeatState);
       return updatedSeatState;
     })
   }

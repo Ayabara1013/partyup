@@ -12,15 +12,25 @@ function getRandomDate() {
 getRandomDate();
 
 class User {
-	constructor(uid, name, games, characters, hoursPlayed, lastActive) {
+	constructor(uid, username, irlname, games, characters, hoursPlayed, lastActive) {
 		this.uid = uid;
-		this.name = name;
+		this.username = username;
+		this.irlname = irlname || null;
 		this.games = games || [];
 		this.characters = characters || [];
 		this.hoursPlayed = hoursPlayed || 0;
 		this.lastActive = lastActive || null;
 	}
 }
+
+/**
+ * regarding name vs username; 
+ * the user class uses the username attribute instead of the name attribute because name would be too ambiguous, 
+ *
+ * the property is specifcially referencing the user's platform-specific username similar to a game character.
+ * 
+ * their irl name can be stored in the irlname property (I am unsure if it would be better to name this irlname or irlName)
+ */
 
 class Player {
 	constructor(uid, game, cid) {
@@ -41,13 +51,14 @@ class Character {
 }
 
 class Game {
-	constructor(gid, players, system, name, gm, totalSeats) {
+	constructor(gid, players, system, name, gm, totalSeats, minSeats) {
 		this.gid = gid;
 		this.players = players || [];
 		this.system = system;
 		this.name = name;
 		this.gm = gm;
 		this.totalSeats = totalSeats;
+		this.minSeats = minSeats || 4;
 	}
 }
 
@@ -152,7 +163,21 @@ const charactersCollection = {
 const cc = charactersCollection;
 
 
+// const getUserGames = (user) => {
+// 	let games = Object.values(gamesCollection).map((game, index) => {
+// 		if (game.includes(user)) return game;
+// 	})
 
+// 	return games;
+// }
+
+// const getUserGames = (user) => {
+// 	let games = Object.values(gamesCollection).filter((game) => {
+// 		return game.players.some((player) => player.uid === user.uid);
+// 	})
+
+// 	return games;
+// }
 
 
 const usersCollection = {
@@ -218,10 +243,6 @@ const usersCollection = {
   user15: new User('uid-15', 'ShadowCircuit', [], []),
 }
 const uc = usersCollection;
-for (let i = 0; i < 5; i++) {
-	let index = i + 1;
-	uc[`user${index}`].characters = [cc[`character${index}`]];
-}
 
 
 /**
@@ -258,31 +279,152 @@ const gamesCollection = {
   ),
   game4: new Game(
     'gid-ff19187f-e5b6-584a-8345-2601bf47194d',
-    [uc.user1, uc.user2, uc.user3, uc.user4, uc.user5],
+    [uc.user1, uc.user2, uc.user3],
     'pathfinder 2e',
     'Shadows Over Eldarion',
-    uc.user1,
+    uc.user2,
     8
   ),
   game5: new Game(
     'gid-d2fbf9fc-bfdc-5f36-94fe-3e10d5f9e5b8',
-    [uc.user1, uc.user2, uc.user3, uc.user4, uc.user5],
+    [uc.user1, uc.user2, uc.user3, uc.user4, uc.user5, uc.user6, uc.user7],
     'call of cthulhu',
     'Whispers of the Forgotten',
-    uc.user1,
+    uc.user3,
     6
 	),
 	
+
+
+  game6: new Game(
+    'gid-6a8d9b27-f3ad-58cb-901b-91b5df874f29',
+    [uc.user2, uc.user3, uc.user4, uc.user5],
+    'vampire: the masquerade',
+    'Bloodlines Requiem',
+    uc.user2,
+    5
+  ),
+  game7: new Game(
+    'gid-2b3c4d5e-6f7a-8g9h-abcd-123456789abc',
+    [uc.user3, uc.user4, uc.user5, uc.user6],
+    'blades in the dark',
+    'The Shadowed Streets',
+    uc.user3,
+    6
+  ),
+  game8: new Game(
+    'gid-8h7g6f5e-4d3c-2b1a-abcd-987654321abc',
+    [uc.user4, uc.user5, uc.user6, uc.user7],
+    'mutants & masterminds',
+    'Emerald Dawn',
+    uc.user4,
+    4
+  ),
+  game9: new Game(
+    'gid-9i8j7k6l-5m4n-3o2p-abcd-654321098abc',
+    [uc.user5, uc.user6, uc.user7, uc.user8],
+    'fate core',
+    'Eclipse Station',
+    uc.user5,
+    5
+  ),
+  game10: new Game(
+    'gid-1a2b3c4d-5e6f-7g8h-abcd-876543210abc',
+    [uc.user6, uc.user7, uc.user8, uc.user9],
+    'powered by the apocalypse',
+    'Broken Skies',
+    uc.user6,
+    6
+	),
 	
+
+
+	game11: new Game(
+    'gid-11a22b33c44d55e66f77',
+    [uc.user6, uc.user7, uc.user8, uc.user9],
+    'starfinder',
+    'The Celestial Shards',
+    uc.user6,
+    5
+  ),
+  game12: new Game(
+    'gid-22b33c44d55e66f77a88',
+    [uc.user7, uc.user8, uc.user9, uc.user10, uc.user11],
+    'dungeons & dragons 5e',
+    'Echoes of Eternity',
+    uc.user7,
+    6
+  ),
+  game13: new Game(
+    'gid-33c44d55e66f77a88b99',
+    [uc.user8, uc.user9, uc.user10, uc.user11, uc.user12],
+    'warhammer fantasy',
+    'The Iron Siege',
+    uc.user8,
+    7
+  ),
+  game14: new Game(
+    'gid-44d55e66f77a88b99c00',
+    [uc.user9, uc.user10, uc.user11, uc.user12, uc.user13],
+    'savage worlds',
+    'Through the Maelstrom',
+    uc.user9,
+    5
+  ),
+  game15: new Game(
+    'gid-55e66f77a88b99c00d11',
+    [uc.user10, uc.user11, uc.user12, uc.user13, uc.user14, uc.user15],
+    'numenera',
+    'Fragments of the Unknown',
+    uc.user10,
+    6
+  ),
 };
 const gc = gamesCollection;
-
-
 
 
 const messagesCollection = {
 
 }
+
+
+
+// db script shiz
+
+const getUserGames = (user) => {
+	let games = Object.values(gamesCollection).filter((game) => {
+		return game.players.some((player) => player.uid === user.uid)
+	})
+
+	return games;
+}
+
+const assignGamesToUsers = () => {
+	Object.values(usersCollection).forEach((user) => {
+		user.games = getUserGames(user);
+	})
+}
+
+const getUserCharacters = (user) => {
+	let characters = Object.values(charactersCollection).filter((character) => {
+		return character.userId === user.uid;
+	})
+
+	return characters;
+}
+
+const assignCharactersToUsers = () => {
+	Object.values(usersCollection).forEach((user) => {
+		user.characters = getUserCharacters(user);
+	})
+}
+
+assignGamesToUsers();
+assignCharactersToUsers();
+
+
+console.log(uc.user1, 'color: yellow');
+
 
 
 

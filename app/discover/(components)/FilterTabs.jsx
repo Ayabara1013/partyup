@@ -23,7 +23,7 @@ export default function FilterTabs({tabList = ['you', 'did', 'something', 'wrong
 		<div className='mb-4'>
 			<div className="tabs flex">
 				{tabList.map((tab, index) => {
-					console.log(tab, index);
+					// console.log(tab, index);
 					return (
 						<div
 							key={index}
