@@ -53,7 +53,7 @@ export function Test2(props) {
       [ 2, 6 ], [ 2, 6, 'fire' ], [ 1, 4 ], [ -2, 'strength' ]
     ]);
 
-    console.log(`--- rollResult--- `);
+    // console.log(`--- rollResult--- `);
 
     // console.log(rollResult);
     // console.log(rollResult2);
@@ -65,7 +65,7 @@ export function Test2(props) {
     // console.log(rollString);
 
 
-    console.log(rollResult);
+    // console.log(rollResult);
 
     setResult(rollString);
 
@@ -89,8 +89,8 @@ export function Test3(props) {
   ]
 
   const handleClick = () => {
-    console.log(`--- testRolls ---`)
-    for (const item of testRolls) console.log(item)
+    // console.log(`--- testRolls ---`)
+    // for (const item of testRolls) console.log(item)
     setResult(rollDie(6));
   }
 

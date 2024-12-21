@@ -55,7 +55,7 @@ export function roll(rolls) {
         // console.log(`rolled ${result} on a d${val[1]}, sum is now ${results.sum}`)
       }
     } else if (typeof item[1] === 'string') { // add the modifier
-      console.log(`adding [${item[0]}] from [${item[1]}]`)
+      // console.log(`adding [${item[0]}] from [${item[1]}]`)
 
       result = item[0];
       results.mods[item[1]] = result;
@@ -75,17 +75,17 @@ export function typedRoll(rolls) {
   let rollsArray = [];
 
   for (const item of rolls) {
-    console.log(item);
+    // console.log(item);
   }
 
   for (const item of rollsArray) {
-    console.log(item);
+    // console.log(item);
 
     let roll = rollDie(item.die);
 
   }
 
-  console.log(rollsArray);
+  // console.log(rollsArray);
 }
 
 
@@ -175,8 +175,8 @@ export function displayRollResults(array, complexity) {
     default:
       for (const item in rolls) {
         if (rolls[item].length > 0) {
-          console.log(`handling ${item}...`)
-          console.log(item, rolls[item]);
+          // console.log(`handling ${item}...`)
+          // console.log(item, rolls[item]);
 
           for (const value of rolls[item]) {
 

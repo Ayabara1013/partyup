@@ -1,65 +1,58 @@
 @use '@styles/globals.scss' as g;
 
+$layout-breakpoint-small: 768px;
+
 .games-page {
-  @apply p-4 border;
+  @apply p-4 pt-2;
+
+  @media (min-width: $layout-breakpoint-small) {
+    @apply p-12 pt-6;
+  }
 }
 
 .games-page__section {
-  @include g.tb1;
-
+  @apply flex flex-col gap-2;
+  // @include g.tb1;
+  
   .section-header {
     @apply text-2xl font-bold;
   }
+
+  &.--create-game { // &.--find-more-games {
+    // @apply md:flex-row;
+
+    button {
+      flex-grow: 0.5;
+    }
+  }
+
+  &.--games-list {
+    @apply flex flex-col;
+  }
+}
+
+.find-more-games-button {
+  @apply m-auto px-4;
 }
 
 .games-page__games-list {
-  @apply flex flex-col gap-4;
+  @apply flex flex-col gap-2;
 
   &__item {
-    @apply flex-col-2 p-4 bg-neutral rounded-lg shadow;
+    @apply flex-col-2 p-2 bg-neutral rounded-lg shadow;
 
-    // .__game-name {
-    //   @apply flex p-2 gap-2 justify-start align-middle border;
-
-    //   // &__name {
-    //   //   // @include g.tb3;
-    //   //   @apply m-auto h-auto text-primary text-2xl font-semibold border;
-    //   // }
-
-    //   // &__system {
-    //   //   // @include g.tb3;
-    //   //   @apply m-auto w-fit h-full border text-lg font-light text-opacity-50 text-;
-    //   // }
-    // }
-    
     .__seats-count {
       // @include g.tb3;
-      @apply flex m-auto gap-4 text-2xl font-bold;
-    }
-
-    // .__game-system {
-    //   // @include g.tb1;
-    // }
-
-    .__players-list {
-      // @include g.tb2;
-      @apply flex gap-4;
-
-      &__list {
-        // @include g.tb3;
-        @apply flex flex-1 gap-2;
-      }
+      @apply text-2xl font-bold;
     }
   }
 }
 
-
-// min-w-24 is the equivalent of max-w-sm (value wise)
-  // for some reason min-w-24 isnt working
+ // min-w-24 is the equivalent of max-w-sm (value wise)
+// for some reason min-w-24 isnt working
 
 .__players-list__item {
-  @apply px-2 w-full m-auto bg-base-100 text-center font-medium rounded-md;
-  min-width: 3rem;
+  @apply flex-1 px-2 bg-base-100 text-center font-medium rounded-md;
 
   &.--filled {
     @apply bg-primary text-primary-content;
@@ -72,4 +65,10 @@
   &.--error {
     @apply bg-error text-error-content;
   }
+}
+
+// yup it works!
+.__players-list__item:last-child {
+  // @apply flex-grow-[0.5];
+  // color: greenyellow;
 }

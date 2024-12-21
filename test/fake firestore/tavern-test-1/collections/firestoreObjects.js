@@ -5,7 +5,7 @@ import { Timestamp } from 'firebase/firestore';
 function getRandomDate() {
 	const twoWeeksAgo = Date.now() - 14 * 24 * 60 * 60 * 1000;
 	const randomDate = new Date(twoWeeksAgo + Math.random() * 14 * 24 * 60 * 60 * 1000);
-	console.log(randomDate);
+	// console.log(randomDate);
 	return randomDate;
 }
 
