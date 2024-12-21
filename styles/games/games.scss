@@ -1,12 +1,17 @@
 @use '@styles/globals.scss' as g;
 
-$layout-breakpoint-small: 768px;
+$layout-breakpoint-sm: 768px;
+$layout-breakpoint-md: 1200px;
 
 .games-page {
   @apply p-4 pt-2;
 
-  @media (min-width: $layout-breakpoint-small) {
-    @apply p-12 pt-6;
+  @media (min-width: $layout-breakpoint-sm) {
+    @apply m-auto p-8 pt-4 max-w-[80%];
+  }
+
+  @media (min-width: $layout-breakpoint-md) {
+    @apply m-auto p-12 pt-6 max-w-[60%];
   }
 }
 
@@ -18,17 +23,21 @@ $layout-breakpoint-small: 768px;
     @apply text-2xl font-bold;
   }
 
-  &.--create-game { // &.--find-more-games {
-    // @apply md:flex-row;
+  // &.--create-game, &.--find-more-games {
+  //   // @apply md:flex-row;
 
-    button {
-      flex-grow: 0.5;
-    }
-  }
+  //   // button {
+  //   //   flex-grow: 0.5;
+  //   // }
+  // }
 
   &.--games-list {
     @apply flex flex-col;
   }
+}
+
+.button-breakpoints {
+  @apply w-full md:w-[80%] lg:w-[60%];
 }
 
 .find-more-games-button {
