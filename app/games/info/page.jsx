@@ -4,96 +4,163 @@ import '@styles/games/info/game-info.scss';
 
 import { content } from '@/app/discover/page';
 import PlayerListing from '@/app/games/info/(components)/PlayerListing';
-import { use, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import timeSince from '@/util/timeSince';
+import { useApplicationContext } from '@/app/ApplicationContext';
+import { gamesCollection } from '@/test/fake firestore/tavern-test-1/collections/firestoreObjects';
 
 
 export default function GameInfo(props) {
   // const { item } = props;
 
-  const playersCurrent = content.players.current;
-  const playersMax = content.players.max;
-  const playersRemaining = playersMax - playersCurrent;
+  const { temp, setTemp, updateTemp } = useApplicationContext();
 
+  // we need to make sure that all the necessary data is held, so I'll check and set that here
+  useEffect(() => {
+    console.clear();
 
-  const displayPlayers = () => {
-    return content.players.list.map((player, i) => {
-      // console.log(player);
-      return <PlayerListing key={i} player={player} index={i}  />
-    })
-  }
-
-  const displayEmptySlots = () => {
-    const [text, setText] = useState('empty');
-
-    for (let i = 0; i < playersRemaining; i++) {
-      return (
-        <div className='empty-slot flex p-4 justify-center shadow-xl'
-          onMouseEnter={() => setText('add a player?')}
-          onMouseLeave={() => setText('empty')}
-        >
-          <div className='text-lg'>{text}</div>
-        </div>
-      )
+    if (temp.userTotalGames !== temp.user.games.length) {
+      console.log(`%ctotal games innacurate`, `color:red`)
+      console.log(`user total games: `, temp.userTotalGames, temp.user.games.length)
+      updateTemp('userTotalGames', temp.user.games.length);
+      // console.log(`user total games: `, temp.userTotalGames);
     }
-  }
 
+    if (!temp.activeGame) {
+      console.log(`%cno stored active game`, 'color:red');
+      updateTemp('activeGame', temp.user.games[0]);
+    } 
+  }, []);
+
+  // log if the temp cache has been updated
+  useEffect(() => {
+    console.log(`user total games updated: `, temp.userTotalGames, temp.user.games.length)
+  }, [temp.userTotalGames]);
+
+  useEffect(() => {
+    console.log(`active game set: `, temp.activeGame)
+  }, [temp.activeGame]);
+
+
+
+  const game = gamesCollection.game1;
+
+  
   return (
-    <div className={`game-info `}>
-      <div className='banner'>
-        <img src={content.imageUrl} alt="" className='w-full' />
-        <div className='banner__play-button'>PLAY</div>
-      </div>
+    <div className='game-info-page page-wrapper flex flex-col'>
+      <div className="tb1 flex flex-col m-auto gap-4">
+        <div className='tb2 text-opacity-50'>
+          <span className='text-primary text-lg font-semibold'>{game.name}</span> by <span className='text-secondary'>{game.gm.username}</span>
+        </div>
 
-      <div className="details-wrapper grid grid-flow-row-dense grid-cols-3 
-      px-4 py-16 gap-x-8 gap-y-16">
-        <PageTitle />
+        <div className='tb2'>
+          
+        </div>
 
-        <GameDetails />
-
-        <InfoCard playersCurrent={playersCurrent} playersMax={playersMax} playersRemaining={playersRemaining} />
-
-        <PlayersCard content={content} playersRemaining={playersRemaining} displayPlayers={displayPlayers} displayEmptySlots={displayEmptySlots} />
-
-        <div className='story col-span-full grid grid-cols-3 gap-4'>
-          <div className='story__header col-span-full text-3xl text-primary font-black text-center'>
-            The Story So Far:
-          </div>
-
-          <div className='story__article-wrapper col-span-2'>
-            <div className='story-so-far article-overflow-wrapper overflow-hidden'>
-              <FakeArticle />
+        <div className='tb2 flex gap-2'>
+          {[
+            ...Object.values(game.players), // existing players
+            ...Array(game.totalSeats - game.players.length).fill(null), // empty spots
+          ].map((player, index) => (
+            <div
+              className={`px-2 ${player ? 'bg-primary text-primary-content' : 'border-2 border-primary text-primary'} font-medium rounded-md`}
+              key={index}
+            >
+              {player ? player.username : "Empty"}
             </div>
-          </div>
+          ))}
 
-          <div className='table-of-contents flex flex-col justify-center'>
-            <ul>
-              <li><a href="#act-1">act 1</a></li>
-              <ul className='ms-4'>
-                <li><a href="#the-beginning">the beginning</a></li>
-                <li><a href="#the-qube">the q-ube</a></li>
-              </ul>
-
-              <li><a href="#act-2">act 2</a></li>
-
-              <ul className='ms-4'>
-                <li><a href="#the-arena">the arena</a></li>
-                <li><a href="#round-1">round 1</a></li>
-                <li><a href="#junker-town">junker town</a></li>
-                <li><a href="#the-myconids">the myconids</a></li>
-              </ul>
-              
-              {/* IMPORTANT ERROR!
-                  I found an error where if you click on one of the list links for the scrolling text box, it will push the page down past it's scroll limit, and you cant get back up
-              */}
-
-            </ul>
-          </div>
         </div>
       </div>
+
     </div>
   )
+
+  // const playersCurrent = content.players.current;
+  // const playersMax = content.players.max;
+  // const playersRemaining = playersMax - playersCurrent;
+
+
+  // const displayPlayers = () => {
+  //   return content.players.list.map((player, i) => {
+  //     // console.log(player);
+  //     return <PlayerListing key={i} player={player} index={i}  />
+  //   })
+  // }
+
+  // const displayEmptySlots = () => {
+  //   const [text, setText] = useState('empty');
+
+  //   for (let i = 0; i < playersRemaining; i++) {
+  //     return (
+  //       <div className='empty-slot flex p-4 justify-center shadow-xl'
+  //         onMouseEnter={() => setText('add a player?')}
+  //         onMouseLeave={() => setText('empty')}
+  //       >
+  //         <div className='text-lg'>{text}</div>
+  //       </div>
+  //     )
+  //   }
+  // }
+
+  // return (
+  //   <div className={`game-info `}>
+  //     <div className='banner'>
+  //       <img src={content.imageUrl} alt="" className='w-full' />
+  //       <div className='banner__play-button'>PLAY</div>
+  //     </div>
+
+  //     <div className="details-wrapper grid grid-flow-row-dense grid-cols-3 
+  //     px-4 py-16 gap-x-8 gap-y-16">
+  //       <PageTitle />
+
+  //       <GameDetails />
+
+  //       <InfoCard playersCurrent={playersCurrent} playersMax={playersMax} playersRemaining={playersRemaining} />
+
+  //       <PlayersCard content={content} playersRemaining={playersRemaining} displayPlayers={displayPlayers} displayEmptySlots={displayEmptySlots} />
+
+  //       <div className='story col-span-full grid grid-cols-3 gap-4'>
+  //         <div className='story__header col-span-full text-3xl text-primary font-black text-center'>
+  //           The Story So Far:
+  //         </div>
+
+  //         <div className='story__article-wrapper col-span-2'>
+  //           <div className='story-so-far article-overflow-wrapper overflow-hidden'>
+  //             <FakeArticle />
+  //           </div>
+  //         </div>
+
+  //         <div className='table-of-contents flex flex-col justify-center'>
+  //           <ul>
+  //             <li><a href="#act-1">act 1</a></li>
+  //             <ul className='ms-4'>
+  //               <li><a href="#the-beginning">the beginning</a></li>
+  //               <li><a href="#the-qube">the q-ube</a></li>
+  //             </ul>
+
+  //             <li><a href="#act-2">act 2</a></li>
+
+  //             <ul className='ms-4'>
+  //               <li><a href="#the-arena">the arena</a></li>
+  //               <li><a href="#round-1">round 1</a></li>
+  //               <li><a href="#junker-town">junker town</a></li>
+  //               <li><a href="#the-myconids">the myconids</a></li>
+  //             </ul>
+              
+  //             {/* IMPORTANT ERROR!
+  //                 I found an error where if you click on one of the list links for the scrolling text box, it will push the page down past it's scroll limit, and you cant get back up
+  //             */}
+
+  //           </ul>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   </div>
+  // )
 }
+
+
 
 // function ExamplePlayerCard({playerName = "KateAdkins", characterName = '"Cloud" Mountain Tree', characterRace = 'Tabaxi', characterClass = 'Bard', ...props}) {
 //   return (

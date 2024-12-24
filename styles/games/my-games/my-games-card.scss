@@ -1,3 +1,5 @@
 .my-games-card {
-  background-color: hsl(var(--p) /0.2);
+  // background-color: hsl(var(--p) /0.2);
+  // background-color: hsl(var(--p) /1);
+  @apply bg-neutral;
 }

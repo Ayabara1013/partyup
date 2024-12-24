@@ -21,17 +21,18 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" data-theme="night" >
-      {/* <Application> */}
       <Toaster position="bottom-right" />
         <body className={`${inter.className} flex grow flex-col min-h-screen h-screen overflow-hidden`}>
-          <Navbar />
-          {/* {children} */}
-          <div className="app-wrapper background-tile overflow-y-scroll">
-            {children}
-            {/* <DaisyFooter /> */}
-          </div>
+          
+          <Application>
+            <Navbar />
+          
+            <div className="app-wrapper background-tile overflow-y-scroll">
+              {children}
+            </div>
+          </Application>
+          
         </body>
-      {/* </Application> */}
     </html>
   )
 }

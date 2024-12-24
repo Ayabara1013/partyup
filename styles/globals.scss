@@ -369,16 +369,35 @@ textarea {
 
   
 }
+
+// html, body {
+//   overflow: hidden;
+// }
   
-body::before {
-  display: block;
-  content: '';
-  position: absolute;
-  top: 0;
-  width: 100%;
-  height: 120%;
-  margin: -20px 0 0 60px;
+// body::before {
+//   display: block;
+//   content: '';
+//   position: absolute;
+//   top: 0;
+//   width: 100%;
+//   height: 100%; /* Make sure it doesn't overflow */
+//   margin: -20px 0 0 60px;
+//   background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/242759/cplogo.svg);
+//   background-size: 120px 60px;
+//   z-index: -1; /* Keeps it behind all other content */
+// }
+
+
+html {
   background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/242759/cplogo.svg);
-  background-size: 120px 60px;
-  z-index: -1;
+  background-repeat: repeat; /* Make the image repeat */
+  background-size: 120px 60px; /* Size the image */
+  background-position: top left; /* Optional, controls image positioning */
+  margin: 0; /* Optional, removes default body margin */
 }
+
+body {
+  position: relative; /* Ensure body content stays on top */
+  z-index: 1; /* Ensures the body content is above the background */
+}
+

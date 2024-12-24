@@ -50,6 +50,23 @@ class Character {
 	}
 }
 
+// /**
+//  * @typedef {Object} Player
+//  * @property {string} id - The player's unique identifier.
+//  * @property {string} name - The player's name.
+//  * @property {string} status - The player's current status (e.g., "active", "inactive").
+//  */
+
+/**
+ * 
+ * @param {*} gid game id
+ * @param {*} players
+ * @param {*} system
+ * @param {*} name
+ * @param {*} gm
+ * @param {*} totalSeats
+ * @param {*} minSeats
+ */
 class Game {
 	constructor(gid, players, system, name, gm, totalSeats, minSeats) {
 		this.gid = gid;
@@ -420,6 +437,9 @@ const assignCharactersToUsers = () => {
 }
 
 assignGamesToUsers();
+// console.log(`games have been assigned to users`);
+// console.log(usersCollection.user1);
+
 assignCharactersToUsers();
 
 
