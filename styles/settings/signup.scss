@@ -1,0 +1,45 @@
+
+
+.signup-page {
+  // height: 100vh; /* Make the parent container take up full height */
+  // display: flex;
+  // flex-direction: column;
+  // justify-content: center;
+  // align-items: center; /* Center horizontally */
+}
+
+.signup-wrapper {
+  min-width: 66%;
+}
+
+
+.subscription-options {
+
+  .--option {
+
+    .--title {
+      // @apply m-auto text-4xl font-bold text-primary;
+
+    }
+
+    .--price {
+      // @apply m-auto text-6xl font-normal;
+      // font-weight: 400;
+
+      .__currency {
+        // @apply text-lg;
+      }
+    }
+
+    .--subtitle {
+      // @apply text-lg font-bold;
+    }
+  }
+}
+
+
+.--pro-option.--option .--title {
+  @apply text-accent;
+}
+
+

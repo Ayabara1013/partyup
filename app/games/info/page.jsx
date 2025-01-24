@@ -48,16 +48,52 @@ export default function GameInfo(props) {
   
   return (
     <div className='game-info-page page-wrapper flex flex-col'>
-      <div className="tb1 flex flex-col m-auto gap-4">
+      <div className="tb1 flex flex-col m-auto gap-4 max-w-[70%] bg-neutral">
         <div className='tb2 text-opacity-50'>
           <span className='text-primary text-lg font-semibold'>{game.name}</span> by <span className='text-secondary'>{game.gm.username}</span>
         </div>
 
-        <div className='tb2'>
+        {/* <div className='tb2 h-1/2'>
           
+        </div> */}
+        {/* <FakeArticle /> */}
+
+        <div className=' flex gap-2'>
+          <div className='tb3 flex-1'>
+            <div>
+              (schedule)
+            </div>
+            <div>
+              (next game)
+            </div>
+            {/* <div>
+              bio
+            </div> */}
+            <div>
+              (insert some sort of text editor here maybe?)
+            </div>
+          </div>
+
+          <div className='tb3 flex-col-2 justify-start'>
+            {[
+              ...Object.values(game.players), // existing players
+              ...Array(game.totalSeats - game.players.length).fill(null), // empty spots
+            ].map((player, index) => (
+              <div
+                className={`btn btn-sm 
+                  ${player
+                    ? 'btn-primary text-primary-content hover:btn-accent'
+                    : 'btn-outline opacity-75 border-2 text-primary hover:bg-transparent hover:border-accent hover:text-accent hover:opacity100'} 
+                  font-medium rounded-md`}
+                key={index} >
+                {player ? player.username : "Empty"}
+              </div>
+            ))}
+            <button className='btn btn-primary opacity-75 btn-sm hover:btn-accent hover:opacity-100'>invite</button>
+          </div>
         </div>
 
-        <div className='tb2 flex gap-2'>
+        {/* <div className='tb2 flex gap-2'>
           {[
             ...Object.values(game.players), // existing players
             ...Array(game.totalSeats - game.players.length).fill(null), // empty spots
@@ -70,6 +106,10 @@ export default function GameInfo(props) {
             </div>
           ))}
 
+        </div> */}
+
+        <div className='tb2'>
+          (dm tools)
         </div>
       </div>
 
@@ -320,7 +360,7 @@ function PlayersCard({ content, playersRemaining, displayPlayers, displayEmptySl
 //   //             <button className='btn btn-sm btn-primary'>@KateAdkins</button>
 //   //             <button className='btn btn-sm btn-neutral text-primary'>@xXKittenLoverXx</button>
 //   //             <button className='btn btn-sm btn-neutral text-primary'>@JohnCena</button>
-//   //           </div>
+//   //           </div>                    
 //   //         </div>
 
 //   //         <ExamplePlayerCard />
@@ -333,9 +373,9 @@ function PlayersCard({ content, playersRemaining, displayPlayers, displayEmptySl
 //   // )
 // }
 
-const FakeArticle = () => {
+const FakeArticle = ({ className }) => {
   return (
-    <article className='prose m-auto p-8 h-full snap-y rounded-lg scroll-smooth overflow-y-scroll floating-scroll'>
+    <article className={`${className} prose m-auto p-8 max-h-[300px] bg-base-100 snap-y rounded-lg scroll-smooth overflow-y-scroll floating-scroll`}>
       <h1 id='act-1' >Act 1</h1>
       <h2 id='the-beginning' >The Beginning</h2>
       <p>You have woken up on a mysterious planet, completely unaware of where you are or how you got there.</p>
