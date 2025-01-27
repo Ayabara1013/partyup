@@ -201,7 +201,7 @@ const usersCollection = {
 	user1: {
 		uid: 'uid-40ce7e3b-5839-5bb6-b637-e25f83fba2fa',
 		username: 'Tomlite',
-		memberType: `Free`,
+		memberType: `game-master`,
 		memberSince: `10/14/23`,
 		hoursPlayed: Math.ceil(Math.random() * 1000) + 1 || 0,
 		lastActive: timeSince('random', 'conversational'),
@@ -211,7 +211,7 @@ const usersCollection = {
 	user2: {
 		uid: 'uid-11a0b5c7-c8ee-5d9e-9e46-f232d450cd5d',
 		username: 'IceyGeography',
-		memberType: `Free`,
+		memberType: `lite`,
 		memberSince: `10/14/23`,
 		hoursPlayed: Math.ceil(Math.random() * 1000) + 1 || 0,
 		lastActive: timeSince('random', 'conversational'),

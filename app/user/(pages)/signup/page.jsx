@@ -1,19 +1,24 @@
+'use client'
 
+
+import { usersCollection } from '@/test/fake firestore/tavern-test-1/collections/firestoreObjects';
 import '@styles/settings/signup.scss';
 
 
-
+let user = usersCollection.user1;
 
 const fc = { // fake context object
   isUser: true,
+  isSubscriber: true,
+  name: user.username,
+  user: user,
 
   option1: {
     title: 'free',
     price: 0,
     features: [
-      <>can participate in up to 2 games as a player<sup>1</sup></>,
+      <>can participate in up to 2 games<sup>1</sup></>,
       <>1 demo game world<sup>2</sup></>,
-      // <></>
     ],
     smallScript: [
       <>upon joining a game, you will be locked out of joining new games for 1 week. This is tracked per alloted game.</>
@@ -51,11 +56,11 @@ const fc = { // fake context object
   
 }
 
-{/*  */}
+
 
 export default function Signup({ className }) {
   return (
-    <div className={`${className} signup-page tb1 flex p-8 justify-center h-full`}>
+    <div className={`${className} signup-page flex p-8 justify-center h-full`}>
 
       <div className="modal" role="dialog" id="my_modal_8">
         <div className="modal-box flex flex-col gap-4">
@@ -77,10 +82,12 @@ export default function Signup({ className }) {
         </div>
       </div>
 
-      <div className='signup-wrapper tb2 flex-col-4 m-auto p-4 rounded min-w-[66%] min-h-[66%]'>
-        <div className='tb3'>you are an existing user!</div>
+      <div className='signup-wrapper flex flex-col m-auto gap-8'>
+        <div className={`${fc.isSubscriber ? '' : 'hidden'} m-auto px-8 py-2 rounded-xl bg-info text-lg text-accent-content font-semibold md:w-2/3`}>
+          Hi {fc.name}! you are already subscribed, do you wish to change your plan?
+        </div>
 
-        <div className='subscription-options tb3 flex flex-1 gap-4'>
+        <div className='subscription-options flex flex-1 gap-8'>
           
           <SubscriptionOption
             title={fc.option1.title} price={fc.option1.price}
@@ -103,38 +110,43 @@ export default function Signup({ className }) {
 }
 
 export function SubscriptionOption({ className, title = '<ERROR>', price = '<ERROR>', features, smallScript }) {
-  // const list = [
-  //   'hello world',
-  //   'you suck',
-  //   <>a thid point<sup>1</sup></>,
-  // ]
 
+  'use client'
+  // const buttonType = user.memberType.replace(/ /g, "-").toLowerCase() === title
+  //   ? 'btn-disabled'
+  //   : 'btn-primary'; // title == 'Game Master"\
+
+
+  let buttonType = title.replace(/ /g, "-").toLowerCase() == user.memberType ? 'btn-disabled' : 'btn-primary';
+  //user.memberType.replace(/-/g, " ");
+
+  // console.log(user);
+  console.log(buttonType);
+
+  let buttonText = 'join';
 
   return (
-    <div className={`${className} --option flex flex-col flex-1 p-4 justify-center bg-neutral rounded`}>
-      <div className="option-wrapper tb1">
-        <div className='--title tb2'>{title}</div>
-        <div className='--price flex items-start tb2'>
-          <div className='__currency'>$</div>
+    <div className={`${className} --option flex flex-col flex-1 px-4 py-12 bg-neutral rounded-xl`}>
+      <div className="option-wrapper flex-col-4  min-h-[60%]">
+        <div className='--title m-auto text-4xl font-bold text-primary'>
+          {title}
+        </div>
+
+        <div className='--price flex items-start m-auto text-6xl font-normal'>
+          <div className='__currency text-xl'>$</div>
           <div className='__value'>{price}</div>
         </div>
 
-        <div className='flex flex-col p-4 gap-2 tb2'>
-          <div className='--subtitle'>features</div>
+        <div className='flex flex-col p-4 gap-2'>
+          <div className='--subtitle text-lg font-bold'>features</div>
           <ul className='list-disc'>
             {features.map((element, index) => (
               <li key={index}>{element}</li>
             ))}
           </ul>
         </div>
-
-        {/* <div>
-          <ul className='text-xs'>
-            {smallScript.map((element, index) => (
-              <li key={index}><sup>{index} </sup>{element}</li>
-            ))}
-          </ul>
-        </div> */}
+        
+        <button className={`btn ${buttonType}`}>{buttonText}</button>
       </div>
 
     </div>
@@ -162,23 +174,3 @@ export function CancelAttempt({ className }) {
     </div>
   )
 }
-
-
-
-      {/* <div className='signup-wrapper tb2 flex-col-4 w-[60%]'>
-        {fc.isUser && <ExistingUser />}
-        
-        <div className='subscription-options flex gap-4'>
-          <div className='--option flex-1'>
-            <div className='__header text-3xl font-bold'>free</div>
-          </div>
-
-          <div className='--option '>
-            basic
-          </div>
-
-          <div className='--option '>
-            basic
-          </div>
-        </div>
-      </div> */}
