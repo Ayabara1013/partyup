@@ -92,9 +92,15 @@ const capitalizeWords = (string) => {
   }).join(" ");
 }
 
+// J
+const arrayReduce = (array) => {
+  return array.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+}
+
 export {
   sortByKey,
   addArrayToArray,
   validateCommand,
-  capitalizeWords
+  capitalizeWords,
+  arrayReduce, // J
 };

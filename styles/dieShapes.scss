@@ -1,0 +1,20 @@
+
+
+.octagon {
+  width: 200px;
+  height: 200px;
+  background-color: #3498db; /* Blue color for the die */
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  
+  /* Create the octagonal shape */
+  clip-path: polygon(50% 0%, 100% 12.5%, 100% 37.5%, 87.5% 75%, 50% 87.5%, 12.5% 75%, 0% 37.5%, 0% 12.5%);
+  
+  /* Add some box shadow for depth */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
