@@ -47,19 +47,36 @@ export default function Play(props) {
 
 const PlayerTracker = ({ value = 50, isturn = false }) => {
   const [isTurn, setIsTurn] = useState(0);
+  /**
+   * 0 - not turn
+   * 1 - is turn check
+   * 2 - is turn
+   * 3 - confirm not turn
+   */
 
   const handleClick = () => {
     // setIsTurn(!isTurn);
-    if (isTurn < 2) setIsTurn(isTurn + 1);
+    if (isTurn < 3) setIsTurn(isTurn + 1);
     else setIsTurn(0);
   }
+  // this should be changed in the future,
+  /**
+   * basically, the green border (1) can only be on one card at a time, it is the "are you sure?" check, however, multiple users can be "green"
+   */
 
   return (
     <div className='border border-primary flex flex-col flex-1 p-2 h-full rounded'>
       <div className="flex flex-1 gap-2" onClick={handleClick}>
         <div className='flex-1 m-auto text-xl text-primary font-bold'>{isTurn.toString()}</div>
 
-        <div className={`aspect-square ${isTurn == 0 ? `bg-error` : isTurn == 1 ? `border-2 border-success` : `bg-success`} rounded`}></div>
+        <div className={`aspect-square 
+        ${isTurn == 0
+          ? `bg-error`
+          : isTurn == 1
+              ? `border-2 border-success`
+              : isTurn == 2
+                ? `bg-success`
+                : `border-2 border-error`} rounded`}></div>
       </div>
 
       <div className="player-tracker__hp-bar flex flex-1 gap-2 items-center">
