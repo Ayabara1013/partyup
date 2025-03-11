@@ -18,6 +18,65 @@
   height: 20%;
 
   &__element {
-    @apply p-2 grow bg-neutral rounded-xl ;
+    @apply p-2 bg-neutral rounded-xl ;
+  }
+}
+
+
+
+$hp-bar-radius: 0.25rem;
+
+.player-tracker__hp-bar {
+
+  .progress {
+    position: relative;
+    width: 100%;
+    appearance: none;
+    overflow: hidden;
+    // height: 0.5rem /* 8px */;
+    background-color: hsl(var(--bc) / 0.2);
+    // border-radius: var(--rounded-box, 1rem /* 16px */);
+    border-radius: $hp-bar-radius;
+  }
+  .progress::-moz-progress-bar {
+    --tw-bg-opacity: 1;
+    background-color: hsl(var(--bc) / var(--tw-bg-opacity));
+  }
+  .progress:indeterminate {
+    --progress-color: hsl(var(--bc));
+    background-image: repeating-linear-gradient(
+    90deg,
+    var(--progress-color) -1%,
+    var(--progress-color) 10%,
+    transparent 10%,
+    transparent 90%
+    );
+    background-size: 200%;
+    background-position-x: 15%;
+    animation: progress-loading 5s ease-in-out infinite;
+  }
+  .progress::-webkit-progress-bar {
+    background-color: transparent;
+    // border-radius: var(--rounded-box, 1rem /* 16px */);
+    border-radius: $hp-bar-radius;
+  }
+  .progress::-webkit-progress-value {
+    --tw-bg-opacity: 1;
+    // background-color: hsl(var(--bc) / var(--tw-bg-opacity));
+    // border-radius: var(--rounded-box, 1rem /* 16px */);
+    border-radius: $hp-bar-radius;
+  }
+  .progress:indeterminate::-moz-progress-bar {
+    background-color: transparent;
+    background-image: repeating-linear-gradient(
+    90deg,
+    var(--progress-color) -1%,
+    var(--progress-color) 10%,
+    transparent 10%,
+    transparent 90%
+    );
+    background-size: 200%;
+    background-position-x: 15%;
+    animation: progress-loading 5s ease-in-out infinite;
   }
 }

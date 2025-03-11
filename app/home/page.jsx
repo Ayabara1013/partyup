@@ -5,6 +5,8 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import Dir from "@/components/Dir";
 import PageLayout from "@/components/PageLayout";
 
+
+
 import { ui } from "@/util/ui";
 import { userAuth } from "@/firebase/base";
 import { accountLocalStorage } from "@/util/localStorage";
@@ -28,6 +30,7 @@ import alltxt from '@/assets/all_text';
 import exampleMobile1 from '../../public/images/example-play-screens-mobile-1x.png';
 import CYACard from './(components)/CYACard';
 import { DaisyFooter } from '@/components/footer/Footer';
+
 
 const coolImages = require("cool-images");
 
