@@ -1,6 +1,5 @@
 // noinspection JSCheckFunctionSignatures
 import {
-  addDoc,
   and,
   collection,
   deleteDoc,
@@ -14,7 +13,7 @@ import {
   where
 } from "firebase/firestore";
 
-import { db, reconstructDoc, toArray, userAuth } from "@/javascript/firebase/base";
+import {db, reconstructDoc, toArray, userAuth} from "@/javascript/firebase/base";
 import toast from "react-hot-toast";
 
 async function generateGameList(idList, dm) {
@@ -45,10 +44,10 @@ function checkActive(gameDoc) {
       break;
     }
   }
-  return { isDm, isMember };
+  return {isDm, isMember};
 }
 
-export const fbManagement = {
+export const fbGenericManagement = {
   live: {
     userIsDmGames:
       async (callback) => {
@@ -80,35 +79,13 @@ export const fbManagement = {
           let memberList = toArray(snapshot);
           if (memberList.length > 0) {
             toast.success(`${memberList[0].uName} has joined the game: ${game.name}`);
-            callBack(await fbManagement.get.userIsDmGames());
+            callBack(await fbGenericManagement.get.userIsDmGames());
             return toArray(snapshot);
           }
         })
-      }
+      },
   },
   get: {
-    publicGames:
-      async () => {
-        let publicGamesRef = doc(db, `game`, `availableGames`);
-        let availableGameDoc = await getDoc(publicGamesRef);
-        let idList = availableGameDoc.data().idList || [];
-        let gameList = [];
-
-        for (let id of idList) {
-          const gameRef = doc(db, `game`, id);
-          const joinGameRef = doc(db, `game`, id, `joinRequest`, userAuth.currentUser.uid)
-
-          let gameDoc = reconstructDoc(await getDoc(gameRef));
-          let joinRequest = await getDoc(joinGameRef);
-          let { isMember, isDm } = checkActive(gameDoc)
-
-          gameDoc.userRequest = (joinRequest.exists()) ? joinRequest.data().status : 'none';
-          if (!isMember && !isDm) {
-            gameList.push(gameDoc)
-          }
-        }
-        return gameList
-      },
     singleGame:
       async (gameId) => {
         const gameRef = doc(db, `game`, gameId);
@@ -132,79 +109,6 @@ export const fbManagement = {
       },
   },
   dm: {
-    createGame:
-      async (data) => {
-        //Create Game Entry in Database
-        const { uid, displayName } = userAuth.currentUser;
-        const gameCollection = collection(db, `game`);
-        data.uid = uid;
-        data.uName = displayName;
-        data.createdAt = Date.now();
-        data.started = false;
-        data.completed = false;
-        data.completionResult = 'none';
-
-        let newGameRef = await addDoc(gameCollection, data);
-
-        //Create an invite-code for the game
-        const inviteRef = collection(db, 'invite');
-        let invite = await addDoc(inviteRef, {
-          createdAt: Date.now(),
-          expiryTime: 604800000,
-          uid: userAuth.currentUser.uid,
-          uName: userAuth.currentUser.displayName,
-          gameId: newGameRef.id
-        })
-
-        //Add to user list of games they are DM of along with an invite-code to the game.
-        const dmListGameRef = doc(db, `user`, userAuth.currentUser.uid, 'dmList', newGameRef.id);
-        await setDoc(dmListGameRef, {
-          started: false,
-          completed: false,
-          completionResult: '',
-          inviteCode: invite.id
-        })
-
-        //Add game to public list if set to true by user
-        if (data.isPublic) {
-          let publicGamesRef = doc(db, `game`, `availableGames`);
-          let publicGamesDoc = await getDoc(publicGamesRef);
-          let idList = publicGamesDoc.data().idList || [];
-          idList.push(newGameRef.id);
-
-          await updateDoc(publicGamesRef, { idList });
-        }
-      },
-    startGame:
-      async (gameId) => {
-        const uid = userAuth.currentUser.uid;
-        const updateGameRef = doc(db, 'game', gameId);
-        const gameMemberRef = collection(db, 'game', gameId, 'members');
-
-        let game = reconstructDoc(await getDoc(updateGameRef));
-        game.members = toArray(await getDocs(gameMemberRef));
-
-        await updateDoc(updateGameRef, {
-          started: true
-        })
-
-        const updateUserGameRef = doc(db, 'user', uid, 'dmList', gameId);
-        await updateDoc(updateUserGameRef, {
-          started: true
-        })
-
-        for (let member of game.members) {
-          const userPlayerListRef = doc(db, 'user', member.id, 'playerList', gameId);
-          await updateDoc(userPlayerListRef, {
-            started: true
-          })
-        }
-      },
-    updateGame:
-      async (gameId, data) => {
-        const updateGameRef = doc(db, 'game', gameId);
-        await updateDoc(updateGameRef, data)
-      },
     denyJoinRequest:
       async (gameId, userId) => {
         //Delete request Document from game
@@ -217,7 +121,7 @@ export const fbManagement = {
   player: {
     acceptInviteLink:
       async (inviteCode, gameId) => {
-        const { uid, displayName } = userAuth.currentUser;
+        const {uid, displayName} = userAuth.currentUser;
 
         const gameRef = doc(db, 'game', gameId);
         const gameMemberRef = collection(db, 'game', gameId, 'members');
@@ -226,11 +130,11 @@ export const fbManagement = {
         let members = toArray(await getDocs(gameMemberRef));
 
         if (members.length >= game.maxPlayers) {
-          return { success: false, message: 'Game already at player max.' }
+          return {success: false, message: 'Game already at player max.'}
         }
         for (let member of members) {
           if (member.id === uid) {
-            return { success: false, message: 'You are already in this game.' }
+            return {success: false, message: 'You are already in this game.'}
           }
         }
         //Update Game to have user as member

@@ -15,7 +15,7 @@ const messageLocalStorage = {
       return 0;
     },
     set(gameId, messages) {
-      if(messages){
+      if (messages && gameId) {
         localStorage.setItem(`${gameId}-messages`, JSON.stringify(messages));
         localStorage.setItem(`${gameId}-messagesAccessTime`, `${Date.now()}`);
       }
@@ -24,13 +24,13 @@ const messageLocalStorage = {
 }
 const accountLocalStorage = {
   getCurrentGame: () => {
-    return (localStorage) ? localStorage.getItem(`currentGame`): null;
+    return (localStorage) ? localStorage.getItem(`currentGame`) : null;
   },
   setCurrentGame: (gameId) => {
     (localStorage) && localStorage.setItem(`currentGame`, gameId);
   },
   getEditGame: () => {
-    return (localStorage) ? localStorage.getItem(`editGame`): null;
+    return (localStorage) ? localStorage.getItem(`editGame`) : null;
   },
   setEditGame: (gameId) => {
     (localStorage) && localStorage.setItem(`editGame`, gameId);
