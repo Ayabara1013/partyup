@@ -5,6 +5,7 @@ import { ChatWindow } from '@app/play/(components)/ChatWindow'
 import '@styles/play/play.scss'
 import { usePlayContext } from './PlayContext';
 import { useEffect, useRef, useState } from 'react';
+import { Modal } from '@/components/ModalTemplate';
 
 
 
@@ -39,6 +40,9 @@ export default function Play(props) {
             [tools]
           </div>
         </div>
+
+        <Modal>hello world!</Modal>
+
       </div>
 
     </div>
