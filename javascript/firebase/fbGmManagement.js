@@ -1,0 +1,75 @@
+import {addDoc, collection, doc, getDoc, getDocs, Timestamp, updateDoc} from "firebase/firestore";
+import {db, reconstructDoc, toArray, userAuth} from "@/javascript/firebase/base";
+import toast from "react-hot-toast";
+
+
+export const fbGmManagement = {
+  general: {
+    createGame: async (data) => {
+      //data fields: name, uName, system, playerCount, sc0, sc1, sc2, sc3, tags, isPublic
+      //Create Game Entry in Database
+      //Reference is the collection. Let firebase create the gameId using addDoc later.
+      const gamePrivateRef = collection(db, `game-private`);
+
+      data.createdAt = Timestamp.now();
+      data.status = 'recruiting';
+      data.completionResult = 'none';
+      data.reqInitPermission = true;
+
+      let gamePrivateDoc = await addDoc(gamePrivateRef, data);
+      return !!gamePrivateDoc;
+    },
+    updateGame: async (data, gameId) => {
+      //data fields: name, uName, system, playerCount, sc0, sc1, sc2, sc3, tags, isPublic
+      //Create Game Entry in Database
+      //Reference is the collection. Let firebase create the gameId using addDoc later.
+      const gamePrivateRef = doc(db, `game-private`, gameId);
+
+      return await updateDoc(gamePrivateRef, data)
+        .then(() => {
+          return true
+        }).catch(() => {
+          return false
+        });
+    },
+    startGame: async (gameId) => {
+      const gamePrivateRef = doc(db, `game-private`, gameId);
+      return await updateDoc(gamePrivateRef, {
+        status: 'started'
+      })
+        .then(() => {
+          return true
+        }).catch(() => {
+          return false
+        });
+    },
+    getGames: async (uid) => {
+      const gamePrivateListRef = doc(db, `user-private`, uid);
+      let gameIdList = reconstructDoc(await getDoc(gamePrivateListRef)).gmGames;
+      const games = [];
+      for (let gameId of gameIdList) {
+        const gameRef = doc(db, `game-private`, gameId);
+        let tempGame = reconstructDoc(await getDoc(gameRef));
+        let memberListRef = collection(db, `game-private`, gameId, 'members');
+        tempGame.members = toArray(await getDocs(memberListRef));
+        games.push(tempGame);
+      }
+      return games;
+    }
+  },
+  inGame: {
+    chat: {
+      addMessage: async (game, windows, content) => {
+        const gameChatRef = collection(db, `game-private`, game.id, `messages`)
+        await addDoc(gameChatRef, {
+          uid: userAuth.currentUser.uid,
+          content,
+          windows,
+        }).catch((e) => {
+          console.log(e)
+          toast.error('Something went wrong, please try again later.')
+        })
+      },
+    }
+  }
+}

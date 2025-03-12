@@ -1,0 +1,420 @@
+[{
+	"id": 1,
+	"player": "Taylor (DM)",
+	"Tags": ["text"],
+	"Content": "The goblin camp is up ahead. You see flickering firelight and hear some low chatter.",
+	"result": ""
+},
+{
+	"id": 2,
+	"player": "Alex",
+	"Tags": ["text"],
+	"Content": "Alright, gang. Should we sneak in and check for loot?",
+	"result": ""
+},
+{
+	"id": 3,
+	"player": "Jamie",
+	"Tags": ["text"],
+	"Content": "Definitely! I’m all for some treasure.",
+	"result": ""
+},
+{
+	"id": 4,
+	"player": "Morgan",
+	"Tags": ["text"],
+	"Content": "I could really use some healing potions if they have any.",
+	"result": ""
+},
+{
+	"id": 5,
+	"player": "Chris",
+	"Tags": ["text"],
+	"Content": "I just want to smash some goblins!",
+	"result": ""
+},
+{
+	"id": 6,
+	"player": "Alex",
+	"Tags": ["text"],
+	"Content": "Easy there, Hulk. Let’s try to be stealthy first.",
+	"result": ""
+},
+{
+	"id": 7,
+	"player": "Jamie",
+	"Tags": ["text"],
+	"Content": "I can cast a spell to help with that. prepares spell",
+	"result": ""
+},
+{
+	"id": 8,
+	"player": "Morgan",
+	"Tags": ["text"],
+	"Content": "I’ll keep an eye out for traps. stealth check",
+	"result": ""
+},
+{
+	"id": 9,
+	"player": "Chris",
+	"Tags": ["text"],
+	"Content": "grumbles Fine, but I’m ready to charge in if things go south!",
+	"result": ""
+},
+{
+	"id": 10,
+	"player": "Taylor (DM)",
+	"Tags": ["text"],
+	"Content": "Alright, @Alex, !roll for stealth!",
+	"result": ""
+},
+{
+	"id": 11,
+	"player": "system",
+	"Tags": ["system message"],
+	"Content": "waiting for roll from @alex113...",
+	"result": ""
+},
+{
+	"id": 12,
+	"player": "Alex",
+	"Tags": ["system text - player"],
+	"Content": "stealth:",
+	"result": ""
+},
+{
+	"id": 13,
+	"player": "Alex",
+	"Tags": ["roll"],
+	"Content": "23 (18 + 5)",
+	"result": "success"
+},
+{
+	"id": 14,
+	"player": "Alex",
+	"Tags": ["text"],
+	"Content": "oh heck yeah!",
+	"result": ""
+},
+{
+	"id": 15,
+	"player": "Taylor (DM)",
+	"Tags": ["text"],
+	"Content": "Nice, that does it!",
+	"result": ""
+},
+{
+	"id": 16,
+	"player": "Taylor (DM)",
+	"Tags": ["text"],
+	"Content": "You manage to sneak close without being noticed",
+	"result": ""
+},
+{
+	"id": 17,
+	"player": "Jamie",
+	"Tags": ["text", "rich text - italics"],
+	"Content": "(kyleth whispers btw)",
+	"result": ""
+},
+{
+	"id": 18,
+	"player": "Jamie",
+	"Tags": ["text"],
+	"Content": "whispers What do you see, Alex?",
+	"result": ""
+},
+{
+	"id": 19,
+	"player": "Alex",
+	"Tags": ["text"],
+	"Content": "There are three goblins by the fire... and some crates nearby.",
+	"result": ""
+},
+{
+	"id": 20,
+	"player": "Morgan",
+	"Tags": ["text"],
+	"Content": "Maybe we can lure them away?",
+	"result": ""
+},
+{
+	"id": 21,
+	"player": "Chris",
+	"Tags": ["text"],
+	"Content": "I can throw a rock to distract them!",
+	"result": ""
+},
+{
+	"id": 22,
+	"player": "Taylor (DM)",
+	"Tags": ["text"],
+	"Content": "Sounds good. @chris, roll to throw a rock.",
+	"result": ""
+},
+{
+	"id": 23,
+	"player": "Chris",
+	"Tags": ["roll"],
+	"Content": "15 (12 + 3)",
+	"result": "success"
+},
+{
+	"id": 24,
+	"player": "Taylor (DM)",
+	"Tags": ["text"],
+	"Content": "You throw the rock, and it lands in the bushes. The goblins perk up and start to investigate.",
+	"result": ""
+},
+{
+	"id": 25,
+	"player": "Alex",
+	"Tags": ["text"],
+	"Content": "Now’s our chance! sneaks closer to the crates",
+	"result": ""
+},
+{
+	"id": 26,
+	"player": "Jamie",
+	"Tags": ["text"],
+	"Content": "I’ll follow you. casts guidance on Alex You got this!",
+	"result": ""
+},
+{
+	"id": 27,
+	"player": "Morgan",
+	"Tags": ["text"],
+	"Content": "I’ll be right behind you both.",
+	"result": ""
+},
+{
+	"id": 28,
+	"player": "Taylor (DM)",
+	"Tags": ["text"],
+	"Content": "Alright, roll again, Alex, for stealth.",
+	"result": ""
+},
+{
+	"id": 29,
+	"player": "Alex",
+	"Tags": ["roll"],
+	"Content": "16 (11 + 5)",
+	"result": ""
+},
+{
+	"id": 30,
+	"player": "Taylor (DM)",
+	"Tags": ["text"],
+	"Content": "You’re still undetected! You reach the crates.",
+	"result": ""
+},
+{
+	"id": 31,
+	"player": "Chris",
+	"Tags": ["text"],
+	"Content": "Can I charge in now?",
+	"result": ""
+},
+{
+	"id": 32,
+	"player": "Morgan",
+	"Tags": ["text"],
+	"Content": "Hold on! We should check for any traps first.",
+	"result": ""
+},
+{
+	"id": 33,
+	"player": "Taylor (DM)",
+	"Tags": ["text"],
+	"Content": "Good idea. Morgan, roll for investigation.",
+	"result": ""
+},
+{
+	"id": 34,
+	"player": "Morgan",
+	"Tags": ["roll"],
+	"Content": "14 (13 + 1)",
+	"result": "success"
+},
+{
+	"id": 35,
+	"player": "Taylor (DM)",
+	"Tags": ["text"],
+	"Content": "You don’t find any traps, but you notice a couple of healing potions among the loot.",
+	"result": ""
+},
+{
+	"id": 36,
+	"player": "Chris",
+	"Tags": ["text"],
+	"Content": "Sweet! Let’s grab them!",
+	"result": ""
+},
+{
+	"id": 37,
+	"player": "Jamie",
+	"Tags": ["text"],
+	"Content": "I’ll take one for sure.",
+	"result": ""
+},
+{
+	"id": 38,
+	"player": "Alex",
+	"Tags": ["text"],
+	"Content": "Alright, let’s be quick. grabs potions",
+	"result": ""
+},
+{
+	"id": 39,
+	"player": "Taylor (DM)",
+	"Tags": ["text"],
+	"Content": "Just then, one of the goblins turns back and sees you!",
+	"result": ""
+},
+{
+	"id": 40,
+	"player": "Chris",
+	"Tags": ["text"],
+	"Content": "Time to smash! charges in",
+	"result": ""
+},
+{
+	"id": 41,
+	"player": "Jamie",
+	"Tags": ["text"],
+	"Content": "Wait, I’m casting a spell first! rolls for spell",
+	"result": ""
+},
+{
+	"id": 42,
+	"player": "Taylor (DM)",
+	"Tags": ["text"],
+	"Content": "What’s your roll, Jamie?",
+	"result": ""
+},
+{
+	"id": 43,
+	"player": "Jamie",
+	"Tags": ["roll"],
+	"Content": "19 (7 + 12)",
+	"result": "success"
+},
+{
+	"id": 44,
+	"player": "Taylor (DM)",
+	"Tags": ["text"],
+	"Content": "Nice! Your spell hits and one goblin falls!",
+	"result": ""
+},
+{
+	"id": 45,
+	"player": "Morgan",
+	"Tags": ["text"],
+	"Content": "I’ll attack the other one! rolls for attack",
+	"result": ""
+},
+{
+	"id": 46,
+	"player": "Morgan",
+	"Tags": ["roll"],
+	"Content": "12 (10 + 2)",
+	"result": "success"
+},
+{
+	"id": 47,
+	"player": "Taylor (DM)",
+	"Tags": ["text"],
+	"Content": "That hits! You take down another goblin!",
+	"result": ""
+},
+{
+	"id": 48,
+	"player": "Chris",
+	"Tags": ["text"],
+	"Content": "grinning I’ll finish the last one! rolls for attack",
+	"result": ""
+},
+{
+	"id": 49,
+	"player": "Chris",
+	"Tags": ["roll"],
+	"Content": "10 (5 + 5)",
+	"result": "miss"
+},
+{
+	"id": 50,
+	"player": "Taylor (DM)",
+	"Tags": ["text"],
+	"Content": "That misses! The goblin dodges just in time!",
+	"result": ""
+},
+{
+	"id": 51,
+	"player": "Alex",
+	"Tags": ["text"],
+	"Content": "I’ll try to sneak up and finish him! rolls for attack",
+	"result": ""
+},
+{
+	"id": 52,
+	"player": "Alex",
+	"Tags": ["roll"],
+	"Content": "14 (13 + 1)",
+	"result": "success"
+},
+{
+	"id": 53,
+	"player": "Taylor (DM)",
+	"Tags": ["text"],
+	"Content": "You stab the last goblin, and he goes down!",
+	"result": ""
+},
+{
+	"id": 54,
+	"player": "Chris",
+	"Tags": ["text"],
+	"Content": "Yes! Teamwork! 🎉",
+	"result": ""
+},
+{
+	"id": 55,
+	"player": "Morgan",
+	"Tags": ["text"],
+	"Content": "Great job, everyone! Let’s check the rest of the camp.",
+	"result": ""
+},
+{
+	"id": 56,
+	"player": "Jamie",
+	"Tags": ["text"],
+	"Content": "I’ll keep watch while you search.",
+	"result": ""
+},
+{
+	"id": 57,
+	"player": "Taylor (DM)",
+	"Tags": ["text"],
+	"Content": "As you search, you find a map indicating other goblin camps nearby.",
+	"result": ""
+},
+{
+	"id": 58,
+	"player": "Chris",
+	"Tags": ["text"],
+	"Content": "Looks like we have more smashing to do!",
+	"result": ""
+},
+{
+	"id": 59,
+	"player": "Alex",
+	"Tags": ["text"],
+	"Content": "And more treasure to find!",
+	"result": ""
+},
+{
+	"id": 60,
+	"player": "Morgan",
+	"Tags": ["text"],
+	"Content": "Let’s do this!",
+	"result": ""
+}]

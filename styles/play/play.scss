@@ -1,0 +1,17 @@
+.play-page {
+  @media screen and (min-width: 768px) {
+    @apply p-4;
+  }
+}
+
+.chat-row {
+  height: 80%;
+}
+
+.tool-row {
+  height: 20%;
+
+  &__element {
+    @apply p-2 grow bg-neutral rounded-xl ;
+  }
+}

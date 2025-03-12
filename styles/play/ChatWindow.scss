@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+$prompt-bg-focus: bg-primary-focus;
+
+
+
+@layer components {
+  .prompt-popup {
+    @apply bg-primary text-secondary-content;
+    
+    display: flex;
+    flex-direction: column;
+
+    gap: 0.25rem;
+
+    position: absolute;
+    bottom: 3.5rem;
+  }
+  
+  .prompt__option {
+    @apply py-1 px-1.5 bg-primary rounded-lg;
+  
+    &.--selected {
+      @apply bg-primary-focus;
+    }
+  
+    &:hover {
+      @apply bg-primary-focus;
+    }
+  }
+}
+
+
+.chat-window {
+  @apply bg-neutral rounded-xl;
+
+  &.--active {
+    @apply grow;
+  }
+
+  &.inactive {
+    @apply shrink;
+  }
+
+  @media screen and (min-width: 768px) {
+    @apply p-2 gap-4;
+
+    // &.--active {
+    //   @apply grow;
+    // }
+  
+    // &.--inactive {
+    //   @apply shrink;
+    // } 
+  }
+}
+
+.chat-window__header {
+  @apply bg-primary text-primary-content;
+  position: relative;
+  top: -0.5rem;
+  left: -0.5rem;
+  
+  padding: 0.25rem;
+  width: calc(100% + 1rem);
+
+  border-radius: 0.75rem 0.75rem 0 0;
+
+  min-width: 125px;
+  
+  text-align: center;
+  font-size: 1em;
+  font-weight: 600;
+}
+
+
+.closed-window {
+  padding: 0.375rem;
+  background-color: hsl(var(--p) / 0.25);
+  border: none;
+  outline: none;
+}
