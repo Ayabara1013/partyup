@@ -1,13 +1,13 @@
-import { useMemo } from "react";
-import { createEditor } from "slate";
-import { Editable, Slate, withReact } from "slate-react";
+import {useMemo} from "react";
+import {createEditor} from "slate";
+import {Editable, Slate, withReact} from "slate-react";
 
 import {
   editorStyle,
   Element,
   withInlines
-} from "@/components/slatejs/(util)/editorSettings";
-import { editorDefault } from "@/components/slatejs/(util)/defulatValues";
+} from "@/javascript/slateInput/editorSettings";
+import {editorDefault} from "@/javascript/slateInput/defulatValues";
 
 function useCustomEditorHook() {
   const editor = useMemo(() => withInlines(withReact(createEditor())), [])
@@ -17,20 +17,20 @@ function useCustomEditorHook() {
 }
 
 function CustomSlate(props) {
-  let { editor, initialValue = editorDefault.value.default } = props
-  let { readOnly, onKeyDown, onKeyUp } = props;
+  let {editor, initialValue = editorDefault.value.default} = props
+  let {readOnly, onKeyDown, onKeyUp, className} = props;
   let editableProps = {
     renderElement: innerProps => <Element {...innerProps}/>,
-    ...readOnly && { readOnly: true },
+    className,
+    ...readOnly && {readOnly: true},
     ...(!readOnly) && {
       placeholder: "Enter some text...",
-      onKeyDown: onKeyDown,
-      onKeyUp: onKeyUp,
       style: editorStyle,
+      onKeyDown, onKeyUp
     }
   }
   return (
-    <Slate editor={editor} initialValue={initialValue}>
+    <Slate {...{editor, initialValue}}>
       <Editable {...editableProps}/>
     </Slate>
   )

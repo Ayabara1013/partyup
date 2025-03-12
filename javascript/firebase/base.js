@@ -1,9 +1,10 @@
-import { initializeApp } from 'firebase/app';
+import {initializeApp} from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
 
-import { getFirestore } from "firebase/firestore";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {getFirestore} from "firebase/firestore";
+import {getAuth, GoogleAuthProvider, signInWithPopup} from "firebase/auth";
+import toast from "react-hot-toast";
 
 const clientCredentials = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -20,9 +21,10 @@ const db = getFirestore(fireApp);
 const userAuth = getAuth(fireApp);
 
 const googleSignInPopUp = (func) => {
+  toast(`Opening google popup...`)
   signInWithPopup(userAuth, new GoogleAuthProvider()).then(data => {
     if (typeof func === 'function') {
-      func(data);
+      func(data.user);
     }
   })
 }

@@ -3,7 +3,7 @@
 'use client'
 
 import { useEffect, useState } from 'react';
-import './ChatWindow.scss';
+import './chatWindow.scss';
 
 
 
