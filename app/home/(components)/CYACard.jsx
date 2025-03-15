@@ -1,4 +1,4 @@
-import dir from '@/javascript/assets/directory'
+import {dirHref} from '@/javascript/assets/directoryHref'
 import Link from 'next/link'
 
 export default function CYACard({cardInfo, ...props}) {
@@ -14,7 +14,7 @@ export default function CYACard({cardInfo, ...props}) {
 
         {/* header */}
         <div className='btn btn-ghost hover:btn-secondary h-auto text-3xl font-extrabold'>
-          <Link href={href || dir.home}>
+          <Link href={href || dirHref.home}>
             {header || '<MISSING HEADER>'}
           </Link>
         </div>

@@ -1,14 +1,11 @@
 'use client';
 import {createContext, useContext, useRef} from 'react';
-import {usePathname, useRouter} from "next/navigation";
 
 const GameManagerContext = createContext(null);
 
 export function GameManagerProvider({children}) {
-  const {push} = useRouter();
-  const pathname = usePathname()
-
   const gameInfoRefs = {
+    descRef: useRef(null),
     gameNameRef: useRef(null),
     systemRef: useRef(null),
     maxPlayersRef: useRef(null),
@@ -31,7 +28,8 @@ export function GameManagerProvider({children}) {
     return {
       name: gameInfoRefs.gameNameRef.current.value.trim(),
       uid: userDetails.id,
-      uName: userDetails.displayName,
+      uName: userDetails.uName,
+      desc:gameInfoRefs.descRef.current.value,
       system: gameInfoRefs.systemRef.current.value,
       maxPlayers: gameInfoRefs.maxPlayersRef.current.value,
       sc0: gameInfoRefs.sc0Ref.current.checked,
@@ -53,7 +51,7 @@ export function GameManagerProvider({children}) {
 export function useGameManager() {
   const context = useContext(GameManagerContext);
   if (!context) {
-    throw new Error('useGameManager must be used within an GameManagerProvider');
+    throw new Error('useGameManager must be used within a GameManagerProvider');
   }
   return context;
 }

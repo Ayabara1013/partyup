@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react';
-import {displayRollResults, roll, rollDie, typedRoll} from './rolls';
+import {displayRollResults, roll, rollDie, typedRoll} from '@components/rolls';
 
 
 const defHeaderTextClass = 'text-center text-lg font-semibold';

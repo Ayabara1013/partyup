@@ -57,7 +57,7 @@ export const Forms = {
     let input;
     switch (type) {
       case 'select':
-        input = <select className={`select select-primary w-full`} ref={forwardRef} {...props}>{children}</select>;
+        input = <select ref={forwardRef} {...props} className={`select select-primary w-full`}>{children}</select>;
         break;
       case 'checkList':
         input =
@@ -69,16 +69,20 @@ export const Forms = {
       case 'checkbox':
         input =
           <>
-            <input className={`toggle checked:border-primary checked:bg-primary mt-auto mb-auto`}
-                   type={type} ref={forwardRef} {...props}/>
+            <input type={type} ref={forwardRef} {...props}
+                   className={`toggle checked:border-primary checked:bg-primary mt-auto mb-auto`}/>
             <label className={`whitespace-nowrap ${labelClass}`}>
               {labelText} {labelSubText && <span className="opacity-50"> {labelSubText}</span>}
             </label>
           </>
         break;
+      case 'textarea':
+        input = <textarea ref={forwardRef} placeholder={placeholder} {...props}
+                          className={`textarea textarea-sm textarea- input-bordered ${className} w-full`}/>
+        break;
       default:
-        input = <input className={`input input-bordered ${className} w-full`}
-                       type={type} placeholder={placeholder} ref={forwardRef} {...props}/>;
+        input = <input {...{type, placeholder}} {...props} ref={forwardRef}
+                       className={`input input-bordered ${className} w-full`}/>;
     }
 
     let label = front

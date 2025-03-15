@@ -1,6 +1,7 @@
 import {DaisyTextInputLabelled} from '@/components/daisyUI/text-inputs';
 import {Blocks} from '@components/templates/blocks';
 import Link from 'next/link';
+import {dirHref} from "@/javascript/assets/directoryHref";
 
 
 export default function CreateCharacter() {
@@ -41,7 +42,7 @@ export default function CreateCharacter() {
             </Blocks.Section>
 
             <Blocks.Section>
-                <Link className='btn btn-primary' href={`/home`}>done</Link>
+                <Link className='btn btn-primary' href={dirHref.home}>done</Link>
             </Blocks.Section>
         </div>
     )

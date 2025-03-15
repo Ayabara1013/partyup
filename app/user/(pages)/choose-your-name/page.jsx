@@ -31,11 +31,11 @@ export default function () {
     let dName = displayNameRef.current.value.trim();
 
     if (dName.length > 3) {
-      fbAccountManagement.checkAvailability.displayName(dName).then(available => {
+      fbAccountManagement.checkAvailability.uName(dName).then(available => {
         if (available) {
           toast.success(`'${dName}' is available as a display name!`)
           if (submit) {
-            fbAccountManagement.update.displayName(user, dName)
+            fbAccountManagement.update.uName(user, dName)
               .then(success => {
                 console.log(success)
                 toast(`Updating display name to: '${dName}'...`);

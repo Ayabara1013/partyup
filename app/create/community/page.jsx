@@ -1,6 +1,7 @@
 import { DaisyTextInputLabelled } from '@/components/daisyUI/text-inputs';
 import { Blocks } from '@components/templates/blocks';
 import Link from 'next/link';
+import {dirHref} from "@/javascript/assets/directoryHref";
 
 
 
@@ -16,7 +17,7 @@ export default function CreateCommunity() {
 
                 <DaisyTextInputLabelled className='input-primary' label='Community Tags' topLeft={'Community Tags'} bottomLeft={'<<placeholder>>'} placeholder='<<XHANGETHIS TO A TAGS SELECT OR SOMETHING>>' />
 
-                <Link href={`/home`} className='btn btn-primary'>done</Link>
+                <Link href={dirHref.home} className='btn btn-primary'>done</Link>
             </Blocks.Section>
 
         </div>

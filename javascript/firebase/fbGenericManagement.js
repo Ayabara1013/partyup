@@ -170,7 +170,7 @@ export const fbGenericManagement = {
       async (gameId) => {
         const joinGameRef = doc(db, `game`, gameId, `joinRequest`, userAuth.currentUser.uid);
         await setDoc(joinGameRef, {
-          uName: userAuth.currentUser.displayName,
+          uName: userAuth.currentUser.uName,
           requestDate: Date.now(),
           status: 'pending'
         })

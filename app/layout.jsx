@@ -8,6 +8,7 @@ import NavBar from "@components/navBar";
 import {ApplicationProvider} from "@app/(contexts)/application";
 import {ContextMenuProvider} from "@app/(contexts)/contextMenu";
 import {Toaster} from "react-hot-toast";
+import {ModalProvider} from "@app/(contexts)/popupModal";
 
 const inter = Inter({subsets: ['latin'],});
 
@@ -21,11 +22,13 @@ export default function RootLayout({children}) {
     <body className={`${inter.className} flex grow flex-col min-h-screen h-screen overflow-hidden`}>
     <ApplicationProvider>
       <ContextMenuProvider>
-        <NavBar/>
-        <div className="app-wrapper background-tile overflow-y-scroll">
-          {children}
-        </div>
-        <Toaster position="bottom-right"/>
+        <ModalProvider>
+          <NavBar/>
+          <div className="app-wrapper background-tile overflow-y-scroll">
+            {children}
+          </div>
+          <Toaster position="bottom-right"/>
+        </ModalProvider>
       </ContextMenuProvider>
     </ApplicationProvider>
     </body>

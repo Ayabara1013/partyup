@@ -1,12 +1,7 @@
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-export default function PageLayout({ children, title, backHref }) {
-  const { push } = useRouter();
-
-  function backOnClick() {
-    push(backHref)
-  }
-
+export default function PageLayout({children, title, backHref}) {
+  console.log(backHref);
   return (
     <div className="h-full w-full center routePage">
       <div className="h-full w-1/2 gap-4 border center flex-col">
@@ -17,7 +12,7 @@ export default function PageLayout({ children, title, backHref }) {
           {children}
         </div>
         <div className="pageBack center vertical border">
-          {(backHref) && <button className="btn w-full" onClick={backOnClick}>Back</button>}
+          {(backHref) && <Link className="btn w-full" href={backHref}>Back</Link>}
         </div>
       </div>
     </div>

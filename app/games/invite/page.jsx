@@ -1,6 +1,6 @@
-import {redirect} from "next/navigation";
+import { redirect } from "next/navigation";
 import {dirHref} from "@/javascript/assets/directoryHref";
 
 export default function Page() {
-  redirect(dirHref.home);
+  redirect(dirHref.games.root);
 }

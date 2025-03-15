@@ -1,7 +1,7 @@
 import {db, reconstructDoc, toArray, userAuth} from "@/javascript/firebase/base";
 import toast from "react-hot-toast";
 import {createUserWithEmailAndPassword} from "firebase/auth";
-import {collection, doc, getDoc, getDocs, query, updateDoc, where} from "firebase/firestore";
+import {collection, doc, getDoc, getDocs, onSnapshot, query, updateDoc, where} from "firebase/firestore";
 
 export const fbAccountManagement = {
   //Methods for account creation.
@@ -36,20 +36,22 @@ export const fbAccountManagement = {
      */
     displayName: async (displayName) => {
       //Use a ref then query to reduce the read count.
-      const userCollectionRef = collection(db, `user-public`);
+      const userCollectionRef = collection(db, `user`);
       const q = query(userCollectionRef, where('displayName', '==', displayName));
 
       return toArray(await getDocs(q)).length === 0;
     }
   },
 
+
   get: {
     accountDetails: async (uid) => {
-      const userInfoRef = doc(db, 'user-private', uid);
+      const userInfoRef = doc(db, 'user', uid);
       let details = await getDoc(userInfoRef);
       return reconstructDoc(details);
     }
   },
+
 
   update: {
     /**
@@ -59,7 +61,7 @@ export const fbAccountManagement = {
      * @param {string} newDisplayName The new text to update the display name.
      */
     displayName: async (user, newDisplayName) => {
-      const userInfoPrivateRef = doc(db, 'user-private', user.uid);
+      const userInfoPrivateRef = doc(db, 'user', user.uid);
       const userInfoPrivate = await getDoc(userInfoPrivateRef);
       let privateUpdated = false;
 
@@ -86,7 +88,7 @@ export const fbAccountManagement = {
      */
     subscription: async (user, tier) => {
       console.log(user)
-      const userInfoRef = doc(db, 'user-private', user.uid);
+      const userInfoRef = doc(db, 'user', user.uid);
       return await updateDoc(userInfoRef, {planTier: tier, planConfirmation: true})
         .then(() => {
           return true;
@@ -97,4 +99,14 @@ export const fbAccountManagement = {
         })
     }
   },
+
+  live: {
+    userUpdate: (user, callback) => {
+      const userInfoRef = doc(db, 'user', user.id);
+
+      return onSnapshot(userInfoRef, async (snapshot) => {
+        callback(reconstructDoc(snapshot));
+      })
+    }
+  }
 }

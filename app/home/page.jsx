@@ -3,10 +3,10 @@ import '@styles/home/home.scss';
 import '@styles/cta.scss';
 
 import {allText} from '@/javascript/assets/all_text';
-
 import CYACard from './(components)/CYACard';
-import {useRouter} from "next/navigation";
 import {useApplication} from "@app/(contexts)/application";
+import Link from "next/link";
+import {dirHref} from "@/javascript/assets/directoryHref";
 
 export default function Home() {
   const {user} = useApplication();
@@ -19,7 +19,6 @@ export default function Home() {
         {user
           ? <CYACard cardInfo={allText.home.cya_card_5}/>
           : <CYACard cardInfo={allText.home.cya_card_1}/>}
-
         <CYACard cardInfo={allText.home.cya_card_2}/>
         <CYACard cardInfo={allText.home.cya_card_3}/>
         <CYACard cardInfo={allText.home.cya_card_4}/>
@@ -28,8 +27,7 @@ export default function Home() {
   )
 }
 
-function CallToAction({signup}) {
-  const {push} = useRouter();
+function CallToAction() {
   return (
     <div className='flex flex-col gap-8'>
       <div className='cta-banner flex flex-col'>
@@ -45,14 +43,12 @@ function CallToAction({signup}) {
       <div className='flex flex-col md:flex-row gap-2'>
         <div className='flex flex-col flex-auto gap-4 m-auto text-center'>
           <div className='m-auto text-[3rem] font-bold max-w-[75%]'>{allText.home.cta_txt_1}</div>
-          <button className='btn btn-lg px-12 btn-primary m-auto' onClick={() => {
-            push('/user/signup')
-          }}>{allText.home.cta_btn_1}</button>
+          <Link className='btn btn-lg px-12 btn-primary m-auto'
+                href={dirHref.user.signup}>{allText.home.cta_btn_1}</Link>
         </div>
 
         <div className='flex flex-auto h-[500px]'>
-          <img src='/images/example-play-screens-mobile-1x.png'
-               className='w-full h-full object-scale-down'></img>
+          <img className='w-full h-full object-scale-down' src='/images/example-play-screens-mobile-1x.png'></img>
         </div>
       </div>
     </div>

@@ -9,12 +9,14 @@ import {useApplication} from "@app/(contexts)/application";
 import {useGameManager} from "@app/(contexts)/gameManager";
 import {fbGmManagement} from "@/javascript/firebase/fbGmManagement";
 import {firefoxNumberInputOnKeyDown} from "@/javascript/util/browserFixes/firefox";
+import {gameSystems} from "@/javascript/assets/gameSystems";
+import {dirHref} from "@/javascript/assets/directoryHref";
 
 export default function GameCreate({className}) {
   const {push} = useRouter();
   const {userDetails, gmGames, setGames} = useApplication();
   const {gameInfoRefs, safetyChecks, getFormData} = useGameManager();
-  const {gameNameRef, systemRef, maxPlayersRef, tagsRef, publicGameRef} = gameInfoRefs
+  const {gameNameRef, systemRef, maxPlayersRef, tagsRef, publicGameRef, descRef} = gameInfoRefs
 
   useEffect(() => {
     if (userDetails) {
@@ -25,7 +27,7 @@ export default function GameCreate({className}) {
   useEffect(() => {
     if (gmGames && !gmGames.canCreate()) {
       toast.error(`You need to upgrade your plan for more slots for gm games!`)
-      push('/games/my-games')
+      push(dirHref.games.root)
     }
   }, [])
 
@@ -36,7 +38,7 @@ export default function GameCreate({className}) {
     if (await fbGmManagement.general.createGame(data)) {
       setTimeout(() => {
         toast.success("Game created successfully.");
-        push('/games/my-games')
+        push(dirHref.games.root)
       }, 1500)
     } else {
       toast.error(`Game was not created.`)
@@ -52,14 +54,16 @@ export default function GameCreate({className}) {
         <Forms.DefaultInputField forwardRef={gameNameRef}
                                  labelText="What is the name of your game?" defaultValue={'Test Game'}/>
 
+        <Forms.DefaultInputField forwardRef={descRef} type={'textarea'} rows={`3`} defaultValue={``}
+                                 labelText="What is the description of your game?"/>
+
         {/* select system */}
         <Forms.DefaultInputField type='select' forwardRef={systemRef} defaultValue={''}
                                  labelText="What system will you be using?">
           <option value={''} disabled>what system do you want to use?</option>
-          <option value={'dnd5e'}>Dungeons & Dragons 5e</option>
-          <option value={'pf2e'}>Pathfinder 2e</option>
-          <option value={'fae'}>Fate Accelerated</option>
-          <option value={'swade'}>Savage Worlds</option>
+          {gameSystems.array.map((gameSystem, index) => {
+            return <option value={gameSystem.value} key={index}>{gameSystem.title}</option>
+          })}
         </Forms.DefaultInputField>
 
         {/* enter max players */}

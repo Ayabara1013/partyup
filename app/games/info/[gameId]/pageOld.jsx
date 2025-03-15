@@ -1,0 +1,456 @@
+'use client'
+
+import '@styles/games/info/game-info.scss';
+
+import {content} from '@app/discover/page';
+import PlayerListing from '@app/games/info/[gameId]/(components)/PlayerListing';
+import {use, useEffect, useState} from 'react';
+import timeSince from '@/javascript/util/timeSince';
+import {useApplicationContext} from '@/app/ApplicationContext';
+import {gamesCollection} from '@/test/fake firestore/tavern-test-1/collections/firestoreObjects';
+
+
+export default function GameInfo(props) {
+  // const { item } = props;
+
+  const {temp, setTemp, updateTemp} = useApplicationContext();
+
+  // we need to make sure that all the necessary data is held, so I'll check and set that here
+  useEffect(() => {
+    console.clear();
+
+    if (temp.userTotalGames !== temp.user.games.length) {
+      console.log(`%ctotal games innacurate`, `color:red`)
+      console.log(`user total games: `, temp.userTotalGames, temp.user.games.length)
+      updateTemp('userTotalGames', temp.user.games.length);
+      // console.log(`user total games: `, temp.userTotalGames);
+    }
+
+    if (!temp.activeGame) {
+      console.log(`%cno stored active game`, 'color:red');
+      updateTemp('activeGame', temp.user.games[0]);
+    }
+  }, []);
+
+  // log if the temp cache has been updated
+  useEffect(() => {
+    console.log(`user total games updated: `, temp.userTotalGames, temp.user.games.length)
+  }, [temp.userTotalGames]);
+
+  useEffect(() => {
+    console.log(`active game set: `, temp.activeGame)
+  }, [temp.activeGame]);
+
+
+  const game = gamesCollection.game1;
+
+
+  return (
+    <div className='game-info-page page-wrapper flex flex-col'>
+      <div className="tb1 flex flex-col m-auto gap-4 max-w-[70%] bg-neutral">
+        <div className='tb2 text-opacity-50'>
+          <span className='text-primary text-lg font-semibold'>{game.name}</span> by <span
+          className='text-secondary'>{game.gm.username}</span>
+        </div>
+
+        {/* <div className='tb2 h-1/2'>
+
+        </div> */}
+        {/* <FakeArticle /> */}
+
+        <div className=' flex gap-2'>
+          <div className='tb3 flex-1'>
+            <div>
+              (schedule)
+            </div>
+            <div>
+              (next game)
+            </div>
+            {/* <div>
+              bio
+            </div> */}
+            <div>
+              (insert some sort of text editor here maybe?)
+            </div>
+          </div>
+
+          <div className='tb3 flex-col-2 justify-start'>
+            {[
+              ...Object.values(game.players), // existing players
+              ...Array(game.totalSeats - game.players.length).fill(null), // empty spots
+            ].map((player, index) => (
+              <div
+                className={`btn btn-sm 
+                  ${player
+                  ? 'btn-primary text-primary-content hover:btn-accent'
+                  : 'btn-outline opacity-75 border-2 text-primary hover:bg-transparent hover:border-accent hover:text-accent hover:opacity100'} 
+                  font-medium rounded-md`}
+                key={index}>
+                {player ? player.username : "Empty"}
+              </div>
+            ))}
+            <button
+              className='btn btn-primary opacity-75 btn-sm hover:btn-accent hover:opacity-100'>invite
+            </button>
+          </div>
+        </div>
+
+        {/* <div className='tb2 flex gap-2'>
+          {[
+            ...Object.values(game.players), // existing players
+            ...Array(game.totalSeats - game.players.length).fill(null), // empty spots
+          ].map((player, index) => (
+            <div
+              className={`px-2 ${player ? 'bg-primary text-primary-content' : 'border-2 border-primary text-primary'} font-medium rounded-md`}
+              key={index}
+            >
+              {player ? player.username : "Empty"}
+            </div>
+          ))}
+
+        </div> */}
+
+        <div className='tb2'>
+          (dm tools)
+        </div>
+      </div>
+
+    </div>
+  )
+
+  // const playersCurrent = content.players.current;
+  // const playersMax = content.players.max;
+  // const playersRemaining = playersMax - playersCurrent;
+
+
+  // const displayPlayers = () => {
+  //   return content.players.list.map((player, i) => {
+  //     // console.log(player);
+  //     return <PlayerListing key={i} player={player} index={i}  />
+  //   })
+  // }
+
+  // const displayEmptySlots = () => {
+  //   const [text, setText] = useState('empty');
+
+  //   for (let i = 0; i < playersRemaining; i++) {
+  //     return (
+  //       <div className='empty-slot flex p-4 justify-center shadow-xl'
+  //         onMouseEnter={() => setText('add a player?')}
+  //         onMouseLeave={() => setText('empty')}
+  //       >
+  //         <div className='text-lg'>{text}</div>
+  //       </div>
+  //     )
+  //   }
+  // }
+
+  // return (
+  //   <div className={`game-info `}>
+  //     <div className='banner'>
+  //       <img src={content.imageUrl} alt="" className='w-full' />
+  //       <div className='banner__play-button'>PLAY</div>
+  //     </div>
+
+  //     <div className="details-wrapper grid grid-flow-row-dense grid-cols-3
+  //     px-4 py-16 gap-x-8 gap-y-16">
+  //       <PageTitle />
+
+  //       <GameDetails />
+
+  //       <InfoCard playersCurrent={playersCurrent} playersMax={playersMax} playersRemaining={playersRemaining} />
+
+  //       <PlayersCard content={content} playersRemaining={playersRemaining} displayPlayers={displayPlayers} displayEmptySlots={displayEmptySlots} />
+
+  //       <div className='story col-span-full grid grid-cols-3 gap-4'>
+  //         <div className='story__header col-span-full text-3xl text-primary font-black text-center'>
+  //           The Story So Far:
+  //         </div>
+
+  //         <div className='story__article-wrapper col-span-2'>
+  //           <div className='story-so-far article-overflow-wrapper overflow-hidden'>
+  //             <FakeArticle />
+  //           </div>
+  //         </div>
+
+  //         <div className='table-of-contents flex flex-col justify-center'>
+  //           <ul>
+  //             <li><a href="#act-1">act 1</a></li>
+  //             <ul className='ms-4'>
+  //               <li><a href="#the-beginning">the beginning</a></li>
+  //               <li><a href="#the-qube">the q-ube</a></li>
+  //             </ul>
+
+  //             <li><a href="#act-2">act 2</a></li>
+
+  //             <ul className='ms-4'>
+  //               <li><a href="#the-arena">the arena</a></li>
+  //               <li><a href="#round-1">round 1</a></li>
+  //               <li><a href="#junker-town">junker town</a></li>
+  //               <li><a href="#the-myconids">the myconids</a></li>
+  //             </ul>
+
+  //             {/* IMPORTANT ERROR!
+  //                 I found an error where if you click on one of the list links for the scrolling text box, it will push the page down past it's scroll limit, and you cant get back up
+  //             */}
+
+  //           </ul>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   </div>
+  // )
+}
+
+
+// function ExamplePlayerCard({playerName = "KateAdkins", characterName = '"Cloud" Mountain Tree', characterRace = 'Tabaxi', characterClass = 'Bard', ...props}) {
+//   return (
+//     <div className='flex p-4 bg-neutral rounded items-center'>
+//       <div>
+//         <div>
+//           <span className='text-primary hover:underline'>{playerName}</span> as <span className='text-primary hover:underline'>{characterName}</span> the <span className='text-primary hover:underline'>{characterRace} {characterClass}</span>
+//         </div>
+
+//         <div>Role: Player</div>
+//       </div>
+
+//       <div className="flex flex-col gap-2">
+//         <button className='btn btn-sm btn-primary'>edit</button>
+//         <button className='btn btn-sm btn-primary'>active</button>
+//       </div>
+//     </div>
+//   )
+// }
+
+
+function PageTitle(props) {
+  return (
+    <div className='page-title col-span-full
+    text-5xl font-bold text-center text-primary'>
+      {content.name}
+    </div>
+  )
+}
+
+function GameDetails(props) {
+  return (
+    <div className='game-details col-span-2 flex flex-col justify-center p-6
+    bg-neutral rounded-lg shadow-xl'>
+      <article className='prose prose-p:mb-2 prose-headings:underline w-full max-w-full'>
+        {content.description}
+      </article>
+    </div>
+  )
+}
+
+function InfoCard({playersCurrent, playersMax, playersRemaining}) {
+  return (
+    <div className='info-card whitespace-nowrap p-6
+    bg-neutral shadow-xl rounded-lg'>
+      <div>players</div>
+      <div>
+        {playersCurrent}/{playersMax} ({playersRemaining} spots remaining)
+      </div>
+      <div>plays every : x days or whatever</div>
+      <div>some other details</div>
+    </div>
+  )
+}
+
+function PlayersCard({content, playersRemaining, displayPlayers, displayEmptySlots}) {
+  return (
+    <div className='players-card col-span-full grid grid-cols-3 px-6 gap-4 rounded-lg whitespace-nowrap'>
+      <div className='text-3xl col-span-full font-bold text-center text-secondary'>Starring</div>
+      {displayPlayers()}
+      {displayEmptySlots()}
+    </div>
+  )
+}
+
+// function ActivePlayerBadge(playerName, lastActive) {
+//   const lastActiveFormatted = () => {
+//     const string = '2h'
+//     return string;
+//   }
+
+//   /**
+//    * this of course could be done with {player} as a prop, and then player.username and player.lastactive could be extracted through that
+//    */
+
+//   return (
+//     <div className='px-4 py-2'>
+//       <div>{playerName}</div>
+//       <div>{lastActiveFormatted}</div>
+//     </div>
+//   )
+// }
+
+
+// const why_was_this_element_here = () => {
+
+
+//   // return (
+//   //   <div className='game-info page-wrapper'>
+
+//   //     {/* <div className='tb1 broad-page-wrapper-thing h-screen flex flex-col gap-4'>
+//   //       <div className='tb2 flex-col-4 content-wrapper justify-center w-2/3 mx-auto'>
+//   //         <div className='w-full bg-primary rounded text-center text-primary-content text-2xl font-semibold'>
+//   //           Age of Ashes
+//   //         </div>
+
+//   //         <img className='border m-auto object-none rounded' src='https://cdn.paizo.com/d960ad1b-9967-00f9-1158-72274b18312d/1c3193bf-95fe-4b36-baae-180ba2cfc13f/AgeofAshesLogo_717x250.png' />
+
+//   //         <div className='game-details bg-neutral p-4 rounded-lg'>
+//   //           <div className='game-details__title'>
+//   //             <span className="text-primary">Age of Ashes</span>: a <span className="text-primary">Pathfinder 2nd Edition</span> Adventure by <span className="text-primary">Timbo_Slice</span>
+//   //           </div>
+
+//   //           <div className='game-details__players'>
+//   //             <div>players:</div>
+//   //             <div className='game-details__players__player-card'>
+//   //               <span className="--character-name">john smith</span> as <span className="--username">john smith</span>
+//   //             </div>
+//   //             <div className='game-details__players__player-card'>
+//   //               <span className="--character-name">janice joplin</span> as <span className="--username">ruth bader ginsburg</span>
+//   //             </div>
+//   //             <div className='game-details__players__player-card'>
+//   //               <span className="--character-name">vladimir putin</span> as <span className="--username">ru paul's drag race</span>
+//   //             </div>
+//   //             <div className='game-details__players__player-card'>
+//   //               <span className="--character-name">gimblebop bramblesnarch</span> as <span className="--username">dave</span>
+//   //             </div>
+//   //           </div>
+//   //         </div>
+//   //       </div>
+//   //     </div> */}
+
+
+//   //     <div className='banner'>
+//   //       <img src={content.imageUrl} alt="" className='w-full' />
+//   //       <div className='banner__play-button'>PLAY</div>
+//   //     </div>
+
+//   //     <div className='details-wrapper flex flex-col border p-4'>
+//   //       <div className='text-xl text-primary'>game name</div>
+//   //       <div className='flex justify-between'>
+//   //         <div>
+//   //           <div>system - dnd 5re</div>
+//   //           <div>players - 4/5</div>
+//   //           <div>dm - @name</div>
+//   //         </div>
+
+//   //         <button className='btn btn-primary'>edit game details</button>
+//   //       </div>
+
+//   //       <div className='divider'></div>
+
+//   //       <div>
+//   //         forth earth score small inch cold send take information branch rich simple rocky division slight underline attempt ride health rate heard require film certain
+//   //       </div>
+
+//   //       <div className='divider'></div>
+
+//   //       <div className='flex flex-col gap-4'>
+//   //         <div className='text-xl text-primary'>players</div>
+
+//   //         <div className='border'>
+//   //           <div className='text-lg'>active players</div>
+//   //           <div className='flex gap-2 justify-center'>
+//   //             {/* <ActivePlayerBadge playerName='@xXKittenLoverXx' /> */}
+
+//   //             <button className='btn btn-sm btn-primary'>@KateAdkins</button>
+//   //             <button className='btn btn-sm btn-neutral text-primary'>@xXKittenLoverXx</button>
+//   //             <button className='btn btn-sm btn-neutral text-primary'>@JohnCena</button>
+//   //           </div>
+//   //         </div>
+
+//   //         <ExamplePlayerCard />
+//   //         <ExamplePlayerCard playerName='@xXKittenLoverXx'/>
+//   //         <ExamplePlayerCard playerName="@JohnCena" />
+//   //       </div>
+
+//   //     </div>
+//   //   </div>
+//   // )
+// }
+
+const FakeArticle = ({className}) => {
+  return (
+    <article
+      className={`${className} prose m-auto p-8 max-h-[300px] bg-base-100 snap-y rounded-lg scroll-smooth overflow-y-scroll floating-scroll`}>
+      <h1 id='act-1'>Act 1</h1>
+      <h2 id='the-beginning'>The Beginning</h2>
+      <p>You have woken up on a mysterious planet, completely unaware of where you are or how you got there.</p>
+      <p>bring opinion correctly magic order train rather constantly valuable lift swimming stock sight who wonder
+        given where satellites farmer please matter policeman found cast</p>
+      <p>twice coat safe husband repeat break printed national pie church muscle together against climb sun night
+        seed probably theory school enemy coach easier movingbring opinion correctly magic order train rather
+        constantly valuable lift swimming stock sight who wonder given where satellites farmer please matter
+        policeman found cast</p>
+      <p>obtain voice lying welcome after secret without value sand sail popular missing beside human making cool
+        design should author available leaf tide built systembring opinion correctly magic order train rather
+        constantly valuable lift swimming stock sight who wonder given where satellites farmer please matter
+        policeman found cast</p>
+      <p>upon traffic master attempt pet energy importance poet dust horn realize desk thin week characteristic
+        factory manufacturing independent jungle field shout speak silver surprisebring opinion correctly magic
+        order train rather constantly valuable lift swimming stock sight who wonder given where satellites
+        farmer please matter policeman found cast</p>
+      <p>exciting tears actual mostly belt salt border identity sail vegetable joined indicate buried planning
+        written glad previous everyone how species examine bare trouble musicalbring opinion correctly magic
+        order train rather constantly valuable lift swimming stock sight who wonder given where satellites
+        farmer please matter policeman found cast</p>
+      <p>nice perhaps slight mad driver anybody wish race football got society blind aloud film shut parallel
+        citizen action tiny gold combine earlier mostly usebring opinion correctly magic order train rather
+        constantly valuable lift swimming stock sight who wonder given where satellites farmer please matter
+        policeman found cast</p>
+
+      <h2 id='the-qube'>the Q-ube</h2>
+
+      <p>part leave amount forth unless hill although sale physical lungs acres army sing joined give force chain
+        indeed studying it fastened complex strength grow</p>
+
+      <h1 id='act-2'>act 2</h1>
+
+      <h2 id='the-arena'>The Arena</h2>
+      <p>obtain voice lying welcome after secret without value sand sail popular missing beside human making cool
+        design should author available leaf tide built systembring opinion correctly magic order train rather
+        constantly valuable lift swimming stock sight who wonder given where satellites farmer please matter
+        policeman found cast</p>
+      <p>upon traffic master attempt pet energy importance poet dust horn realize desk thin week characteristic
+        factory manufacturing independent jungle field shout speak silver surprisebring opinion correctly magic
+        order train rather constantly valuable lift swimming stock sight who wonder given where satellites
+        farmer please matter policeman found cast</p>
+
+      <h2 id='round-1'>round 1</h2>
+      <p>obtain voice lying welcome after secret without value sand sail popular missing beside human making cool
+        design should author available leaf tide built systembring opinion correctly magic order train rather
+        constantly valuable lift swimming stock sight who wonder given where satellites farmer please matter
+        policeman found cast</p>
+      <p>upon traffic master attempt pet energy importance poet dust horn realize desk thin week characteristic
+        factory manufacturing independent jungle field shout speak silver surprisebring opinion correctly magic
+        order train rather constantly valuable lift swimming stock sight who wonder given where satellites
+        farmer please matter policeman found cast</p>
+
+      <h2 id='junker-town'>junker town</h2>
+      <p>obtain voice lying welcome after secret without value sand sail popular missing beside human making cool
+        design should author available leaf tide built systembring opinion correctly magic order train rather
+        constantly valuable lift swimming stock sight who wonder given where satellites farmer please matter
+        policeman found cast</p>
+      <p>upon traffic master attempt pet energy importance poet dust horn realize desk thin week characteristic
+        factory manufacturing independent jungle field shout speak silver surprisebring opinion correctly magic
+        order train rather constantly valuable lift swimming stock sight who wonder given where satellites
+        farmer please matter policeman found cast</p>
+
+      <h2 id='the-myconids'>the myconids</h2>
+      <p>obtain voice lying welcome after secret without value sand sail popular missing beside human making cool
+        design should author available leaf tide built systembring opinion correctly magic order train rather
+        constantly valuable lift swimming stock sight who wonder given where satellites farmer please matter
+        policeman found cast</p>
+      <p>upon traffic master attempt pet energy importance poet dust horn realize desk thin week characteristic
+        factory manufacturing independent jungle field shout speak silver surprisebring opinion correctly magic
+        order train rather constantly valuable lift swimming stock sight who wonder given where satellites
+        farmer please matter policeman found cast</p>
+
+    </article>
+  )
+}

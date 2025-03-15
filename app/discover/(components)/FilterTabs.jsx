@@ -1,40 +1,35 @@
 'use client'
 
-
-import {useState} from 'react';
 import '@styles/discover/FilterTabs.scss';
-
 
 /**
  *
  * @param {*} props
  * @returns
  */
-export default function FilterTabs({tabList = ['you', 'did', 'something', 'wrong', 'dude', 'lol', 'fix', 'it']}) {
-	// const { item } = props;
+export default function FilterTabs({filter, list, currentTab, setCurrentTab}) {
+  // const { item } = props;
+  const handleClick = (index) => {
+    setCurrentTab(index);
+  }
 
-	const [currentTab, setCurrentTab] = useState(1);
-
-	const handleClick = (index) => {
-		setCurrentTab(index);
-	}
-
-	return (
-		<div className='mb-4'>
-			<div className="tabs flex">
-				{tabList.map((tab, index) => {
-					// console.log(tab, index);
-					return (
-						<div
-							key={index}
-							className={`tab tab-bordered ${index === currentTab ? 'tab-active' : ''} grow`}
-							onClick={() => handleClick(index)}
-						>
-							{tabList[index]}
-						</div>
-					)
-				})}
-			</div>
-		</div>
-	)
+  return (
+    <div className='mb-4'>
+      <div className="tabs flex">
+        <div onClick={() => handleClick(-1)}
+             className={`tab tab-bordered ${-1 === currentTab ? 'tab-active' : ''} grow`}>
+          All
+        </div>
+        {list.map((item, index) => {
+          // console.log(tab, index);
+          return (
+            <div key={index} onClick={() => handleClick(index)}
+                 className={`tab tab-bordered ${index === currentTab ? 'tab-active' : ''} grow`}>
+              {item.title}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
 }

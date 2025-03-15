@@ -30,9 +30,9 @@ export default class CharacterSheet {
   #createSkills(skills) {
     let tempSkills = {};
     Object.entries(skills).forEach(([ key, value ]) => {
-      let displayName = value.displayName || key;
+      let displayName = value.uName || key;
       tempSkills[key] = value;
-      tempSkills[key].displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
+      tempSkills[key].uName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
       tempSkills[key].modifier = () => {
         let modifier = this.stats.abilityScores[value.abilityScore].modifier();
         let proficiency = (this.stats.skills[key].proficiency) ? this.stats.proficiencyBonus : 0;

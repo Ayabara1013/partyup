@@ -13,7 +13,7 @@ export default function () {
   const displayNameRef = useRef(null);
 
   function update() {
-    fbAccountManagement.update.displayName(user, displayNameRef.current.value).then()
+    fbAccountManagement.update.uName(user, displayNameRef.current.value).then()
   }
 
   function submitOnClick() {

@@ -9,6 +9,7 @@ import { fbGenericManagement } from "@/javascript/firebase/fbGenericManagement";
 import { userAuth } from "@/javascript/firebase/base";
 import { fbInGameManagement } from "@/javascript/firebase/fbInGameManagement";
 import { ui } from "@/javascript/ui";
+import {dirHref} from "@/javascript/assets/directoryHref";
 
 export default function Play() {
   const { push } = useRouter();
@@ -18,7 +19,6 @@ export default function Play() {
   const [ chatPermissions, setChatPermissions ] = useState({
     initMuted: false,
     initAllow: false,
-
   });
 
   const [ gameId, setGameId ] = useState(null);
@@ -42,7 +42,7 @@ export default function Play() {
           }
         }
       }
-      push('/my-games');
+      push(dirHref.games.root);
     }
   }, [ activeGames ]);
 

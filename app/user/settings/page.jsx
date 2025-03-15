@@ -16,7 +16,7 @@ export default function Settings(props) {
     <div className="settings-page page-wrapper flex flex-col p-6 gap-6">
       <Blocks.Section>
         <Blocks.Header>user details</Blocks.Header>
-        <ChangeField field={'UserName'} item={user?.displayName || 'temp'}/>
+        <ChangeField field={'UserName'} item={user?.uName || 'temp'}/>
         <DisplayField field={'Email'} item={user?.email || 'temp'}/>
       </Blocks.Section>
 

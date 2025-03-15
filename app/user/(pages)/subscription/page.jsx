@@ -16,7 +16,7 @@ export default function Signup({className}) {
     checkUser();
   }, []);
 
-  let promptText = `Hi ${userDetails?.displayName}!${userDetails?.planConfirmation
+  let promptText = `Hi ${userDetails?.uName}!${userDetails?.planConfirmation
     ? ` You are already subscribed, do you wish to change your plan?`
     : ` You have yet to confirm your plan. Please choose your desired plan.`}`
 

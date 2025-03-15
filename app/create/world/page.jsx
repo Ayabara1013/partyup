@@ -1,5 +1,6 @@
 import {Blocks} from '@components/templates/blocks';
 import Link from 'next/link';
+import {dirHref} from "@/javascript/assets/directoryHref";
 
 
 export default function CreateWorld() {
@@ -10,7 +11,7 @@ export default function CreateWorld() {
             <Blocks.Section className='flex-col-4'>
                 <input type="text" placeholder='what is the name of your world?' className='input input-primary'/>
 
-                <Link href={`/home`} className='btn btn-primary'>done</Link>
+                <Link href={dirHref.home} className='btn btn-primary'>done</Link>
             </Blocks.Section>
 
         </div>

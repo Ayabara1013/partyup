@@ -15,6 +15,7 @@ export default function Play(props) {
     ' dsvfz aw  fs  ff',
     ' kdtuyd ytg ',
   ];
+
   return (
     <div className={`play-page h-full`}>
       <div className='chat-row flex p-2 gap-2'>

@@ -1,5 +1,6 @@
 import {Blocks} from '@components/templates/blocks';
 import Link from 'next/link';
+import {dirHref} from "@/javascript/assets/directoryHref";
 
 
 export default function Create() {
@@ -153,9 +154,9 @@ export default function Create() {
 
                     <div className='text-2xl text-warning whitespace-nowrap'>and some other stuff</div>
 
-                    <Link href='/create/community' passhref>
+                    <Link href={dirHref.community.create} passhref>
                         <button className='btn btn-primary whitespace-nowrap'>
-                            {'goto /create/community'}
+                            Create a Community
                         </button>
                     </Link>
                 </div>

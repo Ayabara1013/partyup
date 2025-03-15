@@ -28,7 +28,7 @@ export function ContextMenuProvider({ children }) {
 export function useContextMenu() {
   const context = useContext(ContextMenuContext);
   if (!context) {
-    throw new Error('useApplicationContext must be used within an ApplicationContextProvider');
+    throw new Error('useContextMenu must be used within a ContextMenuProvider');
   }
   return context;
 }
