@@ -1,3 +1,5 @@
+import {Timestamp} from "firebase/firestore";
+
 const messageLocalStorage = {
   game: {
     get(gameId) {
@@ -23,6 +25,13 @@ const messageLocalStorage = {
   }
 }
 const accountLocalStorage = {
+  getLastOtherUpdateTime: (uid) => {
+    return (localStorage) ? JSON.parse(localStorage.getItem(`otherUpdates${uid}`)) : Timestamp.now()
+  },
+  setLastOtherUpdateTime: (uid) => {
+    (localStorage) && localStorage.setItem(`otherUpdates${uid}`, JSON.stringify(Timestamp.now()));
+  },
+
   getCurrentGame: () => {
     return (localStorage) ? localStorage.getItem(`currentGame`) : null;
   },

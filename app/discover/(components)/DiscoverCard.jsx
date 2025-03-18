@@ -35,7 +35,7 @@ export function DiscoverCard({game}) {
         <div className={`gm-details ${focusBoxClass}`}>
           <div className='text-center text-primary text-lg font-bold'>Game Master</div>
           <ul>
-            <ListItem label='Username' value={game.uName}/>
+            <ListItem label='Username' value={game.gm.uName}/>
           </ul>
         </div>
         {/* </div> */}

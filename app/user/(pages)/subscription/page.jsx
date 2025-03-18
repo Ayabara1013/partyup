@@ -1,16 +1,16 @@
 'use client'
 import {usersCollection} from '@/test/fake firestore/tavern-test-1/collections/firestoreObjects';
 import '@styles/settings/signup.scss';
-import {useApplication} from "@app/(contexts)/application";
+import {useAccountManager} from "@app/(contexts)/accountManager";
 import {subscriptionInfo} from "@/javascript/assets/subscriptionInfo";
-import {fbAccountManagement} from "@/javascript/firebase/fbAccountManagement";
+import {fbAccountManager} from "@/javascript/firebase/fbAccountManager";
 import toast from "react-hot-toast";
 import {useRouter} from "next/navigation";
 import {use, useEffect} from "react";
 
 export default function Signup({className}) {
   const {push} = useRouter();
-  const {user, userDetails, checkUser} = useApplication();
+  const {user, userDetails, checkUser} = useAccountManager();
 
   useEffect(() => {
     checkUser();
@@ -21,7 +21,7 @@ export default function Signup({className}) {
     : ` You have yet to confirm your plan. Please choose your desired plan.`}`
 
   const joinOnClick = (e, tier) => {
-    fbAccountManagement.update.subscription(user, tier).then(success => {
+    fbAccountManager.update.subscription(user, tier).then(success => {
       if (success) {
         toast.success(`Successfully updated your plan to : ${subscriptionInfo[`tier${tier}`].title}`)
         setTimeout(() => {

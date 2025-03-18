@@ -2,16 +2,16 @@
 import {useAuthState} from "react-firebase-hooks/auth";
 import {createContext, useContext, useEffect, useRef, useState} from 'react';
 import {userAuth} from "@/javascript/firebase/base";
-import {fbAccountManagement} from "@/javascript/firebase/fbAccountManagement";
+import {fbAccountManager} from "@/javascript/firebase/fbAccountManager";
 import {usePathname, useRouter} from "next/navigation";
 import toast from "react-hot-toast";
-import {fbGmManagement} from "@/javascript/firebase/fbGmManagement";
+import {fbGmManager} from "@/javascript/firebase/fbGmManager";
 import {subscriptionInfo} from "@/javascript/assets/subscriptionInfo";
 import {dirHref} from "@/javascript/assets/directoryHref";
 
-const ApplicationContext = createContext(null);
+const AccountManagerContext = createContext(null);
 
-export function ApplicationProvider({children}) {
+export function AccountManagerProvider({children}) {
   const {push} = useRouter();
   const pathname = usePathname()
 
@@ -20,6 +20,7 @@ export function ApplicationProvider({children}) {
   const [gmGames, setGmGames] = useState(null);
   const [playerGames, setPlayerGames] = useState(null);
   const userUpdate = useRef(null);
+  const otherUpdates = useRef(null);
 
   //Grab custom user data once firebase loads base user.
   useEffect(() => {
@@ -30,15 +31,29 @@ export function ApplicationProvider({children}) {
 
   //Grab games once custom user data is loaded.
   useEffect(() => {
-    console.log('4')
     if (userDetails) {
       setGames();
-      if (!userUpdate.current) {
+    }
+    startLiveUpdates()
+  }, [userDetails]);
+
+  useEffect(() => {
+    startLiveUpdates()
+  }, [gmGames]);
+
+
+  function startLiveUpdates() {
+    if (userDetails) {
+      if (!userUpdate.current && userDetails) {
         //creates a live feed for user updates.
-        userUpdate.current = fbAccountManagement.live.userUpdate(userDetails, setUserDetails);
+        userUpdate.current = fbAccountManager.live.userUpdate(userDetails, setUserDetails);
+      }
+      if (!otherUpdates.current && gmGames && userDetails) {
+        //creates a live feed for user updates.
+        otherUpdates.current = fbAccountManager.live.fullUpdates(userDetails, setUserDetails, gmGames, setGames);
       }
     }
-  }, [userDetails]);
+  }
 
   //Navigation check for confirm name and subscription.
   useEffect(() => {
@@ -58,7 +73,7 @@ export function ApplicationProvider({children}) {
       '/user/subscription'
     ].includes(pathname);
     if (user) {
-      let tempDetails = await fbAccountManagement.get.accountDetails(user.uid);
+      let tempDetails = await fbAccountManager.get.accountDetails(user.uid);
       if (tempDetails) {
         //If displayName is not confirmed, redirect
         if (tempDetails.uNameConfirmation === false && ignoreRedirect) {
@@ -87,36 +102,30 @@ export function ApplicationProvider({children}) {
   }
 
   //Grab games
-  const setGames = async () => {
-    let tempGames = {
-      gameList: await fbGmManagement.general.getGames(userDetails.id),
+  const setGames = async (games) => {
+    setGmGames(games ? games : await fbGmManager.general.getGames(userDetails.id))
+  }
 
-      max: subscriptionInfo[`tier${userDetails.planTier}`].gmGames,
+  function maxGames() {
+    return subscriptionInfo[`tier${userDetails.planTier}`].gmGames
+  }
 
-      activeGames: function () {
-        return this.gameList.length
-      },
-      availableGames: function () {
-        return this.max - this.gameList.length
-      },
-      canCreate: function () {
-        return (this.max - this.gameList.length) > 0
-      },
-    }
-    setGmGames(tempGames)
+  function canCreate() {
+    return maxGames() > (gmGames ? gmGames.length : maxGames())
   }
 
   return (
-    <ApplicationContext.Provider value={{user, gmGames, playerGames, userDetails,  checkUser, setGames}}>
+    <AccountManagerContext.Provider
+      value={{user, gmGames, playerGames, userDetails, checkUser, setGames, canCreate, maxGames}}>
       {children}
-    </ApplicationContext.Provider>
+    </AccountManagerContext.Provider>
   )
 }
 
-export function useApplication() {
-  const context = useContext(ApplicationContext);
+export function useAccountManager() {
+  const context = useContext(AccountManagerContext);
   if (!context) {
-    throw new Error('useApplication must be used within an ApplicationProvider');
+    throw new Error('useAccountManager must be used within an AccountManagerProvider');
   }
   return context;
 }

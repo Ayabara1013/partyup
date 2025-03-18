@@ -1,5 +1,6 @@
 'use client';
 import {createContext, useContext, useRef} from 'react';
+import {cleanUserData} from "@/javascript/firebase/base";
 
 const GameManagerContext = createContext(null);
 
@@ -27,9 +28,8 @@ export function GameManagerProvider({children}) {
     let tags = gameInfoRefs.tagsRef.current.value.split(',');
     return {
       name: gameInfoRefs.gameNameRef.current.value.trim(),
-      uid: userDetails.id,
-      uName: userDetails.uName,
-      desc:gameInfoRefs.descRef.current.value,
+      gm: cleanUserData(userDetails),
+      desc: gameInfoRefs.descRef.current.value,
       system: gameInfoRefs.systemRef.current.value,
       maxPlayers: gameInfoRefs.maxPlayersRef.current.value,
       sc0: gameInfoRefs.sc0Ref.current.checked,

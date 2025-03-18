@@ -9,13 +9,13 @@
 // import '@styles/games/games.scss'
 // import { gamesCollection, usersCollection } from '@/test/fake firestore/tavern-test-1/collections/firestoreObjects';
 // import { useContext } from 'react';
-// import { Application, useApplicationContext } from '../ApplicationContext';
+// import { Application, useAccountManagerContext } from '../AccountManagerContext';
 
 // export default function Games({ className }) {
 //   console.clear();
 //   // obvious placeholders lol (trying to make things as plug and play while also easy for my testing!)
 
-//   const { temp, setTemp, updateTemp } = useApplicationContext();
+//   const { temp, setTemp, updateTemp } = useAccountManagerContext();
 
 //   updateTemp('userTotalGames', 3);
 //   updateTemp('freeAllowedGames', 1);

@@ -4,12 +4,12 @@ import {useRouter} from "next/navigation";
 import Link from 'next/link';
 import {dirHref} from '@/javascript/assets/directoryHref';
 
-import {useApplication} from "@app/(contexts)/application";
+import {useAccountManager} from "@app/(contexts)/accountManager";
 import {userAuth} from "@/javascript/firebase/base";
 import {useState} from "react";
 
 export default function NavBar() {
-  let {userDetails} = useApplication();
+  let {userDetails} = useAccountManager();
   const {push} = useRouter();
   const [refreshNav, setRefreshNav] = useState(false);
 

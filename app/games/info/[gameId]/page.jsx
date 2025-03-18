@@ -3,18 +3,18 @@
 import '@styles/games/info/game-info.scss';
 
 import {use, useEffect} from 'react';
-import {useApplication} from "@app/(contexts)/application";
+import {useAccountManager} from "@app/(contexts)/accountManager";
 import {gameSystems} from "@/javascript/assets/gameSystems";
 
 export default function GameInfo({params}) {
-  const {user, gmGames} = useApplication();
+  const {gmGames} = useAccountManager();
   let {gameId} = use(params);
   useEffect(() => {
 
   }, [])
   // const { item } = props;
 
-  let game = gmGames?.gameList[0];
+  let game = gmGames[0] || null;
   // we need to make sure that all the necessary data is held, so I'll check and set that here
 
   return (
@@ -23,7 +23,7 @@ export default function GameInfo({params}) {
       <div className="tb1 flex flex-col m-auto gap-4 max-w-[70%] bg-neutral">
         <div className='tb2 text-opacity-50'>
           <span className='text-primary text-lg font-semibold'>{game.name}</span>
-          <span className='text-secondary'>  - By: {game.uName}</span>
+          <span className='text-secondary'>  - By: {game.gm.uName}</span>
         </div>
         {/* <FakeArticle /> */}
 

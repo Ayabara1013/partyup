@@ -5,7 +5,7 @@ import {useRouter} from "next/navigation";
 import Link from 'next/link';
 import dir from '@/javascript/assets/directoryHref';
 
-import {useApplication} from "@app/(contexts)/application";
+import {useAccountManager} from "@app/(contexts)/accountManager";
 import {googleSignInPopUp, userAuth} from "@/javascript/firebase/base";
 import {useState} from "react";
 
@@ -86,7 +86,7 @@ function NavbarCenter() {
 }
 
 export function NavbarEnd({logOutOnClick}) {
-  let {userDetails} = useApplication();
+  let {userDetails} = useAccountManager();
   return (
     <div className="navbar-end ">
       {/* <a className="btn">Button</a> */}

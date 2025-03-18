@@ -3,11 +3,11 @@
 import {DaisyTextInputLabelled} from '@/components/daisyUI/text-inputs';
 import {Blocks} from '@components/templates/blocks';
 import '@styles/settings/settings-page.scss'
-import {useApplication} from "@app/(contexts)/application";
+import {useAccountManager} from "@app/(contexts)/accountManager";
 
 
 export default function Settings(props) {
-  let {user} = useApplication();
+  let {user} = useAccountManager();
   const openModal = (element) => {
     document.getElementById(element).showModal();
   }

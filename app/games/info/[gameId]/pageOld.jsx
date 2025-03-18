@@ -6,14 +6,14 @@ import {content} from '@app/discover/page';
 import PlayerListing from '@app/games/info/[gameId]/(components)/PlayerListing';
 import {use, useEffect, useState} from 'react';
 import timeSince from '@/javascript/util/timeSince';
-import {useApplicationContext} from '@/app/ApplicationContext';
+import {useAccountManagerContext} from '@/app/AccountManagerContext';
 import {gamesCollection} from '@/test/fake firestore/tavern-test-1/collections/firestoreObjects';
 
 
 export default function GameInfo(props) {
   // const { item } = props;
 
-  const {temp, setTemp, updateTemp} = useApplicationContext();
+  const {temp, setTemp, updateTemp} = useAccountManagerContext();
 
   // we need to make sure that all the necessary data is held, so I'll check and set that here
   useEffect(() => {

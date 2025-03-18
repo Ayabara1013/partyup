@@ -2,18 +2,18 @@
 import {Blocks} from "@components/templates/blocks";
 import {Forms} from "@components/templates/forms";
 import {useRef} from "react";
-import {fbAccountManagement} from "@/javascript/firebase/fbAccountManagement";
-import {useApplication} from "@app/(contexts)/application";
+import {fbAccountManager} from "@/javascript/firebase/fbAccountManager";
+import {useAccountManager} from "@app/(contexts)/accountManager";
 
 export default function () {
-  let {user} = useApplication();
+  let {user} = useAccountManager();
   const password1Ref = useRef(null);
   const password2Ref = useRef(null);
   const emailRef = useRef(null);
   const displayNameRef = useRef(null);
 
   function update() {
-    fbAccountManagement.update.uName(user, displayNameRef.current.value).then()
+    fbAccountManager.update.uName(user, displayNameRef.current.value).then()
   }
 
   function submitOnClick() {

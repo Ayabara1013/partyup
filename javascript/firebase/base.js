@@ -47,11 +47,20 @@ function toArray(docs) {
   return docArray;
 }
 
+function cleanUserData(userData) {
+  return {
+    id: userData.id,
+    uName: userData.uName,
+    planTier: userData.planTier
+  }
+}
+
 export {
   db,
   fireApp,
   userAuth,
   googleSignInPopUp,
   reconstructDoc,
-  toArray
+  toArray,
+  cleanUserData
 };

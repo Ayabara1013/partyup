@@ -3,8 +3,8 @@
 import {use, useEffect, useState} from 'react'
 import {Forms} from "@components/templates/forms";
 import {firefoxNumberInputOnKeyDown} from "@/javascript/util/browserFixes/firefox";
-import {useApplication} from "@app/(contexts)/application";
-import {fbGmManagement} from "@/javascript/firebase/fbGmManagement";
+import {useAccountManager} from "@app/(contexts)/accountManager";
+import {fbGmManager} from "@/javascript/firebase/fbGmManager";
 import {useRouter} from "next/navigation";
 import toast from "react-hot-toast";
 import {useGameManager} from "@app/(contexts)/gameManager";
@@ -13,7 +13,7 @@ import {dirHref} from "@/javascript/assets/directoryHref";
 
 export default function GameCreate({className, params}) {
   const {push} = useRouter();
-  const {gmGames, setGames, userDetails} = useApplication();
+  const {gmGames, setGames, userDetails} = useAccountManager();
   const [selectedGame, setSelectedGame] = useState();
 
   const {gameId} = use(params);
@@ -24,7 +24,7 @@ export default function GameCreate({className, params}) {
   //load game list.
   useEffect(() => {
     if (gmGames) {
-      for (let game of gmGames.gameList) {
+      for (let game of gmGames) {
         if (gameId === game.id) {
           setSelectedGame(game)
           return;
@@ -53,7 +53,7 @@ export default function GameCreate({className, params}) {
   const updateOnClick = async () => {
     let data = getFormData(userDetails);
 
-    if (await fbGmManagement.general.updateGame(data, gameId)) {
+    if (await fbGmManager.general.updateGame(data, gameId)) {
       toast.success("Game updated successfully.");
       await setGames();
       push(dirHref.games.root)

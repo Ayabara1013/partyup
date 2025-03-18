@@ -4,12 +4,12 @@ import '@styles/cta.scss';
 
 import {allText} from '@/javascript/assets/all_text';
 import CYACard from './(components)/CYACard';
-import {useApplication} from "@app/(contexts)/application";
+import {useAccountManager} from "@app/(contexts)/accountManager";
 import Link from "next/link";
 import {dirHref} from "@/javascript/assets/directoryHref";
 
 export default function Home() {
-  const {user} = useApplication();
+  const {user} = useAccountManager();
   return (
     <div
       className='home-page flex flex-col sm:py-4 md:py-8 lg:pt-8 lg:pb-20 gap-8 lg:gap-28 w-full min-h-full border-2 border-dotted border-red-400'>

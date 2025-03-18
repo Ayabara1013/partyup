@@ -2,7 +2,7 @@
 import {Blocks} from "@components/templates/blocks";
 import {Forms} from "@components/templates/forms";
 import {useRef} from "react";
-import {fbAccountManagement} from "@/javascript/firebase/fbAccountManagement";
+import {fbAccountManager} from "@/javascript/firebase/fbAccountManager";
 import {useRouter} from "next/navigation";
 import toast from "react-hot-toast";
 import {googleSignInPopUp} from "@/javascript/firebase/base";
@@ -14,7 +14,7 @@ export default function () {
   const emailRef = useRef(null);
 
   function devTest() {
-    fbAccountManagement.create.withEP('test@gmail.com', 'password11')
+    fbAccountManager.create.withEP('test@gmail.com', 'password11')
       .then((success) => {
         if (success) {
           console.log(`Account created: ${success}. 5 Seconds till redirect.`)
@@ -32,7 +32,7 @@ export default function () {
       password2: password2Ref.current.value,
       email: emailRef.current.value,
     });
-    fbAccountManagement.create.withEP(emailRef.current.value.trim(), password1Ref.current.value)
+    fbAccountManager.create.withEP(emailRef.current.value.trim(), password1Ref.current.value)
       .then((success) => {
         if (success) {
           console.log(`Account created. 5 Seconds till redirect.`)

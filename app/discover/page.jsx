@@ -6,11 +6,11 @@ import {Blocks} from '@components/templates/blocks';
 import '@styles/blocks.scss';
 import {useState} from "react";
 import {gameSystems} from "@/javascript/assets/gameSystems";
-import {useApplication} from "@app/(contexts)/application";
+import {useAccountManager} from "@app/(contexts)/accountManager";
 
 export default function Discover() {
   const [sysCurrentTab, setSysCurrentTab] = useState(-1);
-  const {gmGames} = useApplication();
+  const {gmGames} = useAccountManager();
   return (
     <div className={`discover-page page-wrapper`}>
 
@@ -28,7 +28,7 @@ export default function Discover() {
 
       <Blocks.Section>
         {gmGames &&
-          <DiscoverCard game={gmGames.gameList[0]}/>
+          <DiscoverCard game={gmGames[0]}/>
         }
         {/*<DiscoverCard/>*/}
       </Blocks.Section>

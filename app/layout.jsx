@@ -5,7 +5,7 @@ import {Inter} from 'next/font/google';
 
 import NavBar from "@components/navBar";
 
-import {ApplicationProvider} from "@app/(contexts)/application";
+import {AccountManagerProvider} from "@app/(contexts)/accountManager";
 import {ContextMenuProvider} from "@app/(contexts)/contextMenu";
 import {Toaster} from "react-hot-toast";
 import {ModalProvider} from "@app/(contexts)/popupModal";
@@ -20,7 +20,7 @@ export default function RootLayout({children}) {
   return (
     <html lang="en" data-theme="night">
     <body className={`${inter.className} flex grow flex-col min-h-screen h-screen overflow-hidden`}>
-    <ApplicationProvider>
+    <AccountManagerProvider>
       <ContextMenuProvider>
         <ModalProvider>
           <NavBar/>
@@ -30,7 +30,7 @@ export default function RootLayout({children}) {
           <Toaster position="bottom-right"/>
         </ModalProvider>
       </ContextMenuProvider>
-    </ApplicationProvider>
+    </AccountManagerProvider>
     </body>
     </html>
   )

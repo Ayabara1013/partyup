@@ -1,9 +1,21 @@
-import {db, reconstructDoc, toArray, userAuth} from "@/javascript/firebase/base";
+import {db, reconstructDoc, userAuth} from "@/javascript/firebase/base";
 import toast from "react-hot-toast";
 import {createUserWithEmailAndPassword} from "firebase/auth";
-import {collection, doc, getDoc, getDocs, onSnapshot, query, updateDoc, where} from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  onSnapshot,
+  query,
+  Timestamp,
+  updateDoc,
+  where
+} from "firebase/firestore";
+import {fbUtilManager} from "@/javascript/firebase/fbUtilManager";
+import {accountLocalStorage} from "@/javascript/localStorage";
+import {fbGmManager} from "@/javascript/firebase/fbGmManager";
 
-export const fbAccountManagement = {
+export const fbAccountManager = {
   //Methods for account creation.
   create: {
     /**
@@ -27,23 +39,6 @@ export const fbAccountManagement = {
     }
   },
 
-  //Methods for checking availability of account details.
-  checkAvailability: {
-    /**
-     * Check display name availability
-     *
-     * @param {string} displayName The display name up for scrutiny.
-     */
-    displayName: async (displayName) => {
-      //Use a ref then query to reduce the read count.
-      const userCollectionRef = collection(db, `user`);
-      const q = query(userCollectionRef, where('displayName', '==', displayName));
-
-      return toArray(await getDocs(q)).length === 0;
-    }
-  },
-
-
   get: {
     accountDetails: async (uid) => {
       const userInfoRef = doc(db, 'user', uid);
@@ -52,21 +47,20 @@ export const fbAccountManagement = {
     }
   },
 
-
   update: {
     /**
      * Update user's display name
      *
      * @param {object} user The user object from firebase .
-     * @param {string} newDisplayName The new text to update the display name.
+     * @param {string} newUName The new text to update the display name.
      */
-    displayName: async (user, newDisplayName) => {
+    uName: async (user, newUName) => {
       const userInfoPrivateRef = doc(db, 'user', user.uid);
       const userInfoPrivate = await getDoc(userInfoPrivateRef);
       let privateUpdated = false;
 
       if (userInfoPrivate.exists()) {
-        privateUpdated = updateDoc(userInfoPrivateRef, {displayName: newDisplayName, displayNameConfirmation: true})
+        privateUpdated = updateDoc(userInfoPrivateRef, {uName: newUName, uNameConfirmation: true})
           .then(() => {
             return true;
           })
@@ -101,11 +95,47 @@ export const fbAccountManagement = {
   },
 
   live: {
-    userUpdate: (user, callback) => {
-      const userInfoRef = doc(db, 'user', user.id);
+    userUpdate: (userDetails, callback) => {
+      const userInfoRef = doc(db, 'user', userDetails.id);
 
       return onSnapshot(userInfoRef, async (snapshot) => {
         callback(reconstructDoc(snapshot));
+      })
+    },
+    fullUpdates: (userDetails, setUserDetails, gmGames, setGames) => {
+      let time = accountLocalStorage.getLastOtherUpdateTime(userDetails.id);
+      let testTime = new Date();
+      testTime.setTime(Date.UTC(2020, 1, 1));
+      const q = query(collection(db, 'user', userDetails.id, 'liveUpdates'), where('updatedAt', '>=', Timestamp.fromDate(testTime)));
+      accountLocalStorage.setLastOtherUpdateTime(userDetails.id);
+
+      return onSnapshot(q, (snapshot) => {
+        snapshot.docChanges().forEach(async (change) => {
+          let data = reconstructDoc(change.doc)
+          if (change.type === "added") {
+            if (data.type === `gmGame`) {
+              let user = await fbUtilManager.get.user(data.data.uid);
+              let newGames = [];
+              if (gmGames) {
+                for (let i = 0; i < gmGames.length; i++) {
+                  if (gmGames[i].id === data.data.gid) {
+                    newGames.push(await fbGmManager.general.getGame(data.data.gid));
+                    if (data.data.field === `joinRequests`) {
+                      toast(`${user.uName} has requested to join the game: ${gmGames[i].name}`)
+                    } else if (data.data.field === `players`) {
+                      toast(`${user.uName} has been added to: ${gmGames[i].name}`)
+                    }
+                  } else {
+                    newGames.push(gmGames[i])
+                  }
+                }
+              }
+              setGames(newGames);
+            }
+          } else if (change.type === "removed") {
+
+          }
+        })
       })
     }
   }

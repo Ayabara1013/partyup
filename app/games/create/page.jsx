@@ -5,16 +5,16 @@ import {useEffect} from 'react'
 import {useRouter} from "next/navigation";
 
 import {Forms} from "@components/templates/forms";
-import {useApplication} from "@app/(contexts)/application";
+import {useAccountManager} from "@app/(contexts)/accountManager";
 import {useGameManager} from "@app/(contexts)/gameManager";
-import {fbGmManagement} from "@/javascript/firebase/fbGmManagement";
+import {fbGmManager} from "@/javascript/firebase/fbGmManager";
 import {firefoxNumberInputOnKeyDown} from "@/javascript/util/browserFixes/firefox";
 import {gameSystems} from "@/javascript/assets/gameSystems";
 import {dirHref} from "@/javascript/assets/directoryHref";
 
 export default function GameCreate({className}) {
   const {push} = useRouter();
-  const {userDetails, gmGames, setGames} = useApplication();
+  const {userDetails, gmGames, setGames, canCreate} = useAccountManager();
   const {gameInfoRefs, safetyChecks, getFormData} = useGameManager();
   const {gameNameRef, systemRef, maxPlayersRef, tagsRef, publicGameRef, descRef} = gameInfoRefs
 
@@ -25,7 +25,7 @@ export default function GameCreate({className}) {
   }, [userDetails]);
 
   useEffect(() => {
-    if (gmGames && !gmGames.canCreate()) {
+    if (gmGames && !canCreate()) {
       toast.error(`You need to upgrade your plan for more slots for gm games!`)
       push(dirHref.games.root)
     }
@@ -33,9 +33,8 @@ export default function GameCreate({className}) {
 
   const submitOnClick = async () => {
     let data = getFormData(userDetails);
-    console.log(data)
     toast(`Game info. has been sent.`)
-    if (await fbGmManagement.general.createGame(data)) {
+    if (await fbGmManager.general.createGame(data)) {
       setTimeout(() => {
         toast.success("Game created successfully.");
         push(dirHref.games.root)

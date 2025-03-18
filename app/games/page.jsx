@@ -1,8 +1,8 @@
 'use client'
 
 import '@styles/games/games.scss'
-import {useApplication} from '@app/(contexts)/application';
-import {fbGmManagement} from "@/javascript/firebase/fbGmManagement";
+import {useAccountManager} from '@app/(contexts)/accountManager';
+import {fbGmManager} from "@/javascript/firebase/fbGmManager";
 import Link from 'next/link';
 import toast from "react-hot-toast";
 import {useEffect} from "react";
@@ -13,10 +13,10 @@ import JoinRequestList from "@components/gm/joinRequestList";
 
 export default function MyGames({className}) {
   const {push} = useRouter();
-  const {userDetails, gmGames, playerGames, setGames, checkUser} = useApplication();
+  const {gmGames, playerGames, setGames, canCreate} = useAccountManager();
 
   const startFunc = async (game) => {
-    if (await fbGmManagement.general.startGame(game.id)) {
+    if (await fbGmManager.general.startGame(game.id)) {
       setGames()
       setTimeout(() => {
         toast.success(`${game.name} has been started. Redirecting...`)
@@ -30,11 +30,11 @@ export default function MyGames({className}) {
   return (
     (gmGames &&
       <div className={`${className} games-page page-wrapper flex flex-col gap-8`}>
-        {gmGames && <MyGamesList gameList={gmGames.gameList} title={`GM Games`} type={'gm'} {...{startFunc}}/>}
-        {playerGames && <MyGamesList gameList={playerGames.gameList} title={`Player Games`}/>}
+        {gmGames && <MyGamesList gameList={gmGames} title={`GM Games`} type={'gm'} {...{startFunc}}/>}
+        {playerGames && <MyGamesList gameList={playerGames} title={`Player Games`}/>}
 
         <div className='games-page__section --find-more-games'>
-          <Link className={`btn button-breakpoints m-auto px-6 w-1/2 ${gmGames.canCreate() ? '' : 'btn-disabled'}`}
+          <Link className={`btn button-breakpoints m-auto px-6 w-1/2 ${canCreate() ? '' : 'btn-disabled'}`}
                 href={dirHref.games.create}>
             create a game</Link>
           <Link className='btn btn-primary button-breakpoints m-auto w-1/2 md:px-6 txt-3xl'
@@ -58,7 +58,7 @@ function MyGamesList({gameList, type = 'player', title, startFunc}) {
         <ul className='games-page__games-list'>
           {
             gameList.map((game, index) => {
-              let playerCount = game.members.length;
+              let playerCount = game.players.length;
               let totalSeats = game.maxPlayers;
               let minSeats = 2;
               let pcs = playerCount === totalSeats ? 'text-success' : 'text-error';
@@ -66,7 +66,7 @@ function MyGamesList({gameList, type = 'player', title, startFunc}) {
 
               function showModalOnClick() {
                 setTitle(`Game join requests`);
-                setModalChildren(<JoinRequestList game={game}/>)
+                setModalChildren(<JoinRequestList game={game} {...{setModalChildren}}/>)
                 showModal();
               }
 
@@ -77,11 +77,6 @@ function MyGamesList({gameList, type = 'player', title, startFunc}) {
                     <div className={`__item-header__system text-opacity-50`}>(System: {game.system})</div>
                     {(type === 'gm') && (
                       <>
-                        {(game.status !== 'started') &&
-                          <button onClick={showModalOnClick}
-                                  className='btn btn-xs btn-accent ml-auto font-semibold'>Join Requests
-                            <div className="badge badge-sm badge-neutral">+{game.requests.length}</div>
-                          </button>}
                         {game.status === 'started'
                           ? <Link className='btn btn-xs btn-accent ml-auto font-semibold'
                                   href={dirHref.games.play(game.id)}>Play</Link>
@@ -96,9 +91,14 @@ function MyGamesList({gameList, type = 'player', title, startFunc}) {
                   <div className="flex gap-2">
                     <div className={`${pcs} text-xl font-bold whitespace-nowrap`}>{playerCount} / {totalSeats}</div>
                     <PlayersList className={`flex-1 my-auto`} {...{game, playerCount, totalSeats}}/>
+                    {(game.status !== 'started') &&
+                      <button onClick={showModalOnClick}
+                              className='btn btn-xs btn-accent ml-auto font-semibold'>Join Requests
+                        <div className="badge badge-sm badge-neutral">{game.joinRequests.length}</div>
+                      </button>}
                     {(type === 'gm')
                       && <Link href={dirHref.games.gm.edit(game.id)}
-                               className='btn btn-xs btn-square btn-accent m-auto font-semibold'>edit</Link>}
+                               className='btn btn-xs btn-accent ml-auto font-semibold'>edit</Link>}
                   </div>
                 </div>
               )
@@ -115,7 +115,6 @@ function PlayersList({className, game, playerCount, totalSeats}) {
 
   async function copyInvite() {
     toast(`Copied invite link`)
-    console.log(game)
     await navigator.clipboard.writeText(dirHref.games.inviteLink(game.id, game.inviteCode));
   }
 
@@ -135,10 +134,10 @@ function PlayersList({className, game, playerCount, totalSeats}) {
   return (
     <div className={`__players-list ${className}`}>
       <div className='__players-list__list flex flex-row flex-wrap gap-2'>
-        {game.members.map((member, index) => {
+        {game.players.map((member, index) => {
           return (
             <li key={index} className={`__players-list__item ${index >= totalSeats ? '--error' : '--filled'}`}>
-              {member.username}
+              <p className={`pointer-events-none`}>{member.uName}</p>
             </li>
           )
         })}
