@@ -1,21 +1,21 @@
-import { Range, Transforms } from "slate";
-import { isKeyHotkey } from "is-hotkey";
-import { ReactEditor } from "slate-react";
-import { editorDefault as editorSettings } from "@/javascript/slateInput/defulatValues";
+import {Range, Transforms} from "slate";
+import {isKeyHotkey} from "is-hotkey";
+import {editorDefault as editorSettings} from "@/javascript/slateInput/defulatValues";
+import markdownParser from "@/javascript/slateInput/markdownParser";
 
 const editorFix = {
   keyDown: (e, editor) => {
-    let { selection } = editor;
+    let {selection} = editor;
     if (selection && Range.isCollapsed(selection)) {
-      const { nativeEvent } = e;
+      const {nativeEvent} = e;
       // calloutKeyDown(event);
       if (isKeyHotkey('left', nativeEvent)) {
         e.preventDefault()
-        Transforms.move(editor, { unit: 'offset', reverse: true })
+        Transforms.move(editor, {unit: 'offset', reverse: true})
       }
       if (isKeyHotkey('right', nativeEvent)) {
         e.preventDefault()
-        Transforms.move(editor, { unit: 'offset' })
+        Transforms.move(editor, {unit: 'offset'})
       }
       if (isKeyHotkey('tab', nativeEvent)) {
         e.preventDefault()
@@ -23,13 +23,13 @@ const editorFix = {
     }
   },
   keyUp: (e, editor) => {
-    let { path } = editor.selection.focus;
+    let {path} = editor.selection.focus;
     let newPathOffset = {
-      path: [ path[0], path[1] + 1 ],
+      path: [path[0], path[1] + 1],
       offset: 0
     };
     if (editorTools.offset.focusedChild(editor).type === 'badge') {
-      Transforms.setSelection(editor, { anchor: newPathOffset, focus: newPathOffset });
+      Transforms.setSelection(editor, {anchor: newPathOffset, focus: newPathOffset});
     }
   }
 }
@@ -37,17 +37,17 @@ const editorFix = {
 const editorTools = {
   offset: {
     findFocus: (editor, fragment) => {
-      let { path } = editor.selection.focus;
+      let {path} = editor.selection.focus;
       let focusedChild = editor.children[path[0]].children[path[1]];
       let offset = focusedChild.text.indexOf(fragment) + fragment.length;
-      return { path, offset };
+      return {path, offset};
     },
     focusedChild: (editor) => {
-      let { path } = editor.selection.focus;
+      let {path} = editor.selection.focus;
       return editor.children[path[0]].children[path[1]];
     },
     focusedFragment: (editor) => {
-      let { path, offset } = editor.selection.focus;
+      let {path, offset} = editor.selection.focus;
       let focusedChild = editor.children[path[0]].children[path[1]];
       if (!focusedChild.type) {
         let words = focusedChild.text.split(' ');
@@ -69,20 +69,44 @@ const editorTools = {
     editor.children = editorSettings.value.default;
     Transforms.select(editor, editorSettings.selection.default);
   },
-  printValues: (messageObject) => {
+  getEditorStringValue: function (editor) {
     let text = '';
-    for (let child of messageObject) {
-      if (child.children) {
-        for (let grandchild of child.children) {
-          text += (grandchild.type === 'badge') ? grandchild.value : `${grandchild.text}`;
+    for (let i = 0; i < editor.children.length; i++) {
+      if (i !== 0) text += '\n';
+      text += recurseThroughChildren(editor.children[i])
+    }
+    return text;
+  },
+  toEditorFormat: markdownParser.toEditor,
+
+  compareValues: function (array1, array2) {
+    if (array1.length === array2.length) {
+      for (let i = 0; i < array1.length; i++) {
+        let child1 = array1[i], child2 = array2[i];
+        if (child1.type !== child2.type) return false;
+        if (child1.children.length !== child2.children.length) return false;
+        for (let j = 0; j < child1.children.length; j++) {
+          let grandchild1 = child1.children[j], grandchild2 = child2.children[j];
+          if (grandchild1 !== grandchild2) return false
         }
       }
-      text += '\n';
     }
-    text.slice(0, -1)
-    return text;
+    return true
   }
 }
+
+function recurseThroughChildren(child) {
+  let text = '';
+  if (child.children) {
+    for (let grandchild of child.children) {
+      text += recurseThroughChildren(grandchild);
+    }
+  } else {
+    text = child.text;
+  }
+  return text;
+}
+
 
 export {
   editorFix,

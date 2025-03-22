@@ -36,8 +36,13 @@ $layout-breakpoint-md: 1200px;
   }
 }
 
+
+.btn-with-breakpoints{
+  @apply w-full md:w-[80%] lg:w-[60%] m-auto w-1/2 btn btn-primary;
+}
+
 .button-breakpoints {
-  @apply w-full md:w-[80%] lg:w-[60%];
+  @apply w-full md:w-[80%] lg:w-[60%] m-auto w-1/2;
 }
 
 .find-more-games-button {

@@ -1,7 +1,7 @@
 import {useRouter} from "next/navigation";
 import {useEffect, useState} from "react";
 import {useAccountManager} from "@app/(contexts)/accountManager";
-import {fbPlayerManager} from "@/javascript/firebase/fbPlayerManager";
+import {fbPlayerManager} from "@/javascript/firebase/managers/fbPlayerManager";
 import toast from "react-hot-toast";
 import {dirHref} from "@/javascript/assets/directoryHref";
 import PageLayout from "@components/pageLayout";
@@ -14,7 +14,7 @@ export default function BaseInvitePage({gameId, inviteCode, errorMessage}) {
 
   useEffect(() => {
     if (inviteCode) {
-      fbPlayerManager.general.get.gameFromInvite(gameId, inviteCode).then(doc => {
+      fbPlayerManager.general.get.game.fromInvite(gameId, inviteCode).then(doc => {
         if (!doc) {
           toast.error(errorMessage)
           push(dirHref.games.root)
@@ -23,7 +23,7 @@ export default function BaseInvitePage({gameId, inviteCode, errorMessage}) {
         setGame(doc)
       });
     } else {
-      fbPlayerManager.general.get.gameFromId(gameId).then(doc => {
+      fbPlayerManager.general.get.game.fromId(gameId).then(doc => {
         if (!doc) {
           toast.error(errorMessage)
           push(dirHref.games.root)
@@ -35,7 +35,7 @@ export default function BaseInvitePage({gameId, inviteCode, errorMessage}) {
   }, []);
 
   async function joinGame() {
-    await fbPlayerManager.general.joinGame(userDetails, gameId, inviteCode);
+    await fbPlayerManager.general.joinGame(gameId, inviteCode);
     setTimeout(()=>{
       push(dirHref.games.root)
     }, 1500)

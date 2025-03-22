@@ -11,9 +11,8 @@ import {
   updateDoc,
   where
 } from "firebase/firestore";
-import {fbUtilManager} from "@/javascript/firebase/fbUtilManager";
-import {accountLocalStorage} from "@/javascript/localStorage";
-import {fbGmManager} from "@/javascript/firebase/fbGmManager";
+import {fbUtilManager} from "@/javascript/firebase/managers/fbUtilManager";
+import {lsAccount} from "@/javascript/util/localStorage";
 
 export const fbAccountManager = {
   //Methods for account creation.
@@ -103,12 +102,8 @@ export const fbAccountManager = {
       })
     },
     fullUpdates: (userDetails, setUserDetails, gmGames, setGames) => {
-      let time = accountLocalStorage.getLastOtherUpdateTime(userDetails.id);
-      let testTime = new Date();
-      testTime.setTime(Date.UTC(2020, 1, 1));
-      const q = query(collection(db, 'user', userDetails.id, 'liveUpdates'), where('updatedAt', '>=', Timestamp.fromDate(testTime)));
-      accountLocalStorage.setLastOtherUpdateTime(userDetails.id);
-
+      let time = lsAccount.getLastOtherUpdateTime(userDetails.id);
+      const q = query(collection(db, 'user', userDetails.id, 'liveUpdates'), where('updatedAt', '>=', time));
       return onSnapshot(q, (snapshot) => {
         snapshot.docChanges().forEach(async (change) => {
           let data = reconstructDoc(change.doc)
@@ -119,7 +114,7 @@ export const fbAccountManager = {
               if (gmGames) {
                 for (let i = 0; i < gmGames.length; i++) {
                   if (gmGames[i].id === data.data.gid) {
-                    newGames.push(await fbGmManager.general.getGame(data.data.gid));
+                    newGames.push(await fbUtilManager.get.game(data.data.gid));
                     if (data.data.field === `joinRequests`) {
                       toast(`${user.uName} has requested to join the game: ${gmGames[i].name}`)
                     } else if (data.data.field === `players`) {

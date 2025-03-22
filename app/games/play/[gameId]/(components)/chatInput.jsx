@@ -1,50 +1,67 @@
 'use client'
 import {isKeyHotkey} from "is-hotkey";
 import {CustomSlate, useCustomEditorHook} from "@components/slatejs/slatejs";
-
-import ChatOptionList from "@app/games/play/[gameId]/(components)/(chatOptions)/chatOptionList";
-
-import {useCallout} from "@app/games/play/[gameId]/(components)/(chatOptions)/optionHook";
-
-import {ui} from "@/javascript/ui";
-import {editorDefault} from "@/javascript/slateInput/defulatValues";
 import {editorFix, editorTools} from "@/javascript/slateInput/editorUtil";
+import {useRef} from "react";
+import {useChatOptions} from "@app/games/play/[gameId]/(components)/(chatOptions)/chatOptionHook";
+import ChatOptionList from "@app/games/play/[gameId]/(components)/(chatOptions)/chatOptionList";
+import {editorDefault} from "@/javascript/slateInput/defulatValues";
+import {fbGameChatManager} from "@/javascript/firebase/managers/fbGameChatManager";
 
-export default function ChatInput(props) {
-  let {
-    activePlayers = editorDefault.activePlayers,
-    game,
-    window,
-    chatPermissions,
-    className
-  } = props;
+export default function ChatInput({name, gid, className, chatPerm}) {
   const {editor} = useCustomEditorHook();
-  //const callout = useCallout(id, editor);
-
-  const canMessage = () => {
-    if (chatPermissions === undefined) return false;
-    let {initMuted, initAllow} = chatPermissions;
-    return (!initMuted && initAllow);
+  const activePlayers = editorDefault.activePlayers
+  const chatOptionsRefs = {
+    mainRef: useRef(null),
+    optionRefs: [
+      useRef(null), useRef(null), useRef(null),
+      useRef(null), useRef(null), useRef(null),
+      useRef(null), useRef(null), useRef(null)
+    ]
   }
+
+  const callout = useChatOptions(chatOptionsRefs, editor);
+
   const onKeyDown = (e) => {
     editorFix.keyDown(e, editor);
-    let block = false //callout.find(e);
-
-    if (!block && isKeyHotkey('enter', e.nativeEvent)) {
-      e.preventDefault();
-      // editorTools.resetEditor(editor);
-      console.log(editorTools.printValues(editor.children))
+    let block = callout.cycleOptionIndex(e);
+    //Make new line while holding shift.
+    if (isKeyHotkey(`enter+shift`, e.nativeEvent)) {
+      return;
     }
+    //Enter to send
+    if (!block && isKeyHotkey(`enter`, e.nativeEvent)) {
+      e.preventDefault();
+      fbGameChatManager.add.message(name, gid, editorTools.getEditorStringValue(editor)).then();
+      editorTools.resetEditor(editor);
+    }
+    //Enter to select current highlighted option
+    if (block && isKeyHotkey('enter', e.nativeEvent)) {
+      e.preventDefault();
+      // callout.selectOption();
+      // editorTools.resetEditor(editor);
+    }
+
   }
   const onKeyUp = (e) => {
-    //callout.update(activePlayers);
+    console.log({
+      ogArray: editor.children,
+      text: editorTools.getEditorStringValue(editor),
+      // newArray: editorTools.toEditorFormat(editorTools.getEditorStringValue(editor)),
+      // compareValue: editorTools.compareValues(editor.children, editor.children)
+
+    })
+
+    if (!isKeyHotkey(`escape`, e.nativeEvent)) {
+      callout.updateOptionsFilter(activePlayers);
+    }
     editorFix.keyUp(e, editor);
   }
 
   return (
-    <div className="min-w-full w-0">
-      {/*<ChatOptionList {...callout.optionProps()}/>*/}
-      <CustomSlate readOnly={canMessage()} {...{onKeyDown, onKeyUp, editor, className}}/>
+    <div className="min-w-full w-0" ref={chatOptionsRefs.mainRef}>
+      <ChatOptionList {...callout.optionProps()} chatOptionsRefs={chatOptionsRefs}/>
+      <CustomSlate readOnly={false} {...{onKeyDown, onKeyUp, editor, className}}/>
     </div>
   )
 }

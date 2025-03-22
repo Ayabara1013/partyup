@@ -1,4 +1,3 @@
-import { toastUser } from "@/javascript/util/functions";
 import toast from "react-hot-toast";
 
 export default function PlayerMessageOptions({ message }) {

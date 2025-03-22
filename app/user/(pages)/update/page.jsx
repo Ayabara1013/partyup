@@ -2,7 +2,7 @@
 import {Blocks} from "@components/templates/blocks";
 import {Forms} from "@components/templates/forms";
 import {useRef} from "react";
-import {fbAccountManager} from "@/javascript/firebase/fbAccountManager";
+import {fbAccountManager} from "@/javascript/firebase/managers/fbAccountManager";
 import {useAccountManager} from "@app/(contexts)/accountManager";
 
 export default function () {

@@ -1,4 +1,4 @@
-import { charactersCollection, gamesCollection } from '@/test/fake firestore/tavern-test-1/collections/firestoreObjects';
+import { charactersCollection, gamesCollection } from '@/javascript/__tests/jeremy/fake firestore/tavern-test-1/collections/firestoreObjects';
 
 
 

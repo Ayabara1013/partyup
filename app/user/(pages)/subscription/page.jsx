@@ -1,9 +1,9 @@
 'use client'
-import {usersCollection} from '@/test/fake firestore/tavern-test-1/collections/firestoreObjects';
+import {usersCollection} from '@/javascript/__tests/jeremy/fake firestore/tavern-test-1/collections/firestoreObjects';
 import '@styles/settings/signup.scss';
 import {useAccountManager} from "@app/(contexts)/accountManager";
 import {subscriptionInfo} from "@/javascript/assets/subscriptionInfo";
-import {fbAccountManager} from "@/javascript/firebase/fbAccountManager";
+import {fbAccountManager} from "@/javascript/firebase/managers/fbAccountManager";
 import toast from "react-hot-toast";
 import {useRouter} from "next/navigation";
 import {use, useEffect} from "react";

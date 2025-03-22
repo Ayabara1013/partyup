@@ -5,6 +5,7 @@ import {
 } from "firebase/firestore";
 import {db, reconstructDoc, toArray, userAuth} from "@/javascript/firebase/base";
 import toast from "react-hot-toast";
+import {fbUtilManager} from "@/javascript/firebase/managers/fbUtilManager";
 
 export const fbGmManager = {
   general: {
@@ -46,18 +47,11 @@ export const fbGmManager = {
           return false
         });
     },
-    getGame: async function (gid) {
-      let tempGame = reconstructDoc(await getDoc(doc(db, `game`, gid)));
-      tempGame.inviteCode = toArray(await getDocs(collection(db, `game`, gid, 'invites')))[0].id;
-      return tempGame;
-    },
-    getGames: async function (uid) {
-      const gamePrivateListRef = doc(db, `user`, uid);
-      let gidList = reconstructDoc(await getDoc(gamePrivateListRef)).gmGames;
+    getGames: async function () {
+      let gidList = reconstructDoc(await getDoc(doc(db, `user`, userAuth.currentUser.uid))).gmGames;
       const games = [];
       for (let gid of gidList) {
-        let tempGame = await this.getGame(gid)
-        games.push(tempGame);
+        games.push(await fbUtilManager.get.game(gid));
       }
       return games;
     },
@@ -79,20 +73,4 @@ export const fbGmManager = {
       return addResult && removeResult
     }
   },
-  inGame: {
-    chat: {
-      addMessage: async (game, windows, content) => {
-        const gameChatRef = collection(db, `game`, game.id, `messages`)
-        await addDoc(gameChatRef, {
-          uid: userAuth.currentUser.uid,
-          content,
-          windows,
-        }).catch((e) => {
-          console.log(e)
-          toast.error('Something went wrong, please try again later.')
-        })
-      },
-    }
-  },
-  live: {}
 }

@@ -5,8 +5,8 @@ import {
     charactersCollection,
     gamesCollection,
     usersCollection
-} from '@/test/fake firestore/tavern-test-1/collections/firestoreObjects';
-import findCharacterByUserId from '@/javascript/util/findCharacterByUserId';
+} from '@/javascript/__tests/jeremy/fake firestore/tavern-test-1/collections/firestoreObjects';
+import findCharacterByUserId from '@/javascript/__tests/jeremy/findCharacterByUserId';
 // import validateEmail from '@/util/validateEmail';
 import {useState} from 'react';
 

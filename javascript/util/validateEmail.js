@@ -1,7 +1,3 @@
-
-
-
-
 function validateEmail(email) {
   let at = email.indexOf('@')
   if (at === -1) return false;

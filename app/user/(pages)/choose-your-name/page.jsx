@@ -2,11 +2,11 @@
 import {Blocks} from "@components/templates/blocks";
 import {Forms} from "@components/templates/forms";
 import {useEffect, useRef} from "react";
-import {fbAccountManager} from "@/javascript/firebase/fbAccountManager";
+import {fbAccountManager} from "@/javascript/firebase/managers/fbAccountManager";
 import {useAccountManager} from "@app/(contexts)/accountManager";
 import toast from "react-hot-toast";
 import {useRouter} from "next/navigation";
-import {fbUtilManager} from "@/javascript/firebase/fbUtilManager";
+import {fbUtilManager} from "@/javascript/firebase/managers/fbUtilManager";
 
 export default function () {
   const {push} = useRouter();

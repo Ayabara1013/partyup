@@ -452,8 +452,35 @@ body {
 
 .full-element-btn {
   cursor: pointer;
+
   & > * {
     pointer-events: none;
     user-select: none;
+  }
+}
+
+.pseudo-input {
+  flex-shrink: 1;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  font-size: 1rem;
+  border-width: 1px;
+  border-color: hsl(var(--bc) / var(--tw-border-opacity));
+  --tw-border-opacity: 0;
+  --tw-bg-opacity: 1;
+  background-color: hsl(var(--b1) / var(--tw-bg-opacity));
+  border-radius: var(--rounded-btn, 0.5rem);
+
+  & button:hover:not(.info-option) {
+    @apply input-primary;
+  }
+
+  &.info-option {
+    --tw-border-opacity: 0;
+    background-color: hsl(var(--p)/0.3);
+  }
+  &.input-accent.info-option {
+    --tw-border-opacity: 0;
+    background-color: hsl(var(--p)/0.3);
   }
 }

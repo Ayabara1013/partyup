@@ -4,7 +4,7 @@ import {use, useEffect, useState} from 'react'
 import {Forms} from "@components/templates/forms";
 import {firefoxNumberInputOnKeyDown} from "@/javascript/util/browserFixes/firefox";
 import {useAccountManager} from "@app/(contexts)/accountManager";
-import {fbGmManager} from "@/javascript/firebase/fbGmManager";
+import {fbGmManager} from "@/javascript/firebase/managers/fbGmManager";
 import {useRouter} from "next/navigation";
 import toast from "react-hot-toast";
 import {useGameManager} from "@app/(contexts)/gameManager";

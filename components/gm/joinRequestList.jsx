@@ -1,8 +1,8 @@
-import {fbGmManager} from "@/javascript/firebase/fbGmManager";
+import {fbGmManager} from "@/javascript/firebase/managers/fbGmManager";
 import toast from "react-hot-toast";
 import {useEffect, useState} from "react";
 
-export default function JoinRequestList({game, modal}) {
+export default function JoinRequestList({game}) {
   const [reqButtons, setReqButtons] = useState([]);
   useEffect(() => {
     let index = 0;
@@ -23,7 +23,7 @@ export default function JoinRequestList({game, modal}) {
 
       buttons.push(
         <button key={index} onClick={acceptOnClick}
-                className={`btn btn-primary button-breakpoints m-auto w-1/2 md:px-6 txt-3xl`}>{reqUser.uName}</button>
+                className={`btn btn-primary button-breakpoints md:px-6 txt-3xl`}>{reqUser.uName}</button>
       )
       if (buttons.length === 0) {
       }

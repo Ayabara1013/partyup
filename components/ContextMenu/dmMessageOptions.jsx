@@ -1,4 +1,3 @@
-import {toastUser} from "@/javascript/util/functions";
 import {messaging} from "@/firebase/messaging";
 import toast from "react-hot-toast";
 

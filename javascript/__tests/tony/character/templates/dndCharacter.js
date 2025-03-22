@@ -1,4 +1,4 @@
-import CharacterSheet from "@/javascript/util/character/CharacterSheet";
+import CharacterSheet from "@/javascript/__tests/tony/character/CharacterSheet";
 
 export default function createDndCharacter(abilityScores, skills, level) {
   let outputAbilityScores = {

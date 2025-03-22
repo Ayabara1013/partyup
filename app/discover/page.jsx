@@ -27,7 +27,7 @@ export default function Discover() {
       </Blocks.Section>
 
       <Blocks.Section>
-        {gmGames &&
+        {gmGames?.length > 0 &&
           <DiscoverCard game={gmGames[0]}/>
         }
         {/*<DiscoverCard/>*/}

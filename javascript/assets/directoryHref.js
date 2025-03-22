@@ -22,7 +22,7 @@ const dirHref = {
     },
     gm: {
       edit: function (gameId) {
-        return `/games/my-games/gm/edit/${gameId}`
+        return `/games/gm/edit/${gameId}`
       }
     }
   },

@@ -2,20 +2,19 @@
 import {useAuthState} from "react-firebase-hooks/auth";
 import {createContext, useContext, useEffect, useRef, useState} from 'react';
 import {userAuth} from "@/javascript/firebase/base";
-import {fbAccountManager} from "@/javascript/firebase/fbAccountManager";
+import {fbAccountManager} from "@/javascript/firebase/managers/fbAccountManager";
 import {usePathname, useRouter} from "next/navigation";
 import toast from "react-hot-toast";
-import {fbGmManager} from "@/javascript/firebase/fbGmManager";
 import {subscriptionInfo} from "@/javascript/assets/subscriptionInfo";
 import {dirHref} from "@/javascript/assets/directoryHref";
+import {fbUtilManager} from "@/javascript/firebase/managers/fbUtilManager";
 
 const AccountManagerContext = createContext(null);
 
 export function AccountManagerProvider({children}) {
   const {push} = useRouter();
   const pathname = usePathname()
-
-  const [user] = useAuthState(userAuth);
+  const [user, loading] = useAuthState(userAuth);
   const [userDetails, setUserDetails] = useState(null);
   const [gmGames, setGmGames] = useState(null);
   const [playerGames, setPlayerGames] = useState(null);
@@ -48,7 +47,7 @@ export function AccountManagerProvider({children}) {
         //creates a live feed for user updates.
         userUpdate.current = fbAccountManager.live.userUpdate(userDetails, setUserDetails);
       }
-      if (!otherUpdates.current && gmGames && userDetails) {
+      if (!otherUpdates.current && userDetails) {
         //creates a live feed for user updates.
         otherUpdates.current = fbAccountManager.live.fullUpdates(userDetails, setUserDetails, gmGames, setGames);
       }
@@ -102,8 +101,9 @@ export function AccountManagerProvider({children}) {
   }
 
   //Grab games
-  const setGames = async (games) => {
-    setGmGames(games ? games : await fbGmManager.general.getGames(userDetails.id))
+  const setGames = async (games, playerGames) => {
+    setGmGames(games ? games : await fbUtilManager.get.gmGames(userDetails.id))
+    setPlayerGames(playerGames ? playerGames : await fbUtilManager.get.playerGames(userDetails.id))
   }
 
   function maxGames() {
@@ -116,7 +116,7 @@ export function AccountManagerProvider({children}) {
 
   return (
     <AccountManagerContext.Provider
-      value={{user, gmGames, playerGames, userDetails, checkUser, setGames, canCreate, maxGames}}>
+      value={{user, gmGames, playerGames, userDetails, checkUser, setGames, canCreate, maxGames, loading}}>
       {children}
     </AccountManagerContext.Provider>
   )

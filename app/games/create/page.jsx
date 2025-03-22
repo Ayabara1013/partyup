@@ -7,7 +7,7 @@ import {useRouter} from "next/navigation";
 import {Forms} from "@components/templates/forms";
 import {useAccountManager} from "@app/(contexts)/accountManager";
 import {useGameManager} from "@app/(contexts)/gameManager";
-import {fbGmManager} from "@/javascript/firebase/fbGmManager";
+import {fbGmManager} from "@/javascript/firebase/managers/fbGmManager";
 import {firefoxNumberInputOnKeyDown} from "@/javascript/util/browserFixes/firefox";
 import {gameSystems} from "@/javascript/assets/gameSystems";
 import {dirHref} from "@/javascript/assets/directoryHref";

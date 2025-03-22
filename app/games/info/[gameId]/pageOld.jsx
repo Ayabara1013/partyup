@@ -7,7 +7,7 @@ import PlayerListing from '@app/games/info/[gameId]/(components)/PlayerListing';
 import {use, useEffect, useState} from 'react';
 import timeSince from '@/javascript/util/timeSince';
 import {useAccountManagerContext} from '@/app/AccountManagerContext';
-import {gamesCollection} from '@/test/fake firestore/tavern-test-1/collections/firestoreObjects';
+import {gamesCollection} from '@/javascript/__tests/jeremy/fake firestore/tavern-test-1/collections/firestoreObjects';
 
 
 export default function GameInfo(props) {
