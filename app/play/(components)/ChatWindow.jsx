@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 
 import '@styles/play/ChatWindow.scss';
+import '@styles/play/chatBubbles.scss';
 
 
 
@@ -102,12 +103,16 @@ function ChatInput(props) {
         type="text"
         value={value}
         placeholder="Type here"
-        className="input input-bordered input-primary w-full"
+        className="input input-bordered border-2 input-primary w-full"
         onChange={(e) => setValue(e.target.value)}
       />
     </div>
   )
 }
+
+
+
+
 
 function PromptPopup(props) {
   const { showPrompt, value } = props;
@@ -145,9 +150,27 @@ const createExampleChatComponents = (num) => {
   return elements;
 }
 
+const NotificationBubble = ({ children, className }) => {
+  return (
+    <div className='chat chat-notification'>
+      <div className={`--bubble ${className}`}>
+        {children || `chat-notification __full-width`}  
+      </div>
+    </div>
+  )
+}
+
 export const BunchOfElements = () => {
   return (
     <>
+      <NotificationBubble>
+        hello world <span className="prompt">roll 1d6</span>
+      </NotificationBubble>
+
+      <NotificationBubble>
+        the above bubble should do the same as a <span className='text-primary font-bold no-wrap'>/r 1d6</span> command
+      </NotificationBubble>
+
       <div className="chat chat-start">
         <div className="chat-bubble chat-bubble-secondary">What kind of nonsense is this</div>
       </div>

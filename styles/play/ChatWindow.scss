@@ -34,7 +34,7 @@ $prompt-bg-focus: bg-primary-focus;
 
 
 .chat-window {
-  @apply bg-neutral rounded-xl;
+  @apply bg-base-100 rounded-2xl border-2 border-primary;
   flex-grow: 1;
 
   &.--active {

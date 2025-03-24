@@ -1,0 +1,23 @@
+.chat-notification {
+  @apply flex py-4 w-full;
+
+  .--bubble {
+    @apply px-4 py-2 w-full bg-neutral text-neutral-content rounded-lg;
+
+    // border-radius: var(--rounded-box);
+  }
+}
+
+.prompt {
+  @apply px-2 py-1 bg-neutral-content text-neutral rounded-md;
+
+  &:hover {
+    box-shadow: 0 2px 5px hsl(var(--p) / var(--tw-bg-opacity));
+    cursor: pointer;
+  }
+  
+  &:active {
+    background-color: oklch(0.90 0.007 260.03) /* Slightly darker */;
+    box-shadow: 0 3px 6px hsl(var(--a) / var(--tw-bg-opacity));
+  }
+}
