@@ -3,8 +3,7 @@ import React from "react";
 import InlineChromiumBugfix from "@components/slatejs/inLineChromiumBugFix";
 
 export default function BadgeElement({attributes, children, element}) {
-  const selected = useSelected()
-
+  const selected = useSelected();
   let colors = {
     'command': 'blue',
     'mention': 'teal'

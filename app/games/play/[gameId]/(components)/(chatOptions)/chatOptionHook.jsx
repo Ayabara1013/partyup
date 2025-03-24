@@ -4,6 +4,7 @@ import {Transforms} from "slate";
 import {ReactEditor} from "slate-react";
 import {editorFix, editorTools} from "@/javascript/slateInput/editorUtil";
 import toast from "react-hot-toast";
+import chatOptions from "@/javascript/assets/chat/chatOptions";
 
 function addToList(member, list) {
   if (!list.includes(member)) {
@@ -11,8 +12,9 @@ function addToList(member, list) {
   }
 }
 
-export const useChatOptions = (chatOptionsRefs, editor) => {
+export const useChatOptions = (chatOptionsRefs, editor, players) => {
   const optionTypes = ['mention', 'command', 'dice'];
+  const [playerList, setPlayerList] = useState([]);
   const [itemList, setItemList] = useState([]);
   const [textFragment, setTextFragment] = useState('');
   const [optionHighlightIndex, setOptionHighlightIndex] = useState(0);
@@ -23,6 +25,14 @@ export const useChatOptions = (chatOptionsRefs, editor) => {
     command: /\/(?![\d ])/,
     dice: /~(?! )/
   };
+  useEffect(() => {
+    let tempPlayerList = [];
+    for (let pid of players.playerIds) {
+      tempPlayerList.push({value: pid, name: players[pid].uName});
+    }
+    tempPlayerList.push({value: players.gm.id, name: players.gm.uName});
+    setPlayerList(tempPlayerList)
+  }, []);
 
   useEffect(() => {
     let classes = highlightStyle.split(' ');
@@ -40,7 +50,7 @@ export const useChatOptions = (chatOptionsRefs, editor) => {
   const cycleOptionIndex = (e) => {
     let {nativeEvent} = e;
     let max = itemList.length;
-    if(isKeyHotkey(`escape`, nativeEvent)) {
+    if (isKeyHotkey(`escape`, nativeEvent)) {
       setTextFragment('');
       setItemList([]);
       setOptionHighlightIndex(0);
@@ -63,11 +73,11 @@ export const useChatOptions = (chatOptionsRefs, editor) => {
     return false;
   }
 
-  const updateOptionsFilter = (activePlayers, availableCommands = ['roll', 'mute']) => {
+  const updateOptionsFilter = (availableCommands = ['roll', 'mute']) => {
     let word = editorTools.offset.focusedFragment(editor);
     let fragment = undefined;
     let baseOptionPopulater = {
-      mention: activePlayers,
+      mention: playerList,
       command: availableCommands,
       dice: []
     }
@@ -96,7 +106,14 @@ export const useChatOptions = (chatOptionsRefs, editor) => {
     }
     index = index || optionHighlightIndex;
     let newFocus = editorTools.offset.findFocus(editor, textFragment);
-    let badgeValue = featureType !== 'dice' ? `${textFragment[0]}${itemList[index].value}` : textFragment;
+    let badgeValue = featureType !== 'dice'
+      ? `${textFragment[0]}{${itemList[index].value}}`
+      : `${textFragment[0]}{${textFragment.substring(1)}}`;
+
+    let badgeText = featureType !== 'dice'
+      ? `${textFragment[0]}${itemList[index].name}`
+      : textFragment;
+
     if (featureType === `dice` && itemList.length === 1) {
       toast.error(`Invalid dice format entered. The system will not roll when message is sent.`);
     }
@@ -113,13 +130,13 @@ export const useChatOptions = (chatOptionsRefs, editor) => {
       {
         type: 'badge',
         featureType,
+        value: badgeValue,
         //If type is dice, input what the use put in else select the option.
-        children: [{text: badgeValue}]
+        children: [{text: badgeText}]
       },
       {at: editor.selection.focus});
     Transforms.move(editor, {unit: 'offset'});
 
-    console.log(editor.children)
     setTextFragment('');
     setItemList([]);
     setOptionHighlightIndex(0);
@@ -157,21 +174,19 @@ export const useChatOptions = (chatOptionsRefs, editor) => {
 }
 
 const filterOptions = {
-  mention: function (word, activePlayers, newOptionList) {
+  mention: function (word, playerList, newOptionList) {
     let formattedWord = word.toLowerCase().replace('@', '');
-    for (let member of activePlayers) {
-      let {name, characterName} = member;
-      let item = {name, value: characterName}
-
-      if (name.toLowerCase().includes(formattedWord) || characterName.toLowerCase().includes(formattedWord)) {
-        addToList(item, newOptionList);
+    for (let player of playerList) {
+      if (player.name.toLowerCase().includes(formattedWord)) {
+        addToList(player, newOptionList);
       } else {
-        for (let alias of member.callouts) {
-          if (alias.toLowerCase().includes(formattedWord)) {
-            addToList(item, newOptionList);
-            break;
-          }
-        }
+        //Future Update? Maybe call it roles or something. Similar to discord.
+        // for (let alias of uName.callouts) {
+        //   if (alias.toLowerCase().includes(formattedWord)) {
+        //     addToList(item, newOptionList);
+        //     break;
+        //   }
+        // }
       }
     }
   },
@@ -186,23 +201,19 @@ const filterOptions = {
   },
   dice: function (word, arrayPlaceholder, newOptionList) {
     let formatedWord = word.toLowerCase().replace('~', '');
-    let singleDiceRegex = /^[Dd]\d+$/;
-    let multiDiceRegex = /\d+[Dd]\d+/;
-    let sequenceDiceRegex = /\d*[Dd]\d+([.]\d*[Dd]\d+)+/;
-
-    if (singleDiceRegex.test(formatedWord)) {
+    if (chatOptions.values.dice.single.test(formatedWord)) {
       newOptionList.push({
         name: `Single Roll, Single Die`,
         value: `SRSD`,
       })
     }
-    if (multiDiceRegex.test(formatedWord)) {
+    if (chatOptions.values.dice.multi.test(formatedWord)) {
       newOptionList.push({
         name: `Multi Roll, Single Die`,
         value: `MRSD`,
       })
     }
-    if (sequenceDiceRegex.test(formatedWord)) {
+    if (chatOptions.values.dice.sequence.test(formatedWord)) {
       newOptionList.push({
         name: `Multi Roll, Multi Die`,
         value: `MRMD`,

@@ -46,7 +46,7 @@ export default function () {
 
   function googleOnClick() {
     googleSignInPopUp((user) => {
-      if(user){
+      if (user) {
         console.log(`Account created. 5 Seconds till redirect.`)
         setTimeout(() => {
           toast(`Account created with: ${user.email}`);

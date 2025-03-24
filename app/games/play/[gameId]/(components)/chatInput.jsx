@@ -5,12 +5,12 @@ import {editorFix, editorTools} from "@/javascript/slateInput/editorUtil";
 import {useRef} from "react";
 import {useChatOptions} from "@app/games/play/[gameId]/(components)/(chatOptions)/chatOptionHook";
 import ChatOptionList from "@app/games/play/[gameId]/(components)/(chatOptions)/chatOptionList";
-import {editorDefault} from "@/javascript/slateInput/defulatValues";
+import markdownParser from "@/javascript/slateInput/markdownParser";
 import {fbGameChatManager} from "@/javascript/firebase/managers/fbGameChatManager";
+import messageParser from "@/javascript/firebase/functions/messageParser";
 
-export default function ChatInput({name, gid, className, chatPerm}) {
+export default function ChatInput({name, gid, className, players}) {
   const {editor} = useCustomEditorHook();
-  const activePlayers = editorDefault.activePlayers
   const chatOptionsRefs = {
     mainRef: useRef(null),
     optionRefs: [
@@ -19,11 +19,9 @@ export default function ChatInput({name, gid, className, chatPerm}) {
       useRef(null), useRef(null), useRef(null)
     ]
   }
-
-  const callout = useChatOptions(chatOptionsRefs, editor);
+  const callout = useChatOptions(chatOptionsRefs, editor, players);
 
   const onKeyDown = (e) => {
-    editorFix.keyDown(e, editor);
     let block = callout.cycleOptionIndex(e);
     //Make new line while holding shift.
     if (isKeyHotkey(`enter+shift`, e.nativeEvent)) {
@@ -32,6 +30,11 @@ export default function ChatInput({name, gid, className, chatPerm}) {
     //Enter to send
     if (!block && isKeyHotkey(`enter`, e.nativeEvent)) {
       e.preventDefault();
+      // let og = editor.children
+      // let text = editorTools.getEditorStringValue(editor)
+      // let attempt = markdownParser.toDisplay(text, players)
+      // console.log({og, attempt})
+      // console.log(messageParser.parseDice(text))
       fbGameChatManager.add.message(name, gid, editorTools.getEditorStringValue(editor)).then();
       editorTools.resetEditor(editor);
     }
@@ -44,16 +47,15 @@ export default function ChatInput({name, gid, className, chatPerm}) {
 
   }
   const onKeyUp = (e) => {
-    console.log({
-      ogArray: editor.children,
-      text: editorTools.getEditorStringValue(editor),
-      // newArray: editorTools.toEditorFormat(editorTools.getEditorStringValue(editor)),
-      // compareValue: editorTools.compareValues(editor.children, editor.children)
-
-    })
+    // console.log({
+    //   ogArray: editor.children,
+    //   text: editorTools.getEditorStringValue(editor),
+    //   newArray: editorTools.toEditorFormat(editorTools.getEditorStringValue(editor)),
+    //   compareValue: editorTools.compareValues(editor.children, editor.children)
+    // })
 
     if (!isKeyHotkey(`escape`, e.nativeEvent)) {
-      callout.updateOptionsFilter(activePlayers);
+      callout.updateOptionsFilter();
     }
     editorFix.keyUp(e, editor);
   }

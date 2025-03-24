@@ -1,10 +1,9 @@
 import {
-  addDoc, deleteDoc, getDoc, getDocs, setDoc, updateDoc,
+  addDoc, deleteDoc, getDoc, setDoc, updateDoc,
   collection, doc,
   Timestamp,
 } from "firebase/firestore";
-import {db, reconstructDoc, toArray, userAuth} from "@/javascript/firebase/base";
-import toast from "react-hot-toast";
+import {db, reconstructDoc, userAuth} from "@/javascript/firebase/base";
 import {fbUtilManager} from "@/javascript/firebase/managers/fbUtilManager";
 
 export const fbGmManager = {

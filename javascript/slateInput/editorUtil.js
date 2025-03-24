@@ -71,6 +71,20 @@ const editorTools = {
   },
   getEditorStringValue: function (editor) {
     let text = '';
+    function recurseThroughChildren(child) {
+      let text = '';
+      if(child.type === `badge`){
+        return child.value;
+      }
+      if (child.children) {
+        for (let grandchild of child.children) {
+          text += recurseThroughChildren(grandchild);
+        }
+      } else {
+        text = child.text;
+      }
+      return text;
+    }
     for (let i = 0; i < editor.children.length; i++) {
       if (i !== 0) text += '\n';
       text += recurseThroughChildren(editor.children[i])
@@ -95,17 +109,7 @@ const editorTools = {
   }
 }
 
-function recurseThroughChildren(child) {
-  let text = '';
-  if (child.children) {
-    for (let grandchild of child.children) {
-      text += recurseThroughChildren(grandchild);
-    }
-  } else {
-    text = child.text;
-  }
-  return text;
-}
+
 
 
 export {

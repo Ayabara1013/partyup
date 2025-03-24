@@ -479,8 +479,21 @@ body {
     --tw-border-opacity: 0;
     background-color: hsl(var(--p)/0.3);
   }
+
   &.input-accent.info-option {
     --tw-border-opacity: 0;
     background-color: hsl(var(--p)/0.3);
   }
+}
+
+.custom-chat {
+  display: grid;
+  grid-column: 1;
+  column-gap: 0.75rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem
+}
+
+.chat-bubble::before {
+  @apply bg-opacity-0;
 }

@@ -1,5 +1,5 @@
 import {collection, doc, getDoc, getDocs, query, where} from "firebase/firestore";
-import {db, reconstructDoc, toArray} from "@/javascript/firebase/base";
+import {cleanUserData, db, reconstructDoc, toArray} from "@/javascript/firebase/base";
 
 export const fbUtilManager = {
   //Methods for checking availability of account details.
@@ -16,6 +16,9 @@ export const fbUtilManager = {
     }
   },
   get: {
+    cleanUser: async (uid) => {
+      return cleanUserData(reconstructDoc(await getDoc(doc(db, `user`, uid))));
+    },
     user: async function (uid) {
       return reconstructDoc(await getDoc(doc(db, `user`, uid)));
     },

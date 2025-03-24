@@ -1,7 +1,7 @@
 export default function DefaultElement(props) {
   return (
-    <pre {...props.attributes}>
-      <code>{props.children}</code>
-    </pre>
+    <div className={`relative ${props.className}`} {...props.attributes}>
+      {props.children}
+    </div>
   )
 }

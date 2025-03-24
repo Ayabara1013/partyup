@@ -3,32 +3,30 @@
 import '@styles/play/ChatWindow.scss';
 import ChatInput from "@app/games/play/[gameId]/(components)/chatInput";
 import msgArrayManip from "@/javascript/util/msgArrayManip";
+import MessageRenderer from "@app/games/play/[gameId]/(components)/messageRenderer";
 
 
-export function ChatWindow({messages, game, uid, className, name}) {
+export function ChatWindow({messages, game, uid, players, name}) {
   function toggleActive(e) {
     e.target.parentElement.classList.toggle('--active');
     e.target.parentElement.classList.toggle('--inactive');
   }
 
   const messageElements = () => {
-    let outputElements = [];
+    let outputMessages = [];
     for (let i = 0; i < messages.length; i++) {
       let message = messages[i];
 
       //check if previous message was by current player to display header name/icon. Displays for very first message.
-      // let applyHeader = i === 0 || (messages[i - 1]?.uid !== message.uid);
-      // message.orderStyle = applyHeader ? 'header' : ''
-
       if (message[name]) {
-        outputElements.push(message);
+        let pushedMessage = structuredClone(message);
+        pushedMessage.header = i === 0 || (outputMessages[outputMessages.length - 1]?.uid !== pushedMessage.uid)
+        outputMessages.push(pushedMessage);
       }
     }
-    console.log({before: outputElements})
-    msgArrayManip.sortByCreated(outputElements);
-    console.log({after: outputElements})
-    return outputElements.map((message, i) => {
-      return <ChatMessage key={i} {...{uid, message}}/>
+    msgArrayManip.sortByCreated(outputMessages);
+    return outputMessages.map((message, i) => {
+      return <ChatMessage key={i} {...{uid, message, players}}/>
     })
   }
 
@@ -44,16 +42,26 @@ export function ChatWindow({messages, game, uid, className, name}) {
         </div>
       </div>
       {(game?.gm.id === uid || name !== `canon`) &&
-        <ChatInput className={`input input-bordered input-primary w-full`} {...{name, gid: game?.id}}/>}
+        <ChatInput className={`input input-bordered input-primary w-full`} {...{name, gid: game.id, players}}/>}
 
     </div>
   )
 }
 
-function ChatMessage({message, uid}) {
+function ChatMessage({message, players, uid}) {
+  let name = (message.uid === `system`) ? `System` : players[message.uid].uName
+
   return (
-    <div className={`chat chat-${message.uid === uid ? `end` : `start`} `}>
-      <div className="chat-bubble chat-bubble-success">{message.text}</div>
+    <div className={`custom-chat `}>
+      {message.header &&
+        <div className="chat-header">
+          {name}
+          <time className="text-xs opacity-50"></time>
+        </div>
+      }
+      <div className={`chat-bubble chat-bubble-primary w-full`}>
+        <MessageRenderer messageText={message.text} players={players}/>
+      </div>
     </div>
   )
 }

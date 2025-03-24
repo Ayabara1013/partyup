@@ -6,6 +6,13 @@ const msgArrayManip = {
       return ((x < y) ? -1 : ((x > y) ? 1 : 0));
     })
   },
+  sortByUpdated: function (array) {
+    array.sort(function (a, b) {
+      let x = a.updatedAt.seconds;
+      let y = b.updatedAt.seconds;
+      return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    })
+  },
   sortByKey: function (array, key) {
     array.sort(function (a, b) {
       let x = a[key];
