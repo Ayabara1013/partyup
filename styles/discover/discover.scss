@@ -31,6 +31,33 @@ $card-padding: 1rem;
   // }
 }
 
+.join-card {
+  // border-radius: 9999px 1rem 100% 999px;
+  // height: calc($max-image-height + 2 * $card-padding);
+  
+  border-radius: 8rem 2rem 2rem 2rem;
+
+  // &__left {
+  //   img {
+  //     max-height: $max-image-height;
+  //   }
+  // }
+
+  // &__middle {
+  //   &__game-name {
+  //     @apply text-center text-3xl text-primary font-bold;
+  //   }
+
+  //   &__description {
+  //     @apply text-ellipsis;
+  //     margin-bottom: 0.25rem;
+  //     line-height: 1.5rem;
+  //     text-indent: 1rem;
+  //     // white-space: nowrap;
+  //   }
+  // }
+}
+
 .discover-card-left {
   // @apply border border-success;
   // position: relative;

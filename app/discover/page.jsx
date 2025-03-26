@@ -5,6 +5,7 @@ import { gamesCollection, starborne, usersCollection } from '@/test/fake firesto
 import { getRandomInt } from '@/test/getRandomInt';
 import { Blocks } from '@/components/templates/Blocks';
 import '@styles/blocks.scss';
+import { JoinGameCardWide } from './(components)/JoinGameCardWide';
 
 
 
@@ -146,6 +147,8 @@ export default function Discover(props) {
 
       <DiscoverCard content={content} />
       <DiscoverCard content={content} />
+
+      <JoinGameCardWide content={content} />
 
     </div>
   )
