@@ -85,6 +85,8 @@ export function JoinGameCardWide(props) {
 		
 		return (
 			<div className={`discover-card-right ${focusBoxClass} mb-auto`}>
+				<div className='text-primary font-bold'>details</div>
+
 				<ul>
 					<ListItem label='playing' value='SWADE' />
 					<ListItem
@@ -101,9 +103,20 @@ export function JoinGameCardWide(props) {
 						label='total messages'
 						value={content.numMessages.toLocaleString()}
 					/>
+
+					<li>current average level: 10</li>
 				</ul>
 
-				{/* shrink this upwards! */}
+				<br></br>
+
+				<div className='text-primary font-bold'>players</div>
+				<ul>
+					<li>{`@player`}: @class</li>
+					<li><span className="text-secondary font-medium">{`@steve2`}</span> as; bongus the fighter</li>
+					<li>player 3</li>
+					<li>player 4</li>
+					<li>player 5</li>
+				</ul>
 			</div>
 		)
 	}
