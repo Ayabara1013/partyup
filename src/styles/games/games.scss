@@ -1,0 +1,88 @@
+@use '@/styles/globals.scss' as g;
+
+$layout-breakpoint-sm: 768px;
+$layout-breakpoint-md: 1200px;
+
+.games-page {
+  @apply p-4 pt-2;
+
+  @media (min-width: $layout-breakpoint-sm) {
+    @apply m-auto p-8 pt-4 max-w-[80%];
+  }
+
+  @media (min-width: $layout-breakpoint-md) {
+    @apply m-auto p-12 pt-6 max-w-[60%];
+  }
+}
+
+.games-page__section {
+  @apply flex flex-col gap-2;
+  // @include g.tb1;
+  
+  .section-header {
+    @apply text-2xl font-bold;
+  }
+
+  // &.--create-game, &.--find-more-games {
+  //   // @apply md:flex-row;
+
+  //   // button {
+  //   //   flex-grow: 0.5;
+  //   // }
+  // }
+
+  &.--games-list {
+    @apply flex flex-col;
+  }
+}
+
+
+.btn-with-breakpoints{
+  @apply w-full md:w-[80%] lg:w-[60%] m-auto w-1/2 btn btn-primary;
+}
+
+.button-breakpoints {
+  @apply w-full md:w-[80%] lg:w-[60%] m-auto w-1/2;
+}
+
+.find-more-games-button {
+  @apply m-auto px-4;
+}
+
+.games-page__games-list {
+  @apply flex flex-col gap-2;
+
+  &__item {
+    @apply flex-col-2 p-2 bg-neutral rounded-lg shadow;
+
+    .__seats-count {
+      // @include g.tb3;
+      @apply text-2xl font-bold;
+    }
+  }
+}
+
+ // min-w-24 is the equivalent of max-w-sm (value wise)
+// for some reason min-w-24 isnt working
+
+.__players-list__item {
+  @apply flex-1 px-2 bg-base-100 text-center font-medium rounded-md;
+
+  &.--filled {
+    @apply bg-primary text-primary-content;
+  }
+
+  &.--empty {
+    @apply text-neutral-content;
+  }
+
+  &.--error {
+    @apply bg-error text-error-content;
+  }
+}
+
+// yup it works!
+.__players-list__item:last-child {
+  // @apply flex-grow-[0.5];
+  // color: greenyellow;
+}

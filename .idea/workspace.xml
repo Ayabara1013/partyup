@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="2bd18018-b126-47fb-b404-6b379ea5e25f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/partyup-supabase.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/008-spellbook-1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/038-adventure-1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/042-epidemiology.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/058-watching-tv.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/dungeons-dragons.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/example-play-screens-mobile-1x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/example-play-screens-mobile.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/(context)/authContext.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/(context)/contextMenuContext.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/(context)/gameCreationEditorContext.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/(context)/popupModalContext.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/(context)/serverProviders.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/auth/callback/route.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/games/create/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/games/create/pageUiExtras.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/games/invite/[inviteCode]/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/games/layout.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/games/play/[gameId]/(components)/GMTools.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/games/play/[gameId]/(components)/PlayerSettingsDisplay.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/games/play/[gameId]/(components)/chat/(chatOptions)/chatOptionsHook.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/games/play/[gameId]/(components)/chat/(chatOptions)/chatOptionsList.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/games/play/[gameId]/(components)/chat/chatInput.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/games/play/[gameId]/(components)/chat/chatMessage.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/games/play/[gameId]/(components)/chat/chatWindow.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/games/play/[gameId]/(components)/chat/messageRenderer.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/games/play/[gameId]/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/games/play/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/games/your-games/(components)/GameList.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/games/your-games/(components)/joinRequestList.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/games/your-games/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/home/(components)/CYACard.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/home/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/loadingUi.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/pageLayout.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/slatejs/(customElements)/badgeElement.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/slatejs/(customElements)/defaultElement.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/slatejs/elementRenderer.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/slatejs/slatejs.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/slatejs/util/editorDefaultValues.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/slatejs/util/editorSettings.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/slatejs/util/editorUtil.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/slatejs/util/inLineChromiumBugFix.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/slatejs/util/markdownParser.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/slatejs/util/slateTypes.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/ui/forms.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/ui/navBar.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/assets/chatOptions.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/assets/gameSystems.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/assets/homeText.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/assets/safetyChecks.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/routing/directoy.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/supabase/client/client.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/supabase/client/server.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/supabase/db/game.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/supabase/db/inGame.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/supabase/util/dateConversion.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/supabase/util/messageParser.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/supabase/util/msgArrayManipulation.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/util/browserFixes/firefox.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/util/camelSnake.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/util/localStorage.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/util/timeSince.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/util/validateEmail.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/proxy.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/styles/basicClasses.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/styles/games/games.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/styles/games/info/PlayerListing.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/styles/games/info/game-info.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/styles/games/my-games/my-games-card.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/styles/games/play/chatWindow.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/styles/games/play/play.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/supabase/config.toml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tailwind.config.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="TypeScript JSX File" />
+        <option value="TypeScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="3APFQlQAvo7G3RF3Rmz8NJr6ATq" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="false" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;kronk.content.tree.expanded.paths&quot;: &quot;|App Router&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Tony/Desktop/Projects/Projects/PartyUp/partyup-next&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\Tony\\Desktop\\Projects\\Projects\\PartyUp-Supabase\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Projects\PartyUp-Supabase\src\components" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Tony\Desktop\Projects\Projects\PartyUp-Supabase\src\app\games\play\[gameId]\(components)\chat\(chatOptions)" />
+      <recent name="C:\Users\Tony\Desktop\Projects\Projects\PartyUp-Supabase\src\lib\supabase\util" />
+      <recent name="C:\Users\Tony\Desktop\Projects\Projects\PartyUp-Supabase\src\components\slatejs\util" />
+      <recent name="C:\Users\Tony\Desktop\Projects\Projects\PartyUp-Supabase\src\app\games\play\[gameId]\(components)\chat" />
+      <recent name="C:\Users\Tony\Desktop\Projects\Projects\PartyUp-Supabase\src\lib\supabase\client" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.18034.62" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.18034.62" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2bd18018-b126-47fb-b404-6b379ea5e25f" name="Changes" comment="" />
+      <created>1772486286059</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1772486286059</updated>
+      <workItem from="1772486287132" duration="11000" />
+      <workItem from="1772486930441" duration="313000" />
+      <workItem from="1772487317446" duration="2691000" />
+      <workItem from="1772502724557" duration="11174000" />
+      <workItem from="1774498839588" duration="1833000" />
+      <workItem from="1774520993163" duration="203000" />
+      <workItem from="1774521344023" duration="32000" />
+      <workItem from="1774521381606" duration="260000" />
+      <workItem from="1774521679179" duration="189000" />
+      <workItem from="1774521875995" duration="4129000" />
+      <workItem from="1774684249101" duration="3732000" />
+      <workItem from="1774983086713" duration="6051000" />
+      <workItem from="1776249807974" duration="2895000" />
+      <workItem from="1776587106413" duration="2000" />
+      <workItem from="1777872858373" duration="40838000" />
+      <workItem from="1778227363477" duration="10388000" />
+      <workItem from="1778332563796" duration="13761000" />
+      <workItem from="1778491925222" duration="21365000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
