@@ -1,10 +1,13 @@
 'use client'
 import {Session, User} from "@supabase/supabase-js";
-import {createContext, ReactNode, useContext, useEffect, useState} from "react";
+import {createContext, Dispatch, ReactNode, useContext, useEffect, useState} from "react";
 import {supabase} from "@/lib/supabase/client/client"
 import {redirect} from "next/navigation";
 import {supabaseGame} from "@/lib/supabase/db/game";
 import {CamelCase, objectToCamel} from "@/lib/util/camelSnake";
+import {supabaseAccount} from "@/lib/supabase/db/account";
+import toast from "react-hot-toast";
+import {supabaseInGame} from "@/lib/supabase/db/inGame";
 
 type CamelUser = CamelCase<User>
 type CamelSession = CamelCase<Session>
@@ -15,7 +18,9 @@ type AuthContextType = {
     signOut: () => Promise<void>,
     gmGames: Array<any> | null,
     playerGames: Array<any> | null,
-    updateGames: () => Promise<void>
+    updateGames: () => Promise<void>,
+    newNotification: any,
+    setNewNotification: Dispatch<any>
 };
 
 const AuthManagerContext = createContext<AuthContextType | null>(null);
@@ -26,6 +31,8 @@ export function AuthManagerProvider({children}: { children: ReactNode }) {
     const [loading, setLoading] = useState(true);
     const [gmGames, setGmGames] = useState<Array<any> | null>(null);
     const [playerGames, setPlayerGames] = useState<Array<any> | null>(null);
+    const [newNotification, setNewNotification] = useState<any>(null);
+    const [notifications, setNotifications] = useState<Array<any>>([]);
 
     useEffect(() => {
         // get initial session
@@ -52,8 +59,12 @@ export function AuthManagerProvider({children}: { children: ReactNode }) {
     useEffect(() => {
         if (!loading && !user) {
             redirect('/auth/login')
-        } else {
+        } else if (user) {
             updateGames()
+            let notificationsChannel = supabaseAccount.live.notifications(user.id, updateNotifications);
+            return () => {
+                supabase.removeChannel(notificationsChannel);
+            }
         }
     }, [user]);
 
@@ -69,6 +80,37 @@ export function AuthManagerProvider({children}: { children: ReactNode }) {
         setPlayerGames(newPlayerGame);
     }
 
+    async function updateNotification() {
+        if (!user) return
+        const tempNotification = await supabaseAccount.get.notifications(user.id)
+        setNotifications(tempNotification)
+    }
+
+    async function updateNotifications(input: any) {
+        let payload: any = input[0];
+        setNotifications([...notifications, payload])
+        setNewNotification(payload)
+        console.log(payload)
+        switch (payload.type) {
+            case `game_created`:
+                toast.success(`Game Created successfully.`);
+                updateGames()
+                break;
+            case  `join_request_created`:
+                toast.success(`Someone requested to join a game.`);
+                updateGames()
+                break;
+            case `game_joined_as_player`:
+                toast.success(`You have joined a game.`);
+                updateGames()
+                break;
+            case `player_joined`:
+                toast.success(`You accepted a player to your game.`);
+                updateGames()
+                break;
+        }
+    }
+
     const value: AuthContextType = {
         user,
         session,
@@ -76,7 +118,9 @@ export function AuthManagerProvider({children}: { children: ReactNode }) {
         signOut,
         gmGames,
         playerGames,
-        updateGames
+        updateGames,
+        newNotification,
+        setNewNotification
     };
     return (
         <AuthManagerContext.Provider value={value}>

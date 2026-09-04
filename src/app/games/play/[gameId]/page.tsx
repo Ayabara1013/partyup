@@ -84,6 +84,8 @@ export default function page({params}: PageProps) {
         }
     }, [gameObject])
 
+
+
     useEffect(() => {
         if (settings.loaded && gameObject && user) {
             let oldSettings = lsInGame.get.settings(gameObject.id);

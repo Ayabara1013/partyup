@@ -3,6 +3,7 @@ import {createContext, Dispatch, ReactNode, RefObject, SetStateAction, useContex
 
 type PopupModalContextType = {
     showModal: () => void;
+    hideModal: () => void;
     setTitle: (title: string) => void;
     setModalChildren: any;
 };
@@ -19,12 +20,16 @@ export function PopupModalProvider({children}: { children: ReactNode }) {
         modalRef.current.showModal();
     }
 
+    function hideModal() {
+        modalRef.current.close();
+    }
+
     function setTitle(title: string) {
         titleRef.current.innerHTML = title;
     }
 
     return (
-        <PopupModalContext.Provider value={{showModal, setTitle, setModalChildren}}>
+        <PopupModalContext.Provider value={{showModal, hideModal, setTitle, setModalChildren}}>
             <dialog ref={modalRef} className={`modal`}>
                 <div className={`modal-box`}>
                     <form method="dialog">

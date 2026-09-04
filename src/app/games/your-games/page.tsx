@@ -7,8 +7,7 @@ import {useAuthManager} from "@/app/(context)/authContext";
 import MyGamesList from "@/app/games/your-games/(components)/GameList";
 
 export default function page() {
-    const {gmGames, playerGames, updateGames} = useAuthManager();
-
+    const {gmGames, playerGames} = useAuthManager();
     return (
         <div className="flex flex-col min-h-0 gap-4 h-full">
             <div className="flex flex-row min-h-0 gap-6 h-full p-10">

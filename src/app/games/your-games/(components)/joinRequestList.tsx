@@ -1,20 +1,25 @@
 import {useEffect, useState} from "react";
 import {supabaseGame} from "@/lib/supabase/db/game";
+import {usePopupModal} from "@/app/(context)/popupModalContext";
+import toast from "react-hot-toast";
 
 export default function JoinRequestList({game}: { game: any }) {
     const [reqButtons, setReqButtons] = useState<Array<any>>([]);
+    const {hideModal} = usePopupModal();
     useEffect(() => {
         if (!game?.joinRequests) return;
 
         const buttons = game.joinRequests.map((request: any, index: number) => {
             const acceptOnClick = async () => {
                 let result = await supabaseGame.set.acceptRequest(game.id, request.id);
-                if (result)
+                if (result) {
+                    if (game.joinRequests.length === 1) hideModal()
                     setReqButtons(prev => {
                         const newButtons = [...prev];
                         newButtons.splice(index, 1);
                         return newButtons;
                     });
+                }
             };
             return (
                 <button
@@ -26,7 +31,6 @@ export default function JoinRequestList({game}: { game: any }) {
                 </button>
             );
         });
-
         setReqButtons(buttons);
     }, [game?.joinRequests]);
 

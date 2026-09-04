@@ -122,7 +122,9 @@ function GameListItemOptions({game, type}: { game: any, type: string }) {
     function showModalOnClick() {
         setTitle(`Game join requests`);
         setModalChildren(<JoinRequestList game={game}/>)
-        showModal();
+        if (game.joinRequests.length > 0) showModal();
+        else toast(`No more requests for this game.`);
+
     }
 
 
