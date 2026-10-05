@@ -1,3 +1,5 @@
+import {RefObject} from "react";
+
 const gameSystemArray = [
     {
         title: `Dungeons & Dragons 5e`,
@@ -18,7 +20,7 @@ const gameSystemArray = [
 ]
 export const gameSystems = {
     array: gameSystemArray,
-    checkListArray: (refList: Array<any>) => {
+    checkListArray: (refList: Array<RefObject<HTMLInputElement|null>>) => {
         return [
             {ref: refList[0], checked: true, label: gameSystemArray[0].title, value: gameSystemArray[0].value},
             {ref: refList[1], checked: true, label: gameSystemArray[1].title, value: gameSystemArray[1].value},

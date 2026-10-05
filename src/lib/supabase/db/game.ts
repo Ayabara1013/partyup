@@ -40,17 +40,55 @@ const supabaseGame = {
                 );
                 return objectToCamel(games ?? []);
             },
+            publicGameList: async (systems: any[], safetyChecks: any[], ageCheck: boolean, sortBy: string = `time`) => {
+                let query = supabase.from(`game`)
+                    .select(`*,
+                    gm:user!game_gm_id_fkey (id,name,image_url),
+                    players:game_player!game_player_game_id_fkey (
+                        user:user!game_player_user_id_fkey (id,name,image_url))`)
+                    .eq(`is_public`, true).eq(`started`, false)
+                    .in(`system`, systems)
+
+                for (let sc of safetyChecks) {
+                    query.eq(`${sc}`, true)
+                }
+
+                if (ageCheck) query.gt(`age_restriction`, 10)
+
+                switch(sortBy){
+                    case 'time':
+                        query.order(`created_at`, {ascending: true})
+                        break;
+                    case 'name':
+                        query.order(`name`, {ascending: true})
+                        break;
+                    default:
+                        query.order(`created_at`, {ascending: true})
+                }
+
+                const {data, error} = await query;
+
+                if (error) {
+                    console.error(`Error fetching public games:`, error)
+                }
+
+                const games = data?.map(game => ({
+                    ...game,
+                    players: game.players.map((player: any) => player.user)
+                }))
+                return objectToCamel(games) || []
+            },
             fromInvite: async (inviteCode: string) => {
                 const {data: gameData, error} = await supabase.rpc(`get_game_by_invite_code`, {
                     code: inviteCode,
                 }).single();
                 if (gameData) {
                     let newData: any = objectToCamel(gameData);
-                    const {data: gmData, error: gmError} = await supabase
-                        .from(`user`).select(`*`).eq(`id`, newData.gmUid).single();
+                    const {data: gmData, error: gmError} = await supabase.from(`user`)
+                        .select(`*`).eq(`id`, newData.gmUid).single();
                     newData.gm = objectToCamel(gmData);
-                    const {data: players, error: pError} = await supabase
-                        .from(`game_player`).select(`user:user_id (*)`).eq(`game_id`, newData.id);
+                    const {data: players, error: pError} = await supabase.from(`game_player`)
+                        .select(`user:user_id (*)`).eq(`game_id`, newData.id);
                     newData.players = (players ?? []).map((p: any) => p.user)
                     return newData;
                 }
@@ -70,7 +108,7 @@ const supabaseGame = {
     set: {
         create: {
             game: async (userId: string, data: any) => {
-                return supabase.from('game').insert([
+                return supabase.from(`game`).insert([
                     {
                         gm_uid: userId,
                         name: data.name,
@@ -107,18 +145,18 @@ const supabaseGame = {
         },
         join: async (gameId: string, userId: string) => {
             const {error} = await supabase
-                .from('join_requests').insert([objectToSnake({gameId, userId})]).select().single();
+                .from(`join_requests`).insert([objectToSnake({gameId, userId})]).select().single();
             return !error;
         },
         acceptRequest: async (gameId: string, userId: string) => {
-            const {error} = await supabase.from('join_requests').delete()
+            const {error} = await supabase.from(`join_requests`).delete()
                 .eq(`game_id`, gameId).eq(`user_id`, userId);
             console.log(error)
             if (error) {
                 toast.error(`Could not delete request`)
                 return false
             }
-            const {data, error: error2} = await supabase.from('game_player')
+            const {data, error: error2} = await supabase.from(`game_player`)
                 .insert([objectToSnake({gameId, userId})]).select().single();
             if (error2) {
                 toast.error(`Could not create player database entry.`)

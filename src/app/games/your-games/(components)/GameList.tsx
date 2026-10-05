@@ -127,7 +127,6 @@ function GameListItemOptions({game, type}: { game: any, type: string }) {
 
     }
 
-
     function PlayButton() {
         return <Link href={dirHref.games.play(game.id)}
                      className='btn btn-xs btn-accent ml-auto font-semibold'>Play</Link>

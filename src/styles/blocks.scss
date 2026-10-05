@@ -1,0 +1,24 @@
+
+
+
+.b1 {
+  @apply border border-primary p-2;
+}
+
+.b2 {
+  @apply border border-secondary p-2;
+}
+
+.b3 {
+  @apply border border-accent p-2;
+}
+
+
+.prw {
+  @apply text-error border-2 border-dotted border-error;
+
+  &.--large {
+    @apply text-2xl;
+  }
+}
+

@@ -4,15 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2bd18018-b126-47fb-b404-6b379ea5e25f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/lib/supabase/db/account.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="2bd18018-b126-47fb-b404-6b379ea5e25f" name="Changes" comment="Added UI updates to joining/adding on Game Page.&#10;&#10;Added Basic notifications for these ui updates as well.">
+      <change afterPath="$PROJECT_DIR$/src/app/discover/(components)/JoinGameCardWide.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/discover/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/templates/blocks.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/templates/forms.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/styles/blocks.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/styles/discover/discover.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(context)/authContext.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(context)/authContext.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(context)/popupModalContext.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(context)/popupModalContext.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/games/play/[gameId]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/play/[gameId]/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/games/your-games/(components)/joinRequestList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/your-games/(components)/joinRequestList.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/games/your-games/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/your-games/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/your-games/(components)/GameList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/your-games/(components)/GameList.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/assets/gameSystems.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/assets/gameSystems.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/assets/safetyChecks.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/assets/safetyChecks.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/supabase/db/game.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/supabase/db/game.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/util/timeSince.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/util/timeSince.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,8 +28,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="TypeScript JSX File" />
         <option value="TypeScript File" />
+        <option value="TypeScript JSX File" />
       </list>
     </option>
   </component>
@@ -48,7 +54,7 @@
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;kronk.content.tree.expanded.paths&quot;: &quot;|App Router&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Tony/Desktop/Projects/Projects/partyUpSupabase&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Tony/Desktop/Projects/Projects/partyUpSupabase/src/styles/discover&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -61,6 +67,9 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Tony\Desktop\Projects\Projects\partyUpSupabase\src\styles\discover" />
+      <recent name="C:\Users\Tony\Desktop\Projects\Projects\partyUpSupabase\src\styles" />
+      <recent name="C:\Users\Tony\Desktop\Projects\Projects\partyUpSupabase\src\components" />
       <recent name="D:\Projects\PartyUp-Supabase\src\components" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -114,8 +123,20 @@
       <workItem from="1783508404669" duration="2657000" />
       <workItem from="1787948492474" duration="12279000" />
       <workItem from="1788466105518" duration="3225000" />
-      <workItem from="1788514368073" duration="1306000" />
+      <workItem from="1788514368073" duration="3519000" />
+      <workItem from="1790150382614" duration="1956000" />
+      <workItem from="1790799682572" duration="15232000" />
+      <workItem from="1791146859313" duration="11770000" />
     </task>
+    <task id="LOCAL-00001" summary="Added UI updates to joining/adding on Game Page.&#10;&#10;Added Basic notifications for these ui updates as well.">
+      <option name="closed" value="true" />
+      <created>1788516032299</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1788516032299</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -131,6 +152,11 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Added UI updates to joining/adding on Game Page" />
+    <MESSAGE value="Added UI updates to joining/adding on Game Page.&#10;&#10;Added Basic notifications for these ui updates as well." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added UI updates to joining/adding on Game Page.&#10;&#10;Added Basic notifications for these ui updates as well." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

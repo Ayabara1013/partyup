@@ -1,4 +1,4 @@
-import {Ref} from "react";
+import {Ref, RefObject} from "react";
 
 const safetyChecksArray = [{
     title: `Queer`,
@@ -15,7 +15,7 @@ const safetyChecksArray = [{
 },]
 export const safetyChecks = {
     array: safetyChecksArray,
-    checkListArray: (refList: Array<Ref<any>>) => {
+    checkListArray: (refList: Array<RefObject<HTMLInputElement|null>>) => {
         return [
             {
                 ref: refList[0],
