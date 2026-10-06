@@ -40,7 +40,8 @@ const supabaseGame = {
                 );
                 return objectToCamel(games ?? []);
             },
-            publicGameList: async (systems: any[], safetyChecks: any[], ageCheck: boolean, sortBy: string = `time`) => {
+            publicGameList: async (systems: any[], safetyChecks: any[], ageCheck: boolean, sortBy: string = `time`, searchTerm: string = ``) => {
+
                 let query = supabase.from(`game`)
                     .select(`*,
                     gm:user!game_gm_id_fkey (id,name,image_url),
@@ -53,9 +54,15 @@ const supabaseGame = {
                     query.eq(`${sc}`, true)
                 }
 
+                if(searchTerm !== ``){
+                    for(let splitTerm of searchTerm.split(`;`)){
+                        query.or(`name.ilike.%${splitTerm}%,description.ilike.%${splitTerm}%,tags.cs.{${splitTerm}}`)
+                    }
+                }
+
                 if (ageCheck) query.gt(`age_restriction`, 10)
 
-                switch(sortBy){
+                switch (sortBy) {
                     case 'time':
                         query.order(`created_at`, {ascending: true})
                         break;

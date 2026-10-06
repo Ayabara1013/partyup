@@ -4,10 +4,11 @@ import timeSince from '@/lib/util/timeSince';
 import Link from 'next/link';
 
 const coolImages = require("cool-images");
+
 // removed m-auto so it fits wide
 const focusBoxClass = 'p-2 border-success whitespace-nowrap bg-neutral-focus rounded-xl shadow-xl';
 
-type GameMaster = { name: string;};
+type GameMaster = { name: string; };
 
 type Player = { id?: string | number; name?: string; };
 
@@ -21,6 +22,7 @@ type Game = {
     players: Player[];
     gm: GameMaster;
     ageRestriction: number;
+    tags: Array<string>;
 };
 
 type JoinGameCardWideProps = { game: Game; };
@@ -95,7 +97,7 @@ function JoinRight({game}: JoinRightProps) {
     const createdAt = new Date(game.createdAt)
     return (
         <div className={`discover-card-right ${focusBoxClass} mb-auto`}>
-            <div className="text-primary font-bold">details</div>
+            <div className="text-primary font-bold">Details</div>
 
             <ul>
                 <PropertyListItem label="System" value={game.system}/>
@@ -111,7 +113,7 @@ function JoinRight({game}: JoinRightProps) {
                 <PropertyListItem label="Current Average Level" value={`10`}/>
             </ul>
             <br/>
-            <div className="text-primary font-bold">players</div>
+            <div className="text-primary font-bold">Players</div>
             <ul>
                 {game.players.map((player, index) => {
                     return (
@@ -119,6 +121,18 @@ function JoinRight({game}: JoinRightProps) {
                             <span className="text-secondary font-medium">@{player.name}</span>{' '} as fighter
                         </li>)
                 })}
+            </ul>
+            <br/>
+            <div className="text-primary font-bold">Tags</div>
+            <ul>
+                <li>
+                    {game.tags.map((tag, index) => {
+                        let endString = index === game.tags.length - 1 ? '' : ', ';
+                        return (<>
+                            <span className="text-secondary font-medium" key={index}>{tag}</span>{endString}
+                        </>)
+                    })}
+                </li>
             </ul>
         </div>
     );

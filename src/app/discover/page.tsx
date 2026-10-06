@@ -54,7 +54,7 @@ export default function Discover() {
                 safetyChecks.push(safetyChecksList[i].dbValue)
         }
 
-        let games = await supabaseGame.get.game.publicGameList(systems, safetyChecks, ageCheck, sortBy);
+        let games = await supabaseGame.get.game.publicGameList(systems, safetyChecks, ageCheck, sortBy,searchTerm);
         console.log(games)
         setGameList(games)
     }
@@ -64,7 +64,7 @@ export default function Discover() {
             <Blocks.Section>
                 <Forms.Group.Horizontal columns={3}>
                     <Forms.InputField defaultValue={``} forwardRef={termsRef} formClassName={`col-span-2`}
-                                      placeholder={`Search name and tags....`}
+                                      placeholder={`Search name and tags (use ';' to separate terms)....`}
                                       labelText={`Search:`}
                                       labelPosition={`front`}/>
 
