@@ -54,8 +54,8 @@ const supabaseGame = {
                     query.eq(`${sc}`, true)
                 }
 
-                if(searchTerm !== ``){
-                    for(let splitTerm of searchTerm.split(`;`)){
+                if (searchTerm !== ``) {
+                    for (let splitTerm of searchTerm.split(`;`)) {
                         query.or(`name.ilike.%${splitTerm}%,description.ilike.%${splitTerm}%,tags.cs.{${splitTerm}}`)
                     }
                 }
@@ -135,8 +135,28 @@ const supabaseGame = {
             }
         },
         edit: {
-            game: async () => {
-
+            game: async (data: any, gameId: string) => {
+                const {data: result, error} = await supabase.from(`game`).update(
+                    {
+                        name: data.name,
+                        description: data.description,
+                        system: data.system,
+                        max_players: data.maxPlayers,
+                        age_restriction: data.ageRes,
+                        is_public: data.isPublic,
+                        sc0: data.sc0,
+                        sc1: data.sc1,
+                        sc2: data.sc2,
+                        sc3: data.sc3,
+                        tags: data.tags,
+                        started: false
+                    }
+                ).eq(`id`, gameId).select().single();
+                if (error) {
+                    console.log(data, error)
+                    return {id: ''}
+                }
+                return result
             },
             startGame: async (gameId: string) => {
                 const {data: uData, error: uError} = await supabase.from(`game`)

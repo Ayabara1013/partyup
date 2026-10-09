@@ -137,7 +137,7 @@ function GameListItemOptions({game, type}: { game: any, type: string }) {
     }
 
     function GMEditButton() {
-        return <Link href={dirHref.games.gm.edit(game.id)}
+        return <Link href={dirHref.games.edit(game.id)}
                      className='btn btn-xs btn-accent ml-auto font-semibold'>edit</Link>
     }
 

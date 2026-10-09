@@ -28,7 +28,7 @@ type PageProps = {
 export default function page({params}: PageProps) {
     const {push} = useRouter();
     const {gameId} = use(params);
-    const {user, loading, gmGames, playerGames} = useAuthManager();
+    const {user, userLoading, gmGames, playerGames, gamesLoading} = useAuthManager();
     const {setContextMenu} = useContextMenu();
 
     const [messages, setMessages] = useState<Array<any>>([]);
@@ -43,21 +43,21 @@ export default function page({params}: PageProps) {
     const chatWindowProps = {messages, game: gameObject, user: user, players, settings, setContextMenu}
 
     useEffect(() => {
-        if (!loading) {
-            if (isPartOfGame(gmGames, gameId)) return;
-            if (isPartOfGame(playerGames, gameId)) return;
+        if (!userLoading && !gamesLoading) {
+            if (userLoading) return;
+
             if (!user) {
-                toast.error("Please login and try again.");
-                setTimeout(() => {
-                    push(dirHref.user.signin)
-                }, 1000)
+                toast.error(`Please login and try again.`);
+                const t = setTimeout(() => push(dirHref.user.signin), 1000);
+                return () => clearTimeout(t);
             }
-            if (gmGames && playerGames) {
-                toast.error(`You are neither the GM nor a player of this game. Redirecting to your games.`);
-                setTimeout(() => {
-                    push(dirHref.games.root)
-                }, 1000)
-            }
+
+            if (gamesLoading) return;
+            if (isPartOfGame(gmGames, gameId) || isPartOfGame(playerGames, gameId)) return;
+
+            toast.error(`You are neither the GM nor a player of this game. Redirecting to your games.`);
+            const t = setTimeout(() => push(dirHref.games.root), 1000);
+            return () => clearTimeout(t);
         }
         // console.log({
         //     text: `/r 2 * (1d6+2[fire] + 2[fire, splash, 10ft]) + 1d6[bleed, persistent]`,
@@ -67,7 +67,7 @@ export default function page({params}: PageProps) {
         //     text: `/r 2 * (1d6+2[fire] + 2[fire, splash, 10ft]) + 3 * (1d6+3[water] + 3[water, splash, 6ft])`,
         //     result: messageParser.parseDice(`/r 2 * (1d6+2[fire] + 2[fire, splash, 10ft]) + 3 * (1d6+3[water] + 3[water, splash, 6ft])`)
         // })
-    }, [gmGames, playerGames, user, loading])
+    }, [gmGames, playerGames, user, userLoading, gamesLoading]);
 
     useEffect(() => {
         if (gameObject) {
@@ -85,7 +85,6 @@ export default function page({params}: PageProps) {
     }, [gameObject])
 
 
-
     useEffect(() => {
         if (settings.loaded && gameObject && user) {
             let oldSettings = lsInGame.get.settings(gameObject.id);
@@ -97,21 +96,14 @@ export default function page({params}: PageProps) {
     useEffect(() => {
     }, [messages]);
 
-    function isPartOfGame(gameList: Array<any> | null, gameId: string) {
-        if (gameList) {
-            for (let game of gameList) {
-                if (gameId === game.id) {
-                    if (messages.length === 0) loadMessages();
-                    if (!gameObject) {
-                        setGameObject(game);
-                    }
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+    function isPartOfGame(gameList: any[] | null, gameId: string) {
+        const game = gameList?.find((g) => g.id === gameId);
+        if (!game) return false;
 
+        if (messages.length === 0) loadMessages();
+        setGameObject((prev: any) => prev ?? game);
+        return true;
+    }
     async function loadMessages() {
         let tempMessages = lsInGame.get.chatLog(gameId);
         if (tempMessages.length === 0) {

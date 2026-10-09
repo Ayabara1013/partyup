@@ -15,7 +15,6 @@ const supabaseAccount = {
                         filter: `user_id=eq.${userId}`,
                     },
                     (payload) => {
-                        console.log(`account-123`);
                         handler(objectToCamel([payload.new]));
                     }
                 )

@@ -57,11 +57,22 @@ const supabaseInGame = {
         }
     },
     set: {
-        addMessage: async (gameId: string, messageText: string, userId: string, channel: string) => {
-            return supabase.from(`game_chat_messages`).insert([objectToSnake({
-                gameId, messageText, playerId: userId, channel
+        addMessage: async (gameId: string, messageText: string, userId: string, channel: string, promptInfo: any = null, isResponse: boolean = false) => {
+            const {data, error} = await supabase.from(`game_chat_messages`).insert([objectToSnake({
+                gameId,
+                messageText,
+                playerId: userId,
+                channel: [channel],
+                promptInfo: promptInfo,
+                isResponse: isResponse,
+                tags: []
             })]).select();
 
+            if (error) {
+                toast.error(`Could not send message.`);
+                return null;
+            }
+            return objectToCamel(data);
         },
         talkingStick: async (gameId: string, playerId: string) => {
             const {data, error} = await supabase.from(`game_settings`)

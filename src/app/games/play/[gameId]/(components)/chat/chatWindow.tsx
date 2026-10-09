@@ -30,19 +30,15 @@ export function ChatWindow(
     }
 
     function messageElements() {
-        let outputMessages = [];
-        for (let i = 0; i < messages.length; i++) {
-            let message = messages[i];
-
-            //check if previous message was by current player to display header name/icon. Displays for very first message.
-            if (message.channel === name && !message.deleted) {
-                let pushedMessage = structuredClone(message);
-                pushedMessage.header = i === 0 || (outputMessages[outputMessages.length - 1]?.playerId !== pushedMessage.playerId)
-                outputMessages.push(pushedMessage);
-            }
-        }
-        msgArrayManipulation.sortByCreated(outputMessages);
-        return outputMessages.map((message, i) => {
+        const channelMessages = messages
+            .filter((m) => m.channel.includes(name) && !m.deleted)
+            .map((m) => ({...m}));
+        msgArrayManipulation.sortByCreated(channelMessages);
+        channelMessages.forEach((m, i) => {
+            const prev = channelMessages[i - 1];
+            m.header = i === 0 || prev.playerId !== m.playerId || !!prev.system !== !!m.system;
+        });
+        return channelMessages.map((message, i) => {
             return <ChatMessage key={i} {...{message, game}}/>
         })
     }
