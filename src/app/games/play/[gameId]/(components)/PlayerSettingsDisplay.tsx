@@ -1,22 +1,23 @@
 export default function PlayerSettingDisplay({game, settings}: { game: any, settings: any }) {
-    let talkingStickDisplay = <div className={`btn btn-disabled pointer-events-none`}>None</div>
-
-    for (let player of game.players) {
-        if (settings.talkingStick === player.id) {
-            talkingStickDisplay = <div className={`btn btn-primary pointer-events-none`}>{player.name}</div>
-        }
-    }
+    const holder = (game.players ?? []).find((player: any) => settings.talkingStick === player.id);
 
     return (
-        <div className='tool-row__element '>
-            <div className={`chat-window__header uppercase`}>
-                <p>Player - Setting Display</p>
-            </div>
-            <div className={`message-area flex-col flex-auto h-full overflow-y-hidden`}>
-                <div className='message-container flex-auto overflow-y-scroll'>
-                    {talkingStickDisplay}
+        <section className='panel tool-row__element'>
+            <header className='panel__bar'>
+                <div className='panel__title'>
+                    <span className='panel__name'>Turn</span>
+                    <span className='panel__desc'>Talking stick</span>
                 </div>
+            </header>
+            <div className='panel__body'>
+                {holder
+                    ? <div className='flex items-center gap-2'>
+                        <span className='badge badge-primary badge-lg font-semibold'>{holder.name}</span>
+                        <span className='panel__hint'>has the talking stick</span>
+                    </div>
+                    : <p className='panel__hint'>Nobody has the talking stick right now.</p>
+                }
             </div>
-        </div>
+        </section>
     )
 }

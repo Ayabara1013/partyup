@@ -31,52 +31,490 @@ $prompt-bg-focus: bg-primary-focus;
 }
 
 
+// Shared look for floating panels: option list, reply bar, pinned popover
+%chat-popup-surface {
+  background-color: oklch(var(--b2));
+  color: oklch(var(--bc));
+  border: 1px solid oklch(var(--bc) / 0.1);
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.5);
+}
+
+// Chat window: a .panel (play.scss) with scrolling messages and the composer at the bottom
 .chat-window {
-  @apply bg-neutral rounded-xl;
-
-  &.--active {
-    @apply grow;
-  }
-
-  &.inactive {
-    @apply shrink;
-  }
-
-  @media screen and (min-width: 768px) {
-    @apply p-2 gap-4;
-
-    // &.--active {
-    //   @apply grow;
-    // }
-
-    // &.--inactive {
-    //   @apply shrink;
-    // }
-  }
+  height: 100%;
+  // Equal thirds: start from 0 width and share the space evenly, and let content
+  // shrink (min-width: 0) instead of long messages stretching one window
+  flex: 1 1 0%;
+  min-width: 0;
 }
 
-.chat-window__header {
-  @apply bg-primary text-primary-content;
-  position: relative;
-  top: -0.5rem;
-  left: -0.5rem;
+.chat-window__messages {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0.5rem 0;
+  scrollbar-width: thin;
+  scrollbar-color: oklch(var(--nc) / 0.25) transparent;
+}
 
-  padding: 0.25rem;
-  width: calc(100% + 1rem);
+.chat-window__composer {
+  flex-shrink: 0;
+  padding: 0 0.75rem 0.75rem;
+}
 
-  border-radius: 0.75rem 0.75rem 0 0;
-
-  min-width: 125px;
-
+.chat-window__notice {
+  padding: 0.625rem 0.875rem;
+  border-radius: 0.5rem;
+  border: 1px dashed oklch(var(--nc) / 0.2);
   text-align: center;
-  font-size: 1em;
-  font-weight: 600;
+  font-size: 0.875rem;
+  opacity: 0.7;
 }
 
+// Message composer: popups stacked above a rounded field holding the Slate editor
+.chat-composer {
+  position: relative;
+}
+
+.chat-composer__field {
+  max-height: 10rem;
+  overflow-y: auto;
+  border-radius: 0.5rem;
+  border: 1px solid oklch(var(--bc) / 0.15);
+  background-color: oklch(var(--b1));
+  color: oklch(var(--bc));
+  transition: border-color 0.15s, box-shadow 0.15s;
+
+  &:focus-within {
+    border-color: oklch(var(--p));
+    box-shadow: 0 0 0 2px oklch(var(--p) / 0.25);
+  }
+}
+
+.chat-composer__editor {
+  min-height: 2.75rem;
+  padding: 0.625rem 0.875rem;
+  outline: none;
+  line-height: 1.5;
+}
 
 .closed-window {
   padding: 0.375rem;
   background-color: hsl(var(--p) / 0.25);
   border: none;
   outline: none;
+}
+
+// Discord-style message rows: avatar gutter + content, grouped consecutive messages.
+.msg {
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr);
+  padding: 0.125rem 0.75rem 0.125rem 0;
+  border-left: 2px solid transparent;
+  line-height: 1.375;
+
+  &--header {
+    margin-top: 0.875rem;
+    padding-top: 0.25rem;
+  }
+
+  &:hover {
+    background-color: oklch(var(--nc) / 0.05);
+
+    .msg__hover-time {
+      visibility: visible;
+    }
+  }
+
+  &--mention {
+    background-color: oklch(var(--wa) / 0.1);
+    border-left-color: oklch(var(--wa));
+
+    &:hover {
+      background-color: oklch(var(--wa) / 0.15);
+    }
+  }
+}
+
+.msg__gutter {
+  display: flex;
+  justify-content: center;
+}
+
+.msg__avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-top: 0.125rem;
+  border-radius: 9999px;
+  object-fit: cover;
+
+  &--fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+  }
+}
+
+.msg__hover-time {
+  visibility: hidden;
+  padding-top: 0.2rem;
+  font-size: 0.625rem;
+  opacity: 0.5;
+  white-space: nowrap;
+}
+
+.msg__header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.msg__name {
+  font-weight: 600;
+  color: oklch(var(--nc));
+}
+
+.msg__tag {
+  @apply bg-primary text-primary-content;
+  padding: 0 0.25rem;
+  border-radius: 0.25rem;
+  font-size: 0.625rem;
+  font-weight: 600;
+  align-self: center;
+}
+
+.msg__time {
+  font-size: 0.75rem;
+  opacity: 0.5;
+}
+
+.msg__body {
+  overflow-wrap: anywhere;
+  color: oklch(var(--nc) / 0.9);
+}
+
+.msg__edited {
+  margin-left: 0.25rem;
+  font-size: 0.625rem;
+  opacity: 0.5;
+}
+
+.msg__dice {
+  margin-top: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-left: 3px solid oklch(var(--p));
+  border-radius: 0.25rem;
+  background-color: oklch(var(--nc) / 0.08);
+  font-size: 0.75rem;
+  opacity: 0.85;
+
+  &--error {
+    border-left-color: oklch(var(--er));
+  }
+}
+
+// Keep "(edited)" on the same line as the last paragraph.
+.msg__body > div:last-of-type {
+  display: inline;
+}
+
+.msg__locked {
+  margin-left: 0.25rem;
+  font-size: 0.625rem;
+  opacity: 0.6;
+}
+
+.msg__editor {
+  margin-top: 0.125rem;
+}
+
+.msg__editor-hint {
+  font-size: 0.6875rem;
+  color: oklch(var(--nc) / 0.6);
+
+  .link {
+    color: oklch(var(--in));
+  }
+}
+
+// Reply preview above a response message (Discord style), with the full message on hover.
+.reply {
+  grid-column: 2;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 0;
+  margin-bottom: 0.125rem;
+  font-size: 0.8125rem;
+  color: oklch(var(--nc) / 0.7);
+  cursor: pointer;
+
+  // Curved connector from the avatar column up to the preview
+  &::before {
+    content: "";
+    position: absolute;
+    left: -2.25rem;
+    top: 50%;
+    width: 1.75rem;
+    height: 0.75rem;
+    border-left: 2px solid oklch(var(--nc) / 0.3);
+    border-top: 2px solid oklch(var(--nc) / 0.3);
+    border-top-left-radius: 0.375rem;
+  }
+
+  &:hover {
+    color: oklch(var(--nc));
+
+    .reply__popup {
+      display: block;
+    }
+  }
+
+  &--missing {
+    font-style: italic;
+    cursor: default;
+  }
+}
+
+.reply__avatar {
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 9999px;
+  object-fit: cover;
+
+  &--fallback {
+    @apply bg-primary text-primary-content;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.5625rem;
+    font-weight: 600;
+  }
+}
+
+.reply__name {
+  flex-shrink: 0;
+  font-weight: 600;
+}
+
+.reply__text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reply__popup {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 30;
+  width: max-content;
+  max-width: min(28rem, 100%);
+  max-height: 16rem;
+  overflow-y: auto;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  background-color: oklch(var(--n));
+  border: 1px solid oklch(var(--nc) / 0.15);
+  box-shadow: 0 8px 16px rgb(0 0 0 / 0.35);
+  cursor: default;
+  white-space: normal;
+}
+
+// Popups stacked above the chat input: reply bar on top, then command/mention options.
+.chat-input__popups {
+  position: absolute;
+  bottom: calc(100% + 0.375rem);
+  left: 0;
+  width: 100%;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.chat-options {
+  @extend %chat-popup-surface;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  max-height: 18rem;
+  overflow-y: auto;
+  padding: 0.375rem;
+}
+
+.chat-options__title {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.6;
+}
+
+.chat-options__item {
+  width: 100%;
+  padding: 0.375rem 0.625rem;
+  border-radius: 0.5rem;
+  text-align: left;
+  font-weight: 500;
+
+  &:hover {
+    background-color: oklch(var(--bc) / 0.1);
+  }
+
+  &--active,
+  &--active:hover {
+    @apply bg-primary text-primary-content;
+  }
+}
+
+.chat-reply-bar {
+  @extend %chat-popup-surface;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-width: 0;
+  padding: 0.375rem 0.375rem 0.375rem 0.75rem;
+  border-left: 3px solid oklch(var(--p));
+  font-size: 0.875rem;
+}
+
+.chat-reply-bar__label {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.chat-reply-bar__name {
+  @apply text-primary;
+  flex-shrink: 0;
+  font-weight: 600;
+}
+
+.chat-reply-bar__text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 0.8;
+}
+
+.msg__dice-totals {
+  margin-top: 0.25rem;
+  font-weight: 600;
+}
+
+// Briefly highlight a message after jumping to it from Pinned Messages
+.msg--flash {
+  background-color: oklch(var(--p) / 0.25);
+  transition: background-color 0.4s ease-out;
+}
+
+// Pin button in the chat window bar + Discord-style "Pinned Messages" popover.
+// The popover is positioned against the bar (relative), so it spans the chat window.
+.pinned__button {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  opacity: 0.7;
+  transition: opacity 0.15s, background-color 0.15s;
+
+  &:hover,
+  &--open {
+    opacity: 1;
+    background-color: oklch(var(--nc) / 0.1);
+  }
+}
+
+.pinned__count {
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.pinned__popover {
+  @extend %chat-popup-surface;
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  right: 0.5rem;
+  z-index: 40;
+  width: min(26rem, calc(100% - 1rem));
+  max-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.pinned__title {
+  padding: 0.75rem 1rem;
+  font-weight: 700;
+  border-bottom: 1px solid oklch(var(--bc) / 0.1);
+}
+
+.pinned__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  overflow-y: auto;
+}
+
+.pinned__empty {
+  padding: 1.5rem 1rem;
+  text-align: center;
+  opacity: 0.7;
+}
+
+.pinned__card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  border: 1px solid oklch(var(--bc) / 0.1);
+  background-color: oklch(var(--b1));
+
+  // Name/time/body use the chat's neutral-content colors; switch to base colors here
+  .msg__name { color: oklch(var(--bc)); }
+  .msg__body { color: oklch(var(--bc) / 0.9); }
+
+  &:hover .pinned__actions {
+    visibility: visible;
+  }
+}
+
+.pinned__avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  object-fit: cover;
+
+  &--fallback {
+    @apply bg-primary text-primary-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+  }
+}
+
+.pinned__actions {
+  visibility: hidden;
+  position: absolute;
+  top: 0.375rem;
+  right: 0.375rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }

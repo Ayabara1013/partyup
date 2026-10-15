@@ -14,10 +14,9 @@ import msgArrayManipulation from "@/lib/supabase/util/msgArrayManipulation";
 
 import {useContextMenu} from "@/app/(context)/contextMenuContext";
 
-import {ChatWindow} from "@/app/games/play/[gameId]/(components)/chat/chatWindow";
+import {ChatWindow} from "@/app/games/play/[gameId]/(components)/chat/window/chatWindow";
 import GMTools from "@/app/games/play/[gameId]/(components)/GMTools";
 import PlayerSettingDisplay from "@/app/games/play/[gameId]/(components)/PlayerSettingsDisplay";
-import messageParser from "@/lib/supabase/util/messageParser";
 
 type PageProps = {
     params: Promise<{
@@ -105,6 +104,7 @@ export default function page({params}: PageProps) {
         return true;
     }
     async function loadMessages() {
+        lsInGame.clear.legacy();
         let tempMessages = lsInGame.get.chatLog(gameId);
         if (tempMessages.length === 0) {
             tempMessages = await supabaseInGame.get.allMessages(gameId);
@@ -116,6 +116,14 @@ export default function page({params}: PageProps) {
         }
         lsInGame.set.chatLog(gameId, tempMessages);
         setMessages(tempMessages);
+    }
+
+    // Drops this game's cached chat log and re-downloads every message from the database
+    async function clearLocalMessages() {
+        lsInGame.clear.chatLog(gameId);
+        setMessages([]);
+        await loadMessages();
+        toast.success(`Cleared local messages and reloaded chat.`);
     }
 
     async function updateMessages(newMessages: Array<any> = []) {
@@ -137,13 +145,26 @@ export default function page({params}: PageProps) {
                         <ChatWindow {...chatWindowProps} name={'open'}/>
                     </div>
 
-                    <div className="tool-row flex shrink-0 p-2 gap-4">
+                    <div className="tool-row flex shrink-0 p-2 pt-0 gap-2">
                         {gameObject.gmUid === user?.id
                             ? <GMTools game={gameObject} settings={settings}/>
                             : <PlayerSettingDisplay game={gameObject} settings={settings}/>
                         }
-                        <div className='tool-row__element'>
-                        </div>
+                        <section className='panel tool-row__element'>
+                            <header className='panel__bar'>
+                                <div className='panel__title'>
+                                    <span className='panel__name'>Chat</span>
+                                    <span className='panel__desc'>Saved on this device</span>
+                                </div>
+                            </header>
+                            <div className='panel__body'>
+                                <p className='panel__hint'>Messages are cached in your browser. Clear them to re-download this game's chat.</p>
+                                <button className="btn btn-sm btn-ghost border border-neutral-content/20 self-start"
+                                        onClick={clearLocalMessages}>
+                                    Clear Local Messages
+                                </button>
+                            </div>
+                        </section>
                     </div>
                 </> :
                 <div className={`flex justify-center`}>

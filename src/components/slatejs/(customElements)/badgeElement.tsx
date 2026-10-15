@@ -1,32 +1,30 @@
-import {useSelected} from "slate-react";
-import React, {ReactNode} from "react";
+import {ReactNode} from "react";
+import {RenderElementProps, useSelected} from "slate-react";
 import InlineChromiumBugfix from "@/components/slatejs/util/inLineChromiumBugFix";
 import {BadgeElementData} from "@/components/slatejs/util/slateTypes";
 
+// Class per badge type (styles in globals.scss). Mentions use the shared Discord-style pill.
+const BADGE_CLASSES: Record<string, string> = {
+    mention: `mention`,
+    command: `slate-badge slate-badge--command`,
+    dice: `slate-badge slate-badge--dice`,
+};
 
-export default function BadgeElement({attributes, children, element}: {
-    attributes?: any,
-    children: ReactNode,
-    element: BadgeElementData
-}) {
+type BadgeElementProps = {
+    attributes?: RenderElementProps[`attributes`];
+    children: ReactNode;
+    element: BadgeElementData;
+};
+
+export default function BadgeElement({attributes, children, element}: BadgeElementProps) {
     const selected = useSelected();
-    const colors: Record<string, string> = {
-        command: "blue",
-        mention: "teal",
-    };
+    const className = BADGE_CLASSES[element.featureType ?? ``] ?? `slate-badge`;
 
     return (
-        <span{...attributes} contentEditable={false}
-             style={{
-                 backgroundColor: colors[element.featureType  ?? ""] ?? 'red',
-                 color: 'white',
-                 padding: '2px',
-                 borderRadius: '2px',
-                 fontSize: '0.9em',
-             }}
-             data-playwright-selected={selected}>
-      <InlineChromiumBugfix/>
+        <span {...attributes} contentEditable={false} className={selected ? `${className} is-selected` : className}>
+            <InlineChromiumBugfix/>
             {children}
-    </span>
-    )
+            <InlineChromiumBugfix/>
+        </span>
+    );
 }

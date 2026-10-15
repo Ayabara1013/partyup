@@ -148,8 +148,7 @@ const supabaseGame = {
                         sc1: data.sc1,
                         sc2: data.sc2,
                         sc3: data.sc3,
-                        tags: data.tags,
-                        started: false
+                        tags: data.tags
                     }
                 ).eq(`id`, gameId).select().single();
                 if (error) {

@@ -1,87 +1,87 @@
 'use client'
 
 import Link from 'next/link';
-import {ReactNode, RefObject, useRef} from "react";
+import {usePathname} from "next/navigation";
+import {ReactNode} from "react";
 import {dirHref} from "@/lib/routing/directoy";
 import {useAuthManager} from "@/app/(context)/authContext";
 
+const NAV_LINKS = [
+    {href: ``, label: `Play`},
+    {href: dirHref.discover, label: `Discover`},
+    {href: dirHref.games.root, label: `Your Games`},
+];
+
 export default function NavBar() {
-    const profileRef: RefObject<any> = useRef(null);
     const {user, signOut} = useAuthManager()
+    const pathname = usePathname();
 
-    function logOutOnClick() {
-        signOut()
-    }
-
-    function closeProfile() {
-        profileRef.current.focus();
+    // Daisy dropdowns stay open while focused; blurring closes them after a choice
+    function closeMenu() {
+        (document.activeElement as HTMLElement | null)?.blur();
     }
 
     return (
-        <div className="navbar bg-neutral z-10 shrink-0">
-            <div tabIndex={1} className="navbar-start" ref={profileRef}>
-                <Link href={dirHref.home} className="btn btn-ghost normal-case text-xl">PartyUp</Link>
+        <nav className="app-nav navbar">
+            <div className="navbar-start">
+                <Link href={dirHref.home} className="app-nav__brand">PartyUp</Link>
             </div>
 
-            <div className='navbar-center'>
-                <div className='navbar-center hidden lg:flex'>
-                    <ul className='menu menu-horizontal px-1 flex flex-row flex-wrap gap-4'>
-                        <NavLink href={``} className={''}>play</NavLink>
-                        <NavLink href={dirHref.discover}>discover</NavLink>
-                        <NavLink href={dirHref.games.root}>Your Games</NavLink>
-                    </ul>
-                </div>
+            <div className='navbar-center hidden lg:flex'>
+                <ul className='flex items-center gap-1'>
+                    {NAV_LINKS.map((link) =>
+                        <NavLink key={link.label} href={link.href} active={!!link.href && pathname.startsWith(link.href)}>
+                            {link.label}
+                        </NavLink>
+                    )}
+                </ul>
             </div>
 
-            <div className="navbar-end ">
+            <div className="navbar-end">
                 <div className="dropdown dropdown-end">
-                    <NavBarAvatar src={user ? "/images/038-adventure-1.png" : "/images/008-spellbook-1.png"}
-                                  tabIndex={0} onClick={closeProfile}/>
-                    <ul tabIndex={-1}
-                        className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 ">
+                    <NavBarAvatar name={user?.userMetadata?.name}
+                                  src={user?.userMetadata?.avatarUrl ?? user?.userMetadata?.picture}/>
+                    <ul tabIndex={-1} className="app-nav__menu menu dropdown-content">
                         {user
                             ? <>
-                                <li><Link href={dirHref.home} onClick={closeProfile}>{user.userMetadata.name} (Your
-                                    Profile)</Link></li>
-                                <li><Link href={dirHref.user.settings} onClick={closeProfile}>Settings</Link></li>
-                                <li><Link href={dirHref.home} onClick={logOutOnClick}>LogOut</Link></li>
+                                <li className="menu-title">{user.userMetadata.name}</li>
+                                {/* The page links live here on small screens */}
+                                {NAV_LINKS.map((link) =>
+                                    <li key={link.label} className="lg:hidden">
+                                        <Link href={link.href} onClick={closeMenu}>{link.label}</Link>
+                                    </li>
+                                )}
+                                <li><Link href={dirHref.home} onClick={closeMenu}>Your Profile</Link></li>
+                                <li><Link href={dirHref.user.settings} onClick={closeMenu}>Settings</Link></li>
+                                <li><Link href={dirHref.home} onClick={() => { closeMenu(); signOut(); }}>Log Out</Link></li>
                             </>
-                            : <li><Link href={dirHref.user.signin} onClick={closeProfile}>LogIn</Link></li>
+                            : <li><Link href={dirHref.user.signin} onClick={closeMenu}>Log In</Link></li>
                         }
                     </ul>
                 </div>
             </div>
-        </div>
+        </nav>
     )
 }
 
-
-function NavLink({className, text, href = 'dir.error', children, ...props}: {
-    className?: string,
-    text?: string,
-    href?: string,
-    children?: ReactNode
-}) {
+function NavLink({href, active, children}: { href: string, active: boolean, children: ReactNode }) {
     return (
-        <li className={``}>
-            <div className='p-0'>
-                <Link className={`btn btn-secondary whitespace-nowrap min-w-[6rem] ${className}`}
-                      href={href}>{text || children || 'BANANA'}</Link>
-            </div>
+        <li>
+            <Link className={`app-nav__link ${active ? `app-nav__link--active` : ``}`} href={href}
+                  aria-current={active ? `page` : undefined}>
+                {children}
+            </Link>
         </li>
     )
 }
 
-function NavBarAvatar({src, onClick, tabIndex}: {
-    src: string | Blob | undefined,
-    onClick?: () => void,
-    tabIndex: number
-}) {
+// Same look as the chat avatars: the profile picture, or the name's initial on primary
+function NavBarAvatar({name, src}: { name?: string, src?: string }) {
     return (
-        <label className="btn btn-ghost btn-circle avatar">
-            <div tabIndex={tabIndex} className="w-10 rounded-full" role="button">
-                <img src={src}/>
-            </div>
-        </label>
+        <div tabIndex={0} role="button" className="btn btn-ghost btn-circle" aria-label="Account menu">
+            {src
+                ? <img className="app-nav__avatar" src={src} alt="" referrerPolicy="no-referrer"/>
+                : <div className="app-nav__avatar app-nav__avatar--fallback">{(name ?? `?`).charAt(0).toUpperCase()}</div>}
+        </div>
     )
 }

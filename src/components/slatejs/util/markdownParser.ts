@@ -1,5 +1,8 @@
 import chatOptions from "@/lib/assets/chatOptions";
 
+// Same format as messageUtil: <@userId>
+const MENTION_RE = /<@([0-9a-fA-F-]{36})>/g;
+
 function parseOption(text: string) {
     return text.split(`{`)[1]?.split(`}`);
 }
@@ -25,23 +28,24 @@ const markdownParser = {
             return baseElement;
         }
 
+        // Splits out <@userId> mentions into mention badges; everything else stays text
         function optionParserDisplay(text: string, baseElement: any) {
-            // let textFragments = text.split(chatOptions.optionRegex);
-            // if (textFragments.length > 1) {
-            //   for (let i = 0; i < textFragments.length; i++) {
-            //     if (i === 0) {
-            //       baseElement.children.push({text: textFragments[0]})
-            //     } else if (i % 2 === 1) {
-            //       let result = chatOptions.optionFromDelimiter(textFragments[i])
-            //       if (result.result && i + 1 < textFragments.length) {
-            //         optionIntoObject[result.type](textFragments[i + 1], baseElement, players);
-            //       }
-            //       i++;
-            //     }
-            //   }
-            //   return;
-            // }
-            baseElement.children.push({text: text});
+            let last = 0;
+            for (const match of text.matchAll(MENTION_RE)) {
+                const index = match.index ?? 0;
+                if (index > last) baseElement.children.push({text: text.slice(last, index)});
+                const player = players.find((p: any) => p?.id === match[1]);
+                baseElement.children.push({
+                    type: `badge`,
+                    featureType: `mention`,
+                    value: match[0],
+                    children: [{text: `@${player?.name ?? `Unknown`}`}]
+                });
+                last = index + match[0].length;
+            }
+            if (last < text.length || baseElement.children.length === 0) {
+                baseElement.children.push({text: text.slice(last)});
+            }
         }
 
         function boldItalicParser(text: string, baseElement: any) {

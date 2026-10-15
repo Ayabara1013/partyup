@@ -5,6 +5,7 @@ export type BadgeElementData = {
     type: "badge";
     featureType?: string;
     label?: string;
+    value?: string; // what getEditorStringValue writes for this badge, e.g. <@userId>
     children: Descendant[];
 };
 

@@ -57,14 +57,16 @@ const supabaseInGame = {
         }
     },
     set: {
-        addMessage: async (gameId: string, messageText: string, userId: string, channel: string, promptInfo: any = null, isResponse: boolean = false) => {
+        addMessage: async (gameId: string, messageText: string, userId: string, channel: string, promptInfo: any = null, replyTo: string | null = null) => {
+            // GM canon posts also go to turn so players can respond to them
+            const channels = channel === `canon` ? [`canon`, `turn`] : [channel];
             const {data, error} = await supabase.from(`game_chat_messages`).insert([objectToSnake({
                 gameId,
                 messageText,
                 playerId: userId,
-                channel: [channel],
+                channel: channels,
                 promptInfo: promptInfo,
-                isResponse: isResponse,
+                ...(replyTo && {replyTo}),
                 tags: []
             })]).select();
 
@@ -78,6 +80,62 @@ const supabaseInGame = {
             const {data, error} = await supabase.from(`game_settings`)
                 .update(objectToSnake({talkingStick: playerId})).eq(`game_id`, gameId).select().single();
             if (error) toast.error(`Could not update talking stick.`)
+        }
+    },
+    edit: {
+        message: {
+            channel: async (messageId: string, channel: string[]) => {
+                const {data, error} = await supabase.from(`game_chat_messages`)
+                    .update({channel})
+                    .eq(`id`, messageId).select().single();
+                if (error) {
+                    toast.error(`Could not update message.`);
+                    return null;
+                }
+                return objectToCamel(data);
+            },
+            text: async (messageId: string, messageText: string) => {
+                // Fails if the message is locked (chat_message_lock trigger)
+                const {data, error} = await supabase.from(`game_chat_messages`)
+                    .update(objectToSnake({messageText}))
+                    .eq(`id`, messageId).select().single();
+                if (error) {
+                    toast.error(`Could not edit message.`);
+                    return null;
+                }
+                return objectToCamel(data);
+            },
+            locked: async (messageId: string, locked: boolean) => {
+                const {data, error} = await supabase.from(`game_chat_messages`)
+                    .update({locked})
+                    .eq(`id`, messageId).select().single();
+                if (error) {
+                    toast.error(`Could not ${locked ? `lock` : `unlock`} message.`);
+                    return null;
+                }
+                return objectToCamel(data);
+            },
+            pinned: async (messageId: string, isPinned: boolean) => {
+                const {data, error} = await supabase.from(`game_chat_messages`)
+                    .update(objectToSnake({isPinned}))
+                    .eq(`id`, messageId).select().single();
+                if (error) {
+                    toast.error(`Could not ${isPinned ? `pin` : `unpin`} message.`);
+                    return null;
+                }
+                return objectToCamel(data);
+            },
+            delete: async (messageId: string) => {
+                // Soft delete: the row stays, the UI filters out `deleted` messages
+                const {data, error} = await supabase.from(`game_chat_messages`)
+                    .update({deleted: true})
+                    .eq(`id`, messageId).select().single();
+                if (error) {
+                    toast.error(`Could not delete message.`);
+                    return null;
+                }
+                return objectToCamel(data);
+            }
         }
     }
 }

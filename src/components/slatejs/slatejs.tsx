@@ -47,6 +47,7 @@ type CustomSlateProps = {
     onKeyDown?: (event: KeyboardEvent<HTMLDivElement>) => void;
     onKeyUp?: (event: KeyboardEvent<HTMLDivElement>) => void;
     className?: string;
+    placeholder?: string;
 };
 
 const cloneDefaultValue = () =>
@@ -59,6 +60,7 @@ function CustomSlate({
                          onKeyDown,
                          onKeyUp,
                          className,
+                         placeholder = "Enter some text...",
                      }: CustomSlateProps) {
     return (
         <Slate editor={editor} initialValue={initialValue}>
@@ -68,7 +70,7 @@ function CustomSlate({
                 )}
                 className={className}
                 readOnly={readOnly}
-                placeholder={!readOnly ? "Enter some text..." : undefined}
+                placeholder={!readOnly ? placeholder : undefined}
                 style={!readOnly ? editorStyle : undefined}
                 onKeyDown={!readOnly ? onKeyDown : undefined}
                 onKeyUp={!readOnly ? onKeyUp : undefined}
