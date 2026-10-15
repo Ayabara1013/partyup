@@ -5,7 +5,7 @@ import {useMemo} from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {useAuthManager} from "@/app/(context)/authContext";
-import HomeActionCard from "@/app/home/(components)/HomeActionCard";
+import HomeActionCard from "@/app/home/(components)/homeActionCard";
 import {allText} from "@/lib/assets/homeText";
 import {dirHref} from "@/lib/routing/directoy";
 import {gameSystems} from "@/lib/assets/gameSystems";
