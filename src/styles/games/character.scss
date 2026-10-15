@@ -1,0 +1,304 @@
+// Character creator: a .panel (globals.scss) shown as a popup over the Canon chat on the play page.
+// It lays out by its own width (container queries), since the popup is about a third of the screen.
+
+// Popup position: covers the Canon chat (first of three equal columns in .chat-row, which has p-2 and gap-2)
+.character-popup {
+  position: absolute;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  left: 0.5rem;
+  z-index: 30;
+  display: flex;
+  width: calc(100% - 1rem); // narrow screens: the whole chat row
+
+  @media (min-width: 768px) {
+    width: calc((100% - 2rem) / 3); // one chat column: (row - padding - two gaps) / 3
+    min-width: 24rem;
+  }
+
+  > .character-form {
+    flex: 1;
+    min-width: 0;
+    box-shadow: 0 20px 40px -10px rgb(0 0 0 / 0.6);
+    border: 1px solid oklch(var(--p) / 0.35);
+  }
+}
+
+.character-form {
+  container-type: inline-size;
+  min-height: 0;
+
+  &__body {
+    gap: 1.25rem;
+    padding: 0 1rem 1rem;
+  }
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  &__heading-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  &__heading {
+    @apply text-primary;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid oklch(var(--nc) / 0.1);
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__heading-row &__heading {
+    flex: 1;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.875rem;
+
+    @container (min-width: 30rem) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @container (min-width: 42rem) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    &--two {
+      @container (min-width: 42rem) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  }
+
+  @container (min-width: 30rem) {
+    &__span-2,
+    &__span-3 {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @container (min-width: 42rem) {
+    &__span-2 { grid-column: span 2; }
+    &__span-3 { grid-column: span 3; }
+  }
+
+  &__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid oklch(var(--nc) / 0.1);
+  }
+}
+
+// Live summary strip: sticks to the top of the scrolling body
+.character-summary {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin: 0 -1rem;
+  padding: 0.5rem 1rem;
+  background-color: oklch(var(--n));
+  border-bottom: 1px solid oklch(var(--nc) / 0.1);
+
+  &__who {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  &__name {
+    @apply text-primary;
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.375rem;
+
+    @container (min-width: 42rem) {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+  }
+
+  // One compact line per stat ("Armor class  12") so the strip stays short in the narrow popup
+  &__stat {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.375rem;
+    min-width: 0;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.375rem;
+    border: 1px solid oklch(var(--nc) / 0.12);
+
+    dt {
+      min-width: 0;
+      font-size: 0.75rem;
+      opacity: 0.65;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    dd {
+      font-weight: 700;
+    }
+  }
+
+  &__saves {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.875rem;
+    font-size: 0.875rem;
+
+    div {
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    dt {
+      opacity: 0.65;
+    }
+
+    dd {
+      font-weight: 700;
+    }
+  }
+
+  &__saves-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.6;
+  }
+}
+
+// Six ability / attribute boxes, like the stat blocks on a paper sheet
+.ability-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+
+  @container (min-width: 36rem) {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+.ability-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0.375rem;
+  border-radius: 0.75rem;
+  border: 1px solid oklch(var(--bc) / 0.15);
+  background-color: oklch(var(--b1) / 0.6);
+  color: oklch(var(--bc));
+
+  &--key {
+    border-color: oklch(var(--p) / 0.6);
+  }
+
+  &__label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    opacity: 0.7;
+  }
+
+  &__input {
+    width: 100%;
+    padding: 0.125rem 0;
+    border-radius: 0.375rem;
+    border: 1px solid transparent;
+    background: transparent;
+    text-align: center;
+    font-size: 1.375rem;
+    font-weight: 700;
+    outline: none;
+
+    &:focus {
+      border-color: oklch(var(--p));
+    }
+  }
+
+  &__mod {
+    @apply text-primary;
+    font-weight: 700;
+  }
+}
+
+// Skill rows: name + ability, live total, training select
+.skill-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.25rem 1rem;
+
+  @container (min-width: 42rem) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.skill-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 2.5rem 7.5rem;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.25rem 0.25rem 0.625rem;
+  border-radius: 0.5rem;
+
+  &--trained {
+    background-color: oklch(var(--p) / 0.1);
+  }
+
+  &__name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__ability {
+    font-size: 0.75rem;
+    opacity: 0.55;
+  }
+
+  &__total {
+    text-align: right;
+    font-weight: 700;
+  }
+
+  &__select {
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.375rem;
+    border: 1px solid oklch(var(--bc) / 0.15);
+    background-color: oklch(var(--b1));
+    color: oklch(var(--bc));
+    font-size: 0.875rem;
+  }
+}

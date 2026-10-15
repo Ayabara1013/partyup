@@ -11,3 +11,81 @@
     min-width: 0;
   }
 }
+
+// Dev. Misc: large action buttons with a one-line explanation underneath
+.panel__actions {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 0.5rem;
+}
+
+.panel-action {
+  display: flex;
+  flex: 1 1 14rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.125rem;
+  min-width: 0;
+  padding: 0.625rem 0.875rem;
+  border-radius: 0.75rem;
+  border: 1px solid oklch(var(--bc) / 0.15);
+  background-color: oklch(var(--b1) / 0.6);
+  color: oklch(var(--bc));
+  text-align: left;
+  transition: border-color 0.15s, background-color 0.15s;
+
+  &:hover:not(:disabled) {
+    border-color: oklch(var(--p) / 0.6);
+    background-color: oklch(var(--p) / 0.1);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  &__title {
+    @apply text-primary;
+    font-size: 1.0625rem;
+    font-weight: 700;
+  }
+
+  &__sub {
+    font-size: 0.8125rem;
+    line-height: 1.3;
+    opacity: 0.7;
+  }
+}
+
+// GM Tools: one button per player, "Player (Character)"; clicking opens the player menu
+.gm-players {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+
+  &__character {
+    margin-left: 0.25rem;
+    font-weight: 400;
+    opacity: 0.75;
+  }
+}
+
+.gm-grave {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+
+  summary {
+    cursor: pointer;
+    font-weight: 600;
+    opacity: 0.75;
+  }
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    margin-top: 0.25rem;
+    padding-left: 1rem;
+  }
+}

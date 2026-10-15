@@ -4,8 +4,8 @@ import '@/styles/discover/discover.scss';
 import {useEffect, useRef, useState} from "react";
 import {useAuthManager} from "@/app/(context)/authContext";
 import {supabaseGame} from "@/lib/supabase/db/game";
-import DiscoverGameCard from "@/app/discover/(components)/DiscoverGameCard";
-import DiscoverFilters, {DEFAULT_FILTERS, DiscoverFilterState} from "@/app/discover/(components)/DiscoverFilters";
+import DiscoverGameCard from "@/app/discover/(components)/discoverGameCard";
+import DiscoverFilters, {DEFAULT_FILTERS, DiscoverFilterState} from "@/app/discover/(components)/discoverFilters";
 
 // Wait this long after the last filter change before searching
 const SEARCH_DELAY_MS = 300;

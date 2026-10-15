@@ -226,6 +226,11 @@ body {
             border-color: oklch(var(--p));
             box-shadow: 0 0 0 2px oklch(var(--p) / 0.25);
         }
+
+        // Example text must not look like an entered value
+        &::placeholder {
+            color: oklch(var(--bc) / 0.35);
+        }
     }
 
     textarea.field__input {
@@ -379,3 +384,15 @@ body {
     }
 }
 
+
+// Cut / Copy / Paste items: label left, keyboard shortcut right
+.context-menu__edit {
+    justify-content: space-between;
+    gap: 1.5rem;
+}
+
+.context-menu__shortcut {
+    font-size: 0.8125rem;
+    font-weight: 400;
+    opacity: 0.55;
+}

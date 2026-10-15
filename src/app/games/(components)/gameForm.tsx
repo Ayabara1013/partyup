@@ -1,7 +1,8 @@
 'use client'
 
 import '@/styles/games/gameForm.scss';
-import {FormEvent, ReactNode, useState} from "react";
+import {FormEvent, useState} from "react";
+import Field from "@/components/ui/field";
 import Link from "next/link";
 import {gameSystems} from "@/lib/assets/gameSystems";
 import {safetyChecks} from "@/lib/assets/safetyChecks";
@@ -194,21 +195,5 @@ export default function GameForm({title, description, initial = EMPTY_GAME, curr
                 </footer>
             </form>
         </div>
-    );
-}
-
-function Field({label, hint, error, optional, children}: {
-    label: string,
-    hint?: string,
-    error?: string,
-    optional?: boolean,
-    children: ReactNode
-}) {
-    return (
-        <label className="field">
-            <span className="field__label">{label}{optional && <span className="field__optional">optional</span>}</span>
-            {children}
-            {error ? <span className="field__error">{error}</span> : hint && <span className="panel__hint">{hint}</span>}
-        </label>
     );
 }

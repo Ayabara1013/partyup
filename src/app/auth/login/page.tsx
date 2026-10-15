@@ -1,5 +1,5 @@
 import '@/styles/auth.scss'
-import {LoginForm} from '@/components/login-form'
+import {LoginForm} from '@/components/loginForm'
 import {safeNextPath} from '@/lib/routing/nextPath'
 
 export default async function Page({searchParams}: { searchParams: Promise<{ next?: string }> }) {

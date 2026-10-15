@@ -4,7 +4,7 @@ import '@/styles/games/games.scss'
 import Link from "next/link";
 import {dirHref} from "@/lib/routing/directoy";
 import {useAuthManager} from "@/app/(context)/authContext";
-import MyGamesList from "@/app/games/your-games/(components)/GameList";
+import MyGamesList from "@/app/games/your-games/(components)/gameList";
 
 export default function Page() {
     const {user, gmGames, playerGames, gamesLoading, updateGames} = useAuthManager();

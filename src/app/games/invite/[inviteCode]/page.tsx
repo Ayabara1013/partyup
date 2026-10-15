@@ -7,7 +7,7 @@ import Link from "next/link";
 import {useAuthManager} from "@/app/(context)/authContext";
 import {dirHref} from "@/lib/routing/directoy";
 import {supabaseGame} from "@/lib/supabase/db/game";
-import DiscoverGameCard from "@/app/discover/(components)/DiscoverGameCard";
+import DiscoverGameCard from "@/app/discover/(components)/discoverGameCard";
 
 type PageProps = {
     params: Promise<{ inviteCode: string }>;

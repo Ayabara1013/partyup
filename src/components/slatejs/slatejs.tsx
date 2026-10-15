@@ -1,10 +1,11 @@
-import React, {KeyboardEvent, useMemo} from "react";
+import React, {KeyboardEvent, useEffect, useMemo} from "react";
 import {createEditor, Descendant, BaseEditor, Element as SlateElement} from "slate";
 import {Editable, ReactEditor, RenderElementProps, Slate, withReact} from "slate-react";
 
 import ElementRenderer from "@/components/slatejs/elementRenderer";
 import {editorStyle} from "@/components/slatejs/util/editorSettings";
 import {editorDefault} from "@/components/slatejs/util/editorDefaultValues";
+import {registerSlateEditor} from "@/components/ui/editContextMenu";
 
 type CustomElement = {
     type: string;
@@ -62,6 +63,9 @@ function CustomSlate({
                          className,
                          placeholder = "Enter some text...",
                      }: CustomSlateProps) {
+    // Lets the right-click Cut / Copy / Paste menu edit through Slate (Editable has mounted by the time this runs)
+    useEffect(() => registerSlateEditor(editor), [editor]);
+
     return (
         <Slate editor={editor} initialValue={initialValue}>
             <Editable

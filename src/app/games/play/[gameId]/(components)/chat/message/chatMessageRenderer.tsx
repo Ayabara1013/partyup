@@ -2,6 +2,7 @@ import {useMemo} from "react";
 import markdownParser from "@/components/slatejs/util/markdownParser";
 import BadgeElement from "@/components/slatejs/(customElements)/badgeElement";
 import DefaultElement from "@/components/slatejs/(customElements)/defaultElement";
+import {PlayerCardTrigger} from "@/app/games/play/[gameId]/(components)/player/playerCard";
 
 export default function ChatMessageRenderer({messageText, players, className}: {
     messageText: string,
@@ -26,7 +27,9 @@ function ObjectRenderer({messageObject, className}: { messageObject: any, classN
             )
         case `badge`:
             if (messageObject.featureType === `mention`) {
-                return <span className="mention">{messageObject.children[0]?.text}</span>
+                // value is "<@userId>"; clicking the pill opens that player's card
+                const userId = /^<@([0-9a-f-]{36})>$/i.exec(messageObject.value ?? ``)?.[1];
+                return <PlayerCardTrigger userId={userId} className="mention">{messageObject.children[0]?.text}</PlayerCardTrigger>
             }
             return (
                 <BadgeElement element={messageObject}>

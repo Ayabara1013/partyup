@@ -1,0 +1,168 @@
+// Player card: opened by clicking a name, avatar or @mention in chat. Same floating surface as the chat popups.
+
+// Button reset at zero specificity (:where), so .mention / .msg__name keep their own padding and colours
+:where(.player-card-trigger) {
+  display: inline;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+}
+
+.player-card-trigger {
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid oklch(var(--p));
+    outline-offset: 2px;
+  }
+}
+
+.msg__name.player-card-trigger:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+// Avatar as a round button
+.msg__avatar-trigger {
+  display: block;
+  border-radius: 9999px;
+  transition: transform 0.1s;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.player-card {
+  position: fixed;
+  z-index: 60;
+  width: 18rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  border: 1px solid oklch(var(--bc) / 0.1);
+  background-color: oklch(var(--b2));
+  color: oklch(var(--bc));
+  box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.5);
+
+  // Player: the outer wrapper
+  &__player {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 0.875rem;
+  }
+
+  &__avatar {
+    flex-shrink: 0;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 9999px;
+    object-fit: cover;
+
+    &--fallback {
+      @apply bg-primary text-primary-content;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.125rem;
+      font-weight: 700;
+    }
+  }
+
+  &__who {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    min-width: 0;
+  }
+
+  &__name {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 1.125rem;
+    font-weight: 700;
+  }
+
+  &__you {
+    font-weight: 400;
+    opacity: 0.6;
+  }
+
+  // Character: inset inside the player card
+  &__character {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    margin: 0 0.625rem 0.625rem;
+    padding: 0.625rem 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid oklch(var(--bc) / 0.12);
+    background-color: oklch(var(--b1));
+  }
+
+  &__character-name {
+    @apply text-primary;
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  &__line {
+    font-size: 0.875rem;
+    opacity: 0.8;
+  }
+
+  &__facts {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.75rem;
+    margin-top: 0.125rem;
+
+    dt {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      opacity: 0.6;
+    }
+
+    dd {
+      font-weight: 700;
+    }
+  }
+
+  &__hp {
+    text-align: right;
+  }
+
+  &__temp {
+    @apply text-info;
+    font-weight: 600;
+  }
+
+  &__bar {
+    height: 0.375rem;
+    overflow: hidden;
+    border-radius: 9999px;
+    background-color: oklch(var(--bc) / 0.12);
+
+    span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      transition: width 0.2s;
+    }
+
+    &--ok span { @apply bg-success; }
+    &--low span { @apply bg-warning; }
+    &--critical span { @apply bg-error; }
+  }
+}

@@ -1,41 +1,37 @@
 'use client';
-import {createContext, Dispatch, ReactNode, RefObject, SetStateAction, useContext, useRef, useState} from 'react';
+import {createContext, Dispatch, ReactNode, SetStateAction, useCallback, useContext, useMemo, useRef, useState} from 'react';
 
 type PopupModalContextType = {
     showModal: () => void;
     hideModal: () => void;
-    setTitle: (title: string) => void;
-    setModalChildren: any;
+    setTitle: Dispatch<SetStateAction<string>>;
+    setModalChildren: Dispatch<SetStateAction<ReactNode>>;
 };
 
 const PopupModalContext = createContext<PopupModalContextType | null>(null);
 
-
 export function PopupModalProvider({children}: { children: ReactNode }) {
-    const [modalChildren, setModalChildren] = useState(null);
-    const modalRef: RefObject<any> = useRef(null);
-    const titleRef: RefObject<any> = useRef(null);
+    const [modalChildren, setModalChildren] = useState<ReactNode>(null);
+    const [title, setTitle] = useState(``);
+    const modalRef = useRef<HTMLDialogElement>(null);
 
-    function showModal() {
-        modalRef.current.showModal();
-    }
+    const showModal = useCallback(() => modalRef.current?.showModal(), []);
+    const hideModal = useCallback(() => modalRef.current?.close(), []);
 
-    function hideModal() {
-        modalRef.current.close();
-    }
-
-    function setTitle(title: string) {
-        titleRef.current.innerHTML = title;
-    }
+    // The functions never change, so opening the modal or changing its content doesn't re-render consumers
+    const value = useMemo(
+        () => ({showModal, hideModal, setTitle, setModalChildren}),
+        [showModal, hideModal]
+    );
 
     return (
-        <PopupModalContext.Provider value={{showModal, hideModal, setTitle, setModalChildren}}>
+        <PopupModalContext.Provider value={value}>
             <dialog ref={modalRef} className={`modal`}>
                 <div className={`modal-box`}>
                     <form method="dialog">
                         <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                     </form>
-                    <h1 ref={titleRef} className={`font-bold text-2xl`}>Title here</h1>
+                    <h1 className={`font-bold text-2xl`}>{title}</h1>
                     {modalChildren}
                 </div>
                 <form method="dialog" className="modal-backdrop">

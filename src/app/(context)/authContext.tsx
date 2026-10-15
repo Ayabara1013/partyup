@@ -1,162 +1,131 @@
 'use client'
-import {Session, User} from "@supabase/supabase-js";
-import {createContext, Dispatch, ReactNode, useContext, useEffect, useRef, useState} from "react";
+import {User} from "@supabase/supabase-js";
+import {createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
 import {supabase} from "@/lib/supabase/client/client"
-import {redirect} from "next/navigation";
+import {useRouter} from "next/navigation";
 import {loginHref} from "@/lib/routing/nextPath";
+import {pendingInvite} from "@/lib/routing/pendingInvite";
 import {supabaseGame} from "@/lib/supabase/db/game";
 import {CamelCase, objectToCamel} from "@/lib/util/camelSnake";
 import {supabaseAccount} from "@/lib/supabase/db/account";
 import toast from "react-hot-toast";
 
 type CamelUser = CamelCase<User>
-type CamelSession = CamelCase<Session>
 type AuthContextType = {
     user: CamelUser | null;
-    session: CamelSession | null;
     userLoading: boolean;
     gamesLoading: boolean;
     signOut: () => Promise<void>,
     gmGames: Array<any>,
     playerGames: Array<any>,
     updateGames: () => Promise<void>,
-    newNotification: any,
-    setNewNotification: Dispatch<any>
 };
 
 const AuthManagerContext = createContext<AuthContextType | null>(null);
 
+// Toast for each notification type: one text for everyone, or one for the GM and one for players that names the game
+type gameToast = (name: string) => string;
+const notificationToast: Record<string, { text?: string, gm?: gameToast, player?: gameToast }> = {
+    game_created: {text: `Game Created successfully.`},
+    join_request_created: {text: `Someone requested to join a game.`},
+    game_joined_as_player: {text: `You have joined a game.`},
+    player_joined: {text: `You accepted a player to your game.`},
+    game_edited: {gm: (name) => `You updated: ${name}.`, player: (name) => `${name} has been updated.`},
+    game_started: {gm: (name) => `You started: ${name}.`, player: (name) => `${name} has started.`},
+    game_stopped: {gm: (name) => `You stopped: ${name}.`, player: (name) => `${name} has stopped.`},
+};
+
 export function AuthManagerProvider({children}: { children: ReactNode }) {
+    const router = useRouter();
     const [user, setUser] = useState<CamelUser | null>(null);
-    const [session, setSession] = useState<CamelSession | null>(null);
     const [userLoading, setUserLoading] = useState(true);
     const [gamesLoading, setGamesLoading] = useState(true);
     const [gmGames, setGmGames] = useState<Array<any>>([]);
     const [playerGames, setPlayerGames] = useState<Array<any>>([]);
-    const [newNotification, setNewNotification] = useState<any>(null);
-    const [notifications, setNotifications] = useState<Array<any>>([]);
+    const userId = user?.id ?? null;
+    const gamesRequest = useRef(0);
 
     const gmGamesRef = useRef(gmGames);
     const playerGamesRef = useRef(playerGames);
-
-    useEffect(() => { gmGamesRef.current = gmGames; }, [gmGames]);
-    useEffect(() => { playerGamesRef.current = playerGames; }, [playerGames]);
-
-
     useEffect(() => {
-        // get initial session
-        supabase.auth.getSession().then(({data}) => {
-            const newData = objectToCamel(data.session)
-            setSession(newData);
-            setUser(newData?.user ?? null);
+        gmGamesRef.current = gmGames;
+        playerGamesRef.current = playerGames;
+    }, [gmGames, playerGames]);
+
+    // The listener also reports the initial session, so no separate getSession() call is needed
+    useEffect(() => {
+        const {data: listener} = supabase.auth.onAuthStateChange((_event, session) => {
+            const next = objectToCamel(session)?.user ?? null;
+            // Token refreshes and tab refocus re-send the same user: keep the old object so nothing re-renders
+            setUser((prev) => prev && next && prev.id === next.id && prev.updatedAt === next.updatedAt ? prev : next);
             setUserLoading(false);
-        });
-        // listen for changes
-        const {data: listener} = supabase.auth.onAuthStateChange(
-            (_event, session) => {
-                const newData = objectToCamel(session)
-                setSession(newData);
-                setUser(newData?.user ?? null);
-                setUserLoading(false);
+            if (!next) {
+                gamesRequest.current++;
+                setGmGames([]);
+                setPlayerGames([]);
+                setGamesLoading(true);
             }
-        );
-        return () => {
-            listener.subscription.unsubscribe();
-        };
+        });
+        return () => listener.subscription.unsubscribe();
     }, []);
 
-    useEffect(() => {
-        if (!userLoading && !user) {
-            redirect(loginHref(window.location.pathname + window.location.search))
-        } else if (user) {
-            updateGames()
-            let notificationsChannel = supabaseAccount.live.notifications(user.id, updateNotifications);
-            return () => {
-                supabase.removeChannel(notificationsChannel);
-            }
-        }
-    }, [user]);
-
-    const signOut = async () => {
-        await supabase.auth.signOut();
-    };
-
-    async function updateGames() {
-        if (!user) return;
+    const updateGames = useCallback(async () => {
+        if (!userId) return;
+        const request = ++gamesRequest.current;
         // Both lists load in parallel
         const [newGmGame, newPlayerGame] = await Promise.all([
-            supabaseGame.get.game.gm(user.id),
-            supabaseGame.get.game.player(user.id),
+            supabaseGame.get.game.gm(userId),
+            supabaseGame.get.game.player(userId),
         ]);
+        if (request !== gamesRequest.current) return;
         setGmGames(newGmGame);
         setPlayerGames(newPlayerGame);
-        setGamesLoading(false)
-    }
+        setGamesLoading(false);
+    }, [userId]);
 
-    async function updateNotification() {
-        if (!user) return
-        const tempNotification = await supabaseAccount.get.notifications(user.id)
-        setNotifications(tempNotification)
-    }
+    useEffect(() => {
+        if (userLoading) return;
 
-    async function updateNotifications(input: any) {
-        let payload: any = input[0];
-        setNotifications([...notifications, payload])
-        setNewNotification(payload)
-        const id = payload.data.gameId;
-        const gmGame = gmGamesRef.current.find((g) => g.id === id);
-        const game = gmGame ?? playerGamesRef.current.find((g) => g.id === id);
-
-        switch (payload.type) {
-            case `game_created`:
-                toast(`Game Created successfully.`);
-                updateGames()
-                break;
-            case  `join_request_created`:
-                toast(`Someone requested to join a game.`);
-                updateGames()
-                break;
-            case `game_joined_as_player`:
-                toast(`You have joined a game.`);
-                updateGames()
-                break;
-            case `player_joined`:
-                toast(`You accepted a player to your game.`);
-                updateGames()
-                break;
-            case `game_edited`:
-                if (game) {
-                    toast(gmGame ? `You updated: ${game.name}.` : `${game.name} has been updated.`);
-                }
-                updateGames()
-                break;
-            case `game_started`:
-                if (game) {
-                    toast(gmGame ? `You started: ${game.name}.` : `${game.name} has started.`);
-                }
-                updateGames()
-                break;
-            case `game_stopped`:
-                if (game) {
-                    toast(gmGame ? `You stopped: ${game.name}.` : `${game.name} has stopped.`);
-                }
-                updateGames()
-                break;
+        if (!userId) {
+            // Signed out: send them to the login page
+            pendingInvite.save(window.location.pathname);
+            router.replace(loginHref(window.location.pathname + window.location.search));
+            return;
         }
-    }
 
-    const value: AuthContextType = {
-        user,
-        session,
-        userLoading,
-        signOut,
-        gmGames,
-        playerGames,
-        gamesLoading,
-        updateGames,
-        newNotification,
-        setNewNotification
-    };
+        // Signed in after opening an invite link while signed out: go back to that invite.
+        // Anywhere other than the default landing page means the visitor already chose where to go.
+        const invite = pendingInvite.take();
+        const path = window.location.pathname;
+        if (invite && (path === `/home` || path === `/`)) router.replace(invite);
+
+        // Loading the user's games from the server; state is only set after the request resolves
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        updateGames();
+        const notificationsChannel = supabaseAccount.live.notifications(userId, (input: any) => {
+            const payload = input[0];
+            const message = notificationToast[payload.type];
+            if (!message) return;
+
+            const gmGame = gmGamesRef.current.find((g) => g.id === payload.data.gameId);
+            const game = gmGame ?? playerGamesRef.current.find((g) => g.id === payload.data.gameId);
+            const text = message.text ?? (game && (gmGame ? message.gm : message.player)?.(game.name));
+            if (text) toast(text);
+            updateGames();
+        });
+        return () => {
+            supabase.removeChannel(notificationsChannel);
+        };
+    }, [userId, userLoading, updateGames, router]);
+
+    const signOut = useCallback(async () => {
+        await supabase.auth.signOut();
+    }, []);
+
+    const value = useMemo<AuthContextType>(() => ({
+        user, userLoading, signOut, gmGames, playerGames, gamesLoading, updateGames,
+    }), [user, userLoading, signOut, gmGames, playerGames, gamesLoading, updateGames]);
+
     return (
         <AuthManagerContext.Provider value={value}>
             {children}

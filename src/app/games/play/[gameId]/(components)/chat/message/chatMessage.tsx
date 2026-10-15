@@ -1,5 +1,6 @@
 import {memo, useMemo, useState} from "react";
 import ChatMessageRenderer from "@/app/games/play/[gameId]/(components)/chat/message/chatMessageRenderer";
+import {PlayerCardTrigger} from "@/app/games/play/[gameId]/(components)/player/playerCard";
 import ChatMessageEditor from "@/app/games/play/[gameId]/(components)/chat/message/chatMessageEditor";
 import {useContextMenuSetter} from "@/app/(context)/contextMenuContext";
 import {summarizeDiceLog} from "@/lib/supabase/util/diceLog";
@@ -76,7 +77,7 @@ export const ChatMessage = memo(function ChatMessage(
         await supabaseInGame.edit.message.delete(message.id);
     }
 
-    const disableContextMenu = (e: any) => {
+    const openMessageMenu = (e: any) => {
         e.preventDefault();
         // Open to the left of the cursor when the menu would run off the right edge
         const openLeft = e.clientX + 200 > window.innerWidth;
@@ -113,23 +114,25 @@ export const ChatMessage = memo(function ChatMessage(
 
     return (
         <div className={`msg ${header ? `msg--header` : ``} ${isMentioned ? `msg--mention` : ``}`}
-             onContextMenu={disableContextMenu} data-msg-id={message.id}>
+             onContextMenu={openMessageMenu} data-msg-id={message.id}>
             {message.replyTo && <ReplyPreview replied={repliedMessage} game={game}/>}
             <div className="msg__gutter">
                 {header
-                    ? avatarUrl
-                        ? <img className="msg__avatar" src={avatarUrl} alt="" loading="lazy" decoding="async"/>
-                        : <div
-                            className={`msg__avatar msg__avatar--fallback ${message.system ? `bg-black text-white` : `bg-primary text-primary-content`}`}>
-                            {name.charAt(0).toUpperCase()}
-                        </div>
+                    ? <PlayerCardTrigger userId={message.system ? null : message.playerId} className="msg__avatar-trigger">
+                        {avatarUrl
+                            ? <img className="msg__avatar" src={avatarUrl} alt="" loading="lazy" decoding="async"/>
+                            : <span
+                                className={`msg__avatar msg__avatar--fallback ${message.system ? `bg-black text-white` : `bg-primary text-primary-content`}`}>
+                                {name.charAt(0).toUpperCase()}
+                            </span>}
+                    </PlayerCardTrigger>
                     : <time className="msg__hover-time" title={fullTime}>{shortTime}</time>
                 }
             </div>
             <div className="msg__content">
                 {header &&
                   <div className="msg__header">
-                    <span className="msg__name">{name}</span>
+                    <PlayerCardTrigger userId={message.system ? null : message.playerId} className="msg__name">{name}</PlayerCardTrigger>
                       {message.system && <span className="msg__tag">SYSTEM</span>}
                     <time className="msg__time" title={created?.toLocaleString()}>{fullTime}</time>
                   </div>

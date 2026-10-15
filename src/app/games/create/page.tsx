@@ -5,7 +5,7 @@ import {useRouter} from "next/navigation";
 import {dirHref} from "@/lib/routing/directoy";
 import {useAuthManager} from "@/app/(context)/authContext";
 import {supabaseGame} from "@/lib/supabase/db/game";
-import GameForm, {GameFormValues} from "@/app/games/(components)/GameForm";
+import GameForm, {GameFormValues} from "@/app/games/(components)/gameForm";
 
 export default function CreateGamePage() {
     const {push} = useRouter();

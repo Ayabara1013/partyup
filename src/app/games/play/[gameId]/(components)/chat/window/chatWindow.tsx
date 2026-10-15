@@ -54,10 +54,6 @@ export function ChatWindow(
         windowEnd.current?.scrollIntoView({behavior: 'smooth', block: 'start'});
     }, [messages])
 
-    const disableContextMenu = (e: any) => {
-        e.preventDefault();
-    }
-
     // This chat's messages in order, each flagged with whether it starts a new group (shows a header).
     // Only recomputed when the message list changes, and the original objects are kept so
     // ChatMessage's memo can skip unchanged rows.
@@ -79,7 +75,7 @@ export function ChatWindow(
             : `You're muted in Open chat.`;
 
     return (
-        <section className={`panel chat-window`} onContextMenu={disableContextMenu}>
+        <section className={`panel chat-window`}>
             <header className={`panel__bar`}>
                 <div className={`panel__title`}>
                     <span className={`panel__name`}>{name}</span>

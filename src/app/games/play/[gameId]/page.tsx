@@ -2,7 +2,7 @@
 
 import '@/styles/games/play/play.scss';
 import toast from "react-hot-toast";
-import {use, useEffect, useState} from "react";
+import {use, useCallback, useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import {useAuthManager} from "@/app/(context)/authContext";
 
@@ -12,11 +12,19 @@ import {supabase} from "@/lib/supabase/client/client";
 import {supabaseInGame} from "@/lib/supabase/db/inGame";
 import msgArrayManipulation from "@/lib/supabase/util/msgArrayManipulation";
 
-import {useContextMenu} from "@/app/(context)/contextMenuContext";
+import {useContextMenuSetter} from "@/app/(context)/contextMenuContext";
 
 import {ChatWindow} from "@/app/games/play/[gameId]/(components)/chat/window/chatWindow";
-import GMTools from "@/app/games/play/[gameId]/(components)/GMTools";
-import PlayerSettingDisplay from "@/app/games/play/[gameId]/(components)/PlayerSettingsDisplay";
+import GMTools from "@/app/games/play/[gameId]/(components)/gmTools";
+import PlayerSettingDisplay from "@/app/games/play/[gameId]/(components)/playerSettingsDisplay";
+import CharacterForm, {CharacterSystem} from "@/app/games/play/[gameId]/(components)/character/characterForm";
+import {useCharacterRoster} from "@/app/games/play/[gameId]/(components)/character/useCharacterRoster";
+import {PlayerCardProvider} from "@/app/games/play/[gameId]/(components)/player/playerCard";
+import {supabaseCharacter} from "@/lib/supabase/db/character";
+import type {CharacterSheet} from "@/lib/assets/classes/characterSheet";
+
+// Systems the character creator supports
+const CHARACTER_SYSTEMS: CharacterSystem[] = [`dnd5e`, `pf2e`];
 
 type PageProps = {
     params: Promise<{
@@ -24,11 +32,11 @@ type PageProps = {
     }>;
 };
 
-export default function page({params}: PageProps) {
+export default function PlayPage({params}: PageProps) {
     const {push} = useRouter();
     const {gameId} = use(params);
     const {user, userLoading, gmGames, playerGames, gamesLoading} = useAuthManager();
-    const {setContextMenu} = useContextMenu();
+    const setContextMenu = useContextMenuSetter();
 
     const [messages, setMessages] = useState<Array<any>>([]);
     const [settings, setSettings] = useState({
@@ -40,6 +48,22 @@ export default function page({params}: PageProps) {
     const [gameObject, setGameObject] = useState<any>(null);
     const [players, setPlayers] = useState({hasPlayers: false});
     const chatWindowProps = {messages, game: gameObject, user: user, players, settings, setContextMenu}
+
+    // Characters: one living character per player; the GM sends dead ones to the grave and allows new ones
+    const {roster, graveyard} = useCharacterRoster(gameObject?.id);
+    const [creatorOpen, setCreatorOpen] = useState(false);
+    const isGm = !!gameObject && gameObject.gmUid === user?.id;
+    const mySeat = roster.find((entry) => entry.userId === user?.id);
+    const canCreateCharacter = !!mySeat?.canCreateCharacter && !mySeat.character;
+    const closeCreator = useCallback(() => setCreatorOpen(false), []);
+
+    const createCharacter = async (sheet: CharacterSheet) => {
+        if (!gameObject) return false;
+        if (!await supabaseCharacter.set.create(gameObject.id, sheet)) return false;
+        toast.success(`${sheet.name} is ready.`);
+        setCreatorOpen(false);
+        return true;
+    };
 
     useEffect(() => {
         if (!userLoading && !gamesLoading) {
@@ -138,35 +162,55 @@ export default function page({params}: PageProps) {
     return (
         <div className="flex flex-col flex-1 min-h-0 h-full">
             {settings.loaded ?
-                <>
-                    <div className="chat-row flex flex-1 min-h-0 p-2 gap-2">
+                <PlayerCardProvider game={gameObject} roster={roster} currentUserId={user?.id}>
+                    <div className="chat-row relative flex flex-1 min-h-0 p-2 gap-2">
                         <ChatWindow {...chatWindowProps} name={'canon'}/>
                         <ChatWindow {...chatWindowProps} name={'turn'}/>
                         <ChatWindow {...chatWindowProps} name={'open'}/>
+
+                        {/* Character creator: a popup over the Canon chat */}
+                        {creatorOpen && canCreateCharacter &&
+                          <div className="character-popup">
+                              <CharacterForm system={gameObject.system} gameName={gameObject.name}
+                                             playerName={user?.userMetadata?.name ?? ``}
+                                             onClose={closeCreator} onSubmit={createCharacter}/>
+                          </div>
+                        }
                     </div>
 
                     <div className="tool-row flex shrink-0 p-2 pt-0 gap-2">
                         {gameObject.gmUid === user?.id
-                            ? <GMTools game={gameObject} settings={settings}/>
+                            ? <GMTools game={gameObject} settings={settings} roster={roster} graveyard={graveyard}/>
                             : <PlayerSettingDisplay game={gameObject} settings={settings}/>
                         }
                         <section className='panel tool-row__element'>
                             <header className='panel__bar'>
                                 <div className='panel__title'>
-                                    <span className='panel__name'>Chat</span>
-                                    <span className='panel__desc'>Saved on this device</span>
+                                    <span className='panel__name'>Dev. Misc</span>
+                                    <span className='panel__desc'>Dev stuff</span>
                                 </div>
                             </header>
-                            <div className='panel__body'>
-                                <p className='panel__hint'>Messages are cached in your browser. Clear them to re-download this game's chat.</p>
-                                <button className="btn btn-sm btn-ghost border border-neutral-content/20 self-start"
-                                        onClick={clearLocalMessages}>
-                                    Clear Local Messages
+                            <div className='panel__body panel__actions'>
+                                {!isGm && CHARACTER_SYSTEMS.includes(gameObject.system) &&
+                                  <button className="panel-action" onClick={() => setCreatorOpen(true)} disabled={!canCreateCharacter}>
+                                      <span className="panel-action__title">Create Character</span>
+                                      <span className="panel-action__sub">
+                                          {mySeat?.character
+                                              ? `You're playing ${mySeat.character.name}. One character per game.`
+                                              : canCreateCharacter
+                                                  ? `Build your character sheet for this game.`
+                                                  : `Ask your GM to allow a new character.`}
+                                      </span>
+                                  </button>
+                                }
+                                <button className="panel-action" onClick={clearLocalMessages}>
+                                    <span className="panel-action__title">Clear Local Messages</span>
+                                    <span className="panel-action__sub">Messages are cached in your browser. Clear them to re-download this game&apos;s chat.</span>
                                 </button>
                             </div>
                         </section>
                     </div>
-                </> :
+                </PlayerCardProvider> :
                 <div className={`flex justify-center`}>
                     <span className={`loading loading-infinity loading-lg`}/>
                 </div>
