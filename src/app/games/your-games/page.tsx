@@ -6,23 +6,19 @@ import {dirHref} from "@/lib/routing/directoy";
 import {useAuthManager} from "@/app/(context)/authContext";
 import MyGamesList from "@/app/games/your-games/(components)/GameList";
 
-export default function page() {
-    const {gmGames, playerGames} = useAuthManager();
-    return (
-        <div className="flex flex-col min-h-0 gap-4 h-full">
-            <div className="flex flex-row min-h-0 gap-6 h-full p-10">
-                {(gmGames) && <MyGamesList gameList={gmGames} type={`gm`}/>}
-                {(playerGames) && <MyGamesList gameList={playerGames}/>}
-            </div>
+export default function Page() {
+    const {user, gmGames, playerGames, gamesLoading, updateGames} = useAuthManager();
 
-            <div className='games-page__section --find-more-games mt-auto mb-10'>
-                <Link href={dirHref.games.create}
-                      className={`btn-with-breakpoints px-6 ${true ? '' : 'btn-disabled'}`}>create a game</Link>
-                <Link href={dirHref.discover}
-                      className='btn-with-breakpoints md:px-6 txt-3xl'>find more games</Link>
-                {/*<Link href={dirHref.games.root}*/}
-                {/*      className='btn-with-breakpoints md:px-6 txt-3xl'>return</Link>*/}
-            </div>
+    return (
+        <div className="games-dashboard">
+            <MyGamesList
+                type="gm" games={gmGames} loading={gamesLoading} userId={user?.id} updateGames={updateGames}
+                action={<Link href={dirHref.games.create} className="btn btn-sm btn-primary">Create a game</Link>}
+                empty="You aren't running any games yet."/>
+            <MyGamesList
+                type="player" games={playerGames} loading={gamesLoading} userId={user?.id} updateGames={updateGames}
+                action={<Link href={dirHref.discover} className="btn btn-sm btn-ghost border border-neutral-content/20">Find games</Link>}
+                empty="You haven't joined any games yet."/>
         </div>
     )
 }

@@ -1,55 +1,89 @@
 'use client'
-import {useAuthManager} from "@/app/(context)/authContext";
-import CYACard from "@/app/home/(components)/CYACard";
-import {allText} from "@/lib/assets/homeText";
+
+import '@/styles/home.scss';
+import {useMemo} from "react";
 import Link from "next/link";
+import Image from "next/image";
+import {useAuthManager} from "@/app/(context)/authContext";
+import HomeActionCard from "@/app/home/(components)/HomeActionCard";
+import {allText} from "@/lib/assets/homeText";
 import {dirHref} from "@/lib/routing/directoy";
+import {gameSystems} from "@/lib/assets/gameSystems";
 
 export default function Home() {
-    const {user} = useAuthManager()
+    const {user, userLoading, gmGames, playerGames, gamesLoading} = useAuthManager();
+
+    // Games already in progress, GM games first; built from the lists the auth context already loaded
+    const activeGames = useMemo(() => [
+        ...gmGames.filter((g) => g.started).map((game) => ({game, role: `GM`})),
+        ...playerGames.filter((g) => g.started).map((game) => ({game, role: `Player`})),
+    ], [gmGames, playerGames]);
+
+    if (!userLoading && !user) return <SignedOut/>;
+
+    const name = user?.userMetadata?.name;
 
     return (
-        <div
-            className='home-page flex flex-col sm:py-4 md:py-8 lg:pt-8 lg:pb-20 gap-8 lg:gap-28 w-full min-h-full border-2 border-dotted border-red-400'>
-            {!user && <CallToAction/>}
+        <div className="home">
+            <section className="panel home__hero">
+                <div className="home__hero-body">
+                    <h1 className="home__greeting">{name ? `Welcome back, ${name}` : `Welcome back`}</h1>
+                    <p className="home__tagline">{allText.home.tagline}</p>
+                </div>
+            </section>
 
-            <div className='carousel flex flex-col md:flex-row gap-12 justify-center'>
-                {user
-                    ? <CYACard cardInfo={allText.home.cya_card_5}/>
-                    : <CYACard cardInfo={allText.home.cya_card_1}/>}
-                <CYACard cardInfo={allText.home.cya_card_2}/>
-                <CYACard cardInfo={allText.home.cya_card_3}/>
-                <CYACard cardInfo={allText.home.cya_card_4}/>
+            <div className="home__actions">
+                {allText.home.actions.map((action) => <HomeActionCard key={action.title} action={action}/>)}
             </div>
+
+            <section className="panel home__active">
+                <header className="panel__bar">
+                    <div className="panel__title">
+                        <span className="panel__name">Jump back in</span>
+                        {!gamesLoading &&
+                          <span className="panel__desc">{activeGames.length} in progress</span>}
+                    </div>
+                    <Link href={dirHref.games.root} className="btn btn-sm btn-ghost border border-neutral-content/20">
+                        Your games
+                    </Link>
+                </header>
+                <div className="panel__body">
+                    {gamesLoading
+                        ? <div className="flex justify-center py-6"><span className="loading loading-dots loading-md"/></div>
+                        : activeGames.length === 0
+                            ? <p className="panel__hint py-4 text-center">
+                                None of your games have started yet. <Link href={dirHref.discover} className="link link-primary">Find a game</Link> or start one from Your Games.
+                            </p>
+                            : <ul className="home__active-list">
+                                {activeGames.map(({game, role}) =>
+                                    <li key={game.id} className="home__active-item">
+                                        <span className="home__active-name">{game.name}</span>
+                                        <span className="badge badge-ghost badge-sm">{gameSystems.valueToTitle[game.system] ?? game.system}</span>
+                                        <span className={`badge badge-sm ${role === `GM` ? `badge-primary` : `badge-primary badge-outline`}`}>{role}</span>
+                                        <Link href={dirHref.games.play(game.id)} className="btn btn-sm btn-primary ml-auto">Play</Link>
+                                    </li>
+                                )}
+                            </ul>
+                    }
+                </div>
+            </section>
         </div>
     )
 }
 
-function CallToAction() {
+// Signed-out visitors are normally redirected to the login page by the auth context; this covers the moment before
+function SignedOut() {
     return (
-        <div className='flex flex-col gap-8'>
-            <div className='cta-banner flex flex-col'>
-                <div className='cta-header'>welcome to <span className="uppercase">tavern</span></div>
-                <div className='cta-subheader'>play <span className="cta-subheader__accent">how</span> you want, <span
-                    className="text-accent">when</span> you want
+        <div className="home">
+            <section className="panel home__hero home__hero--signed-out">
+                <div className="home__hero-body">
+                    <h1 className="home__greeting">{allText.home.signedOutTitle}</h1>
+                    <p className="home__tagline">{allText.home.tagline}</p>
+                    <Link href="/auth/login" className="btn btn-primary self-start">{allText.home.signedOutButton}</Link>
                 </div>
-                <div className='cta-subheader'>no scheduling conflicts, <span
-                    className="cta-subheader__accent">ever</span> again
-                </div>
-            </div>
-
-            <div className='flex flex-col md:flex-row gap-2'>
-                <div className='flex flex-col flex-auto gap-4 m-auto text-center'>
-                    <div className='m-auto text-[3rem] font-bold max-w-[75%]'>{allText.home.cta_txt_1}</div>
-                    <Link className='btn btn-lg px-12 btn-primary m-auto'
-                          href={dirHref.user.signup}>{allText.home.cta_btn_1}</Link>
-                </div>
-
-                <div className='flex flex-auto h-[500px]'>
-                    <img className='w-full h-full object-scale-down'
-                         src='/images/example-play-screens-mobile-1x.png'></img>
-                </div>
-            </div>
+                <Image className="home__hero-image" src="/images/example-play-screens-mobile-1x.png" alt="PartyUp on a phone"
+                       width={571} height={756} priority/>
+            </section>
         </div>
     )
 }

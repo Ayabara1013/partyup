@@ -1,26 +1,30 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import '@/styles/auth.scss'
+import Link from 'next/link'
 
-export default async function Page({ searchParams }: { searchParams: Promise<{ error: string }> }) {
-  const params = await searchParams
+export default async function Page({searchParams}: { searchParams: Promise<{ error?: string }> }) {
+    const {error} = await searchParams
 
-  return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-      <div className="w-full max-w-sm">
-        <div className="flex flex-col gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-2xl">Sorry, something went wrong.</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {params?.error ? (
-                <p className="text-sm text-muted-foreground">Code error: {params.error}</p>
-              ) : (
-                <p className="text-sm text-muted-foreground">An unspecified error occurred.</p>
-              )}
-            </CardContent>
-          </Card>
+    return (
+        <div className="auth-page">
+            <section className="panel auth-card">
+                <header className="panel__bar">
+                    <div className="panel__title">
+                        <span className="panel__name">Sign-in didn&apos;t work</span>
+                    </div>
+                </header>
+
+                <div className="panel__body auth-card__body">
+                    <p className="auth-card__lead">
+                        Something went wrong while signing you in. Please try again; if it keeps happening, try the other sign-in option.
+                    </p>
+                    {error && <p className="panel__hint">Error code: {error}</p>}
+                </div>
+
+                <footer className="auth-card__footer">
+                    <Link href="/home" className="btn btn-sm btn-ghost border border-neutral-content/20">Home</Link>
+                    <Link href="/auth/login" className="btn btn-sm btn-primary">Try again</Link>
+                </footer>
+            </section>
         </div>
-      </div>
-    </div>
-  )
+    )
 }

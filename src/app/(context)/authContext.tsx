@@ -3,6 +3,7 @@ import {Session, User} from "@supabase/supabase-js";
 import {createContext, Dispatch, ReactNode, useContext, useEffect, useRef, useState} from "react";
 import {supabase} from "@/lib/supabase/client/client"
 import {redirect} from "next/navigation";
+import {loginHref} from "@/lib/routing/nextPath";
 import {supabaseGame} from "@/lib/supabase/db/game";
 import {CamelCase, objectToCamel} from "@/lib/util/camelSnake";
 import {supabaseAccount} from "@/lib/supabase/db/account";
@@ -66,7 +67,7 @@ export function AuthManagerProvider({children}: { children: ReactNode }) {
 
     useEffect(() => {
         if (!userLoading && !user) {
-            redirect('/auth/login')
+            redirect(loginHref(window.location.pathname + window.location.search))
         } else if (user) {
             updateGames()
             let notificationsChannel = supabaseAccount.live.notifications(user.id, updateNotifications);
@@ -82,8 +83,11 @@ export function AuthManagerProvider({children}: { children: ReactNode }) {
 
     async function updateGames() {
         if (!user) return;
-        const newGmGame = await supabaseGame.get.game.gm(user.id)
-        const newPlayerGame = await supabaseGame.get.game.player(user.id)
+        // Both lists load in parallel
+        const [newGmGame, newPlayerGame] = await Promise.all([
+            supabaseGame.get.game.gm(user.id),
+            supabaseGame.get.game.player(user.id),
+        ]);
         setGmGames(newGmGame);
         setPlayerGames(newPlayerGame);
         setGamesLoading(false)

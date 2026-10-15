@@ -1,160 +1,147 @@
+import {memo, ReactNode} from "react";
 import Link from "next/link";
-import {dirHref} from "@/lib/routing/directoy";
-import toast from "react-hot-toast";
 import {useRouter} from "next/navigation";
+import toast from "react-hot-toast";
+import {dirHref} from "@/lib/routing/directoy";
 import {usePopupModal} from "@/app/(context)/popupModalContext";
-import {useAuthManager} from "@/app/(context)/authContext";
 import JoinRequestList from "@/app/games/your-games/(components)/joinRequestList";
 import {supabaseGame} from "@/lib/supabase/db/game";
 
+// Below this many players a game shows its seat count as a warning
+const MIN_PLAYERS = 2;
 
-export default function MyGamesList({gameList, type = 'player'}: { gameList: Array<any>, type?: string }) {
-    const title = type === 'player' ? 'Player Games' : 'GM Games';
+type MyGamesListProps = {
+    type: `gm` | `player`;
+    games: any[];
+    loading: boolean;
+    userId: string | undefined;
+    updateGames: () => Promise<void>;
+    action: ReactNode;
+    empty: string;
+};
+
+export default function MyGamesList({type, games, loading, userId, updateGames, action, empty}: MyGamesListProps) {
+    const title = type === `gm` ? `GM Games` : `Player Games`;
+
     return (
-        <div className=' w-full flex flex-col gap-4 p-4'>
-            <div className='text-3xl font-semibold shrink-0 text-center'>{title}</div>
-            <div className='games-page__section --games-list h-full overflow-y-auto'>
-
-                <ul className='games-page__games-list'>
-                    {gameList.map((game, index) => {
-                        return <GameListItem key={index}{...{game, type}}/>
-                    })}
-                </ul>
+        <section className="panel games-dashboard__panel">
+            <header className="panel__bar">
+                <div className="panel__title">
+                    <span className="panel__name">{title}</span>
+                    {!loading && <span className="panel__desc">{games.length} {games.length === 1 ? `game` : `games`}</span>}
+                </div>
+                {action}
+            </header>
+            <div className="panel__body">
+                {loading
+                    ? <div className="flex justify-center py-6"><span className="loading loading-dots loading-md"/></div>
+                    : games.length === 0
+                        ? <p className="panel__hint py-4 text-center">{empty}</p>
+                        : games.map((game) =>
+                            <GameCard key={game.id} game={game} isGm={type === `gm`} userId={userId}
+                                      updateGames={updateGames}/>)
+                }
             </div>
-        </div>
+        </section>
     )
 }
 
-function GameListItem({game, type}: { game: any, type: string }) {
-    let playerCount = game.players?.length ?? 4
-        , totalSeats = game.maxPlayers
-        , minSeats = 2;
-    let pcs =
-        playerCount === totalSeats ? 'text-success'
-            : playerCount < minSeats ? 'text-warning'
-                : 'text-neutral-content';
+type GameCardProps = {
+    game: any;
+    isGm: boolean;
+    userId: string | undefined;
+    updateGames: () => Promise<void>;
+};
+
+const GameCard = memo(function GameCard({game, isGm, userId, updateGames}: GameCardProps) {
+    const players: any[] = game.players ?? [];
+    const seats: number = game.maxPlayers;
+    const countClass = players.length >= seats ? `text-success` : players.length < MIN_PLAYERS ? `text-warning` : ``;
 
     return (
-        <div className='games-page__games-list__item'>
-            <div className={`flex flex-wrap justify-start items-end gap-x-2`}>
-                <div className='text-2xl font-semibold text-primary'>{game.name}</div>
-                <div className={`text-opacity-50`}>(System: {game.system})</div>
-                {type === `player` ? <div className={`text-opacity-50`}>(GM: {game.gm.name})</div> : <></>}
-                <GameListItemOptions {...{game, type}}/>
+        <article className="game-card">
+            <div className="game-card__top">
+                <div className="game-card__info">
+                    <span className="game-card__name">{game.name}</span>
+                    <span className="badge badge-ghost badge-sm uppercase">{game.system}</span>
+                    <span className={`badge badge-sm ${game.started ? `badge-success badge-outline` : `badge-ghost`}`}>
+                        {game.started ? `In progress` : `Not started`}
+                    </span>
+                    {!isGm && game.gm && <span className="game-card__gm">GM: {game.gm.name}</span>}
+                </div>
+                <GameActions game={game} isGm={isGm} updateGames={updateGames}/>
             </div>
 
-            <div className="flex gap-2">
-                <div className={`${pcs} text-xl font-bold whitespace-nowrap`}>{playerCount} / {totalSeats}</div>
-                <PlayersList className={`flex-1 my-auto`} {...{game, playerCount, totalSeats}}/>
+            <div className="game-card__seats">
+                <span className={`game-card__count ${countClass}`}>{players.length} / {seats}</span>
+                <SeatList game={game} players={players} seats={seats} userId={userId}/>
             </div>
-        </div>
+        </article>
     )
-}
+});
 
-function PlayersList({className, game}: { className: string, game: any }) {
-    let playerCount = game.players?.length ?? 4
-    let maxPlayers: number = game.maxPlayers;
-    let remainingSeats: number = maxPlayers - playerCount;
-    const {user} = useAuthManager();
-
-    async function copyInvite() {
-        toast(`Copied invite link`)
+function SeatList({game, players, seats, userId}: { game: any, players: any[], seats: number, userId: string | undefined }) {
+    const copyInvite = async () => {
         await navigator.clipboard.writeText(dirHref.games.inviteLink(game.inviteCode));
-    }
-
-    function FilledSeats() {
-        return (game.players ?? []).map((player: any, index: number) => (
-            <li className={`__players-list__item ${index >= maxPlayers ? "--error" : "--filled"}`}
-                key={index}>
-                <p className="pointer-events-none">
-                    {player.name}{user?.id === player.id ? " (you)" : ""}
-                </p>
-            </li>
-        ));
-    }
-
-    const RemainingSeats = () => {
-        return Array.from({length: remainingSeats}, (_, index) => {
-            const i = playerCount + index;
-
-            if (game.started) {
-                return (
-                    <li key={i} className="__players-list__item --empty disabled">
-                        <p>Empty</p>
-                    </li>
-                );
-            }
-
-            return (
-                <li className={`__players-list__item ${i >= maxPlayers ? "--error" : "--empty"} full-element-btn`}
-                    key={i} onClick={copyInvite}>
-                    <p>Invite</p>
-                </li>
-            );
-        });
+        toast(`Copied invite link`);
     };
+
+    const openSeats = Math.max(seats - players.length, 0);
+
     return (
-        <div className={`__players-list ${className}`}>
-            <div className='__players-list__list flex flex-row flex-wrap gap-2'>
-                <FilledSeats/>
-                <RemainingSeats/>
-            </div>
-        </div>
+        <ul className="seat-list">
+            {players.map((player, i) =>
+                <li key={player.id}
+                    className={`seat ${i >= seats ? `seat--over` : player.id === userId ? `seat--you` : `seat--filled`}`}>
+                    {player.name}{player.id === userId ? ` (you)` : ``}
+                </li>
+            )}
+            {Array.from({length: openSeats}, (_, i) =>
+                <li key={`open-${i}`}>
+                    {game.started
+                        ? <span className="seat seat--empty">Empty</span>
+                        : <button className="seat seat--open" onClick={copyInvite} title="Copy invite link">Invite</button>}
+                </li>
+            )}
+        </ul>
     )
 }
 
-function GameListItemOptions({game, type}: { game: any, type: string }) {
+function GameActions({game, isGm, updateGames}: { game: any, isGm: boolean, updateGames: () => Promise<void> }) {
     const {push} = useRouter();
-    const {updateGames} = useAuthManager();
     const {showModal, setTitle, setModalChildren} = usePopupModal();
+    const requestCount: number = game.joinRequests?.length ?? 0;
 
-    const startFunc = async () => {
-        if (await supabaseGame.set.edit.startGame(game.id)) {
-            updateGames()
-            setTimeout(() => {
-                push(dirHref.games.play(game.id));
-            }, 1500)
-        } else {
-            toast.error(`${game.name} failed to start!`)
+    const startGame = async () => {
+        if (!await supabaseGame.set.edit.startGame(game.id)) {
+            toast.error(`${game.name} failed to start!`);
+            return;
         }
-    }
+        updateGames();
+        push(dirHref.games.play(game.id));
+    };
 
-    function showModalOnClick() {
-        setTitle(`Game join requests`);
-        setModalChildren(<JoinRequestList game={game}/>)
-        if (game.joinRequests.length > 0) showModal();
-        else toast(`No more requests for this game.`);
+    const showJoinRequests = () => {
+        setTitle(`Join requests`);
+        // Fresh key per open, so the list never keeps another game's (or a stale) request state
+        setModalChildren(<JoinRequestList key={`${game.id}-${Date.now()}`} game={game} onAccepted={updateGames}/>);
+        showModal();
+    };
 
-    }
-
-    function PlayButton() {
-        return <Link href={dirHref.games.play(game.id)}
-                     className='btn btn-xs btn-accent ml-auto font-semibold'>Play</Link>
-    }
-
-    function GMStartButton() {
-        return <button onClick={startFunc} className='btn btn-xs btn-accent ml-auto font-semibold'>Start</button>;
-    }
-
-    function GMEditButton() {
-        return <Link href={dirHref.games.edit(game.id)}
-                     className='btn btn-xs btn-accent ml-auto font-semibold'>edit</Link>
-    }
-
-    function GMJoinRequestButton() {
-        return (
-            <button onClick={showModalOnClick} className='btn btn-xs btn-accent ml-auto font-semibold'>Join Requests
-                <div className="badge badge-sm badge-neutral">{game.joinRequests.length}</div>
-            </button>)
-    }
+    const subtleButton = `btn btn-sm btn-ghost border border-neutral-content/20`;
 
     return (
-        <div className={`flex gap-2 ml-auto`}>
-            {(!game.started && type === `gm`) && <GMJoinRequestButton/>}
-
-            {type === `gm` && <GMEditButton/>}
-            {game.started && <PlayButton/>}
-            {(!game.started && type === `gm`) && <GMStartButton/>}
+        <div className="game-card__actions">
+            {isGm && !game.started &&
+              <button className={subtleButton} onClick={showJoinRequests} disabled={requestCount === 0}>
+                Join requests
+                {requestCount > 0 && <span className="badge badge-sm badge-primary">{requestCount}</span>}
+              </button>
+            }
+            {isGm && <Link href={dirHref.games.edit(game.id)} className={subtleButton}>Edit</Link>}
+            {game.started
+                ? <Link href={dirHref.games.play(game.id)} className="btn btn-sm btn-primary">Play</Link>
+                : isGm && <button className="btn btn-sm btn-primary" onClick={startGame}>Start</button>}
         </div>
     )
 }

@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { loginHref } from '@/lib/routing/nextPath'
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -44,9 +45,9 @@ export async function updateSession(request: NextRequest) {
     !request.nextUrl.pathname.startsWith('/auth')
   ) {
     // no user, potentially respond by redirecting the user to the login page
-    const url = request.nextUrl.clone()
-    url.pathname = '/auth/login'
-    return NextResponse.redirect(url)
+    // Remember the page they asked for (e.g. an invite link) so sign-in can send them back
+    const from = request.nextUrl.pathname + request.nextUrl.search
+    return NextResponse.redirect(new URL(loginHref(from), request.url))
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.

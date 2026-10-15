@@ -1,97 +1,61 @@
 'use client'
 
-import '@/styles/blocks.scss';
+import '@/styles/discover/discover.scss';
 import {useEffect, useRef, useState} from "react";
-import {gameSystems} from "@/lib/assets/gameSystems";
-import JoinGameCardWide from "@/app/discover/(components)/JoinGameCardWide";
-import {Forms} from "@/components/templates/forms";
-import {Blocks} from '@/components/templates/blocks';
-import {safetyChecks} from "@/lib/assets/safetyChecks";
+import {useAuthManager} from "@/app/(context)/authContext";
 import {supabaseGame} from "@/lib/supabase/db/game";
+import DiscoverGameCard from "@/app/discover/(components)/DiscoverGameCard";
+import DiscoverFilters, {DEFAULT_FILTERS, DiscoverFilterState} from "@/app/discover/(components)/DiscoverFilters";
+
+// Wait this long after the last filter change before searching
+const SEARCH_DELAY_MS = 300;
 
 export default function Discover() {
+    const {user} = useAuthManager();
+    const [filters, setFilters] = useState<DiscoverFilterState>(DEFAULT_FILTERS);
+    const [games, setGames] = useState<any[]>([]);
+    const [status, setStatus] = useState<`loading` | `ready` | `error`>(`loading`);
+    const requestId = useRef(0);
 
-    //Search Filters
-    const systemsList = gameSystems.checkListArray([
-        useRef<HTMLInputElement>(null),
-        useRef<HTMLInputElement>(null),
-        useRef<HTMLInputElement>(null),
-        useRef<HTMLInputElement>(null)
-    ])
-
-    const safetyChecksList = safetyChecks.checkListArray([
-        useRef<HTMLInputElement>(null),
-        useRef<HTMLInputElement>(null),
-        useRef<HTMLInputElement>(null),
-        useRef<HTMLInputElement>(null)
-    ])
-    const ageCheckRef = useRef<HTMLInputElement>(null);
-    const termsRef = useRef<HTMLInputElement>(null);
-    const sortRef = useRef<HTMLInputElement>(null);
-
-    const [gameList, setGameList] = useState<any[]>([]);
-
-
+    // Refetch when the filters change (debounced); responses from older requests are ignored
     useEffect(() => {
-        getList();
-    }, [])
-
-    useEffect(() => {
-    }, [gameList])
-
-    async function getList() {
-        let systems = []
-        let safetyChecks = []
-        let ageCheck = ageCheckRef.current?.checked || false
-        let sortBy = sortRef.current?.value || 'Time Created'
-        let searchTerm = termsRef.current?.value.trim().toLowerCase()
-        for (let i = 0; i < systemsList.length; i++) {
-            if (systemsList[i].ref.current?.checked)
-                systems.push(systemsList[i].value)
-        }
-        for (let i = 0; i < safetyChecksList.length; i++) {
-            if (safetyChecksList[i].ref?.current?.checked)
-                safetyChecks.push(safetyChecksList[i].dbValue)
-        }
-
-        let games = await supabaseGame.get.game.publicGameList(systems, safetyChecks, ageCheck, sortBy,searchTerm);
-        console.log(games)
-        setGameList(games)
-    }
+        const id = ++requestId.current;
+        const timer = setTimeout(async () => {
+            setStatus(`loading`);
+            const result = await supabaseGame.get.game.publicGameList({...filters, userId: user?.id});
+            if (id !== requestId.current) return;
+            setGames(result ?? []);
+            setStatus(result ? `ready` : `error`);
+        }, SEARCH_DELAY_MS);
+        return () => clearTimeout(timer);
+    }, [filters, user?.id]);
 
     return (
-        <div className={`discover-page page-wrapper`}>
-            <Blocks.Section>
-                <Forms.Group.Horizontal columns={3}>
-                    <Forms.InputField defaultValue={``} forwardRef={termsRef} formClassName={`col-span-2`}
-                                      placeholder={`Search name and tags (use ';' to separate terms)....`}
-                                      labelText={`Search:`}
-                                      labelPosition={`front`}/>
+        <div className="discover">
+            <DiscoverFilters filters={filters} onChange={setFilters}/>
 
-                    <Forms.InputField type='select' forwardRef={sortRef} defaultValue={'time'}
-                                      labelText="Sort by:" labelPosition={`front`}>
-                        <option value={'time'}>Time Created</option>
-                        <option value={'name'}>Name</option>
-                    </Forms.InputField>
-                </Forms.Group.Horizontal>
-                <Forms.Group.Horizontal columns={5}>
-                    <Forms.InputField type={'checkList'} list={systemsList} formClassName={`col-span-2`}
-                                      labelText="Prefered Systems:"/>
-                    <Forms.InputField type={'checkList'} list={safetyChecksList}
-                                      labelText="Safety checks:"/>
-                    <Forms.InputField type={'checkbox'} forwardRef={ageCheckRef} defaultChecked={true}
-                                      labelText="Hide Age Restricted: "
-                                      labelPosition={`top-left`}/>
-                </Forms.Group.Horizontal>
+            <section className="panel discover__results">
+                <header className="panel__bar">
+                    <div className="panel__title">
+                        <span className="panel__name">Discover</span>
+                        {status === `ready` &&
+                          <span className="panel__desc">{games.length} open {games.length === 1 ? `game` : `games`}</span>}
+                    </div>
+                </header>
 
-                <button className={`btn`} onClick={getList}>Apply</button>
-            </Blocks.Section>
-
-            <Blocks.Section>
-                {gameList.map((game, index) => {
-                    return <JoinGameCardWide game={game} key={index}/>
-                })}
-            </Blocks.Section>
+                <div className="panel__body">
+                    {status === `loading` && games.length === 0
+                        ? <div className="flex justify-center py-8"><span className="loading loading-dots loading-md"/></div>
+                        : status === `error`
+                            ? <p className="panel__hint py-6 text-center">Couldn&apos;t load games. Try again in a moment.</p>
+                            : games.length === 0
+                                ? <p className="panel__hint py-6 text-center">No open games match these filters.</p>
+                                : <div className={`discover__grid ${status === `loading` ? `discover__grid--stale` : ``}`}>
+                                    {games.map((game) => <DiscoverGameCard key={game.id} game={game} userId={user?.id}/>)}
+                                </div>
+                    }
+                </div>
+            </section>
         </div>
     )
 }

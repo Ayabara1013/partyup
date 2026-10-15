@@ -1,0 +1,25 @@
+// Invite page: one centered .panel (globals.scss) holding the Discover game card.
+
+.invite-page {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  min-height: 0;
+  padding: 0.5rem;
+  overflow-y: auto;
+}
+
+.invite {
+  width: 100%;
+  max-width: 40rem;
+  height: fit-content;
+  margin-top: 2rem;
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid oklch(var(--nc) / 0.1);
+  }
+}

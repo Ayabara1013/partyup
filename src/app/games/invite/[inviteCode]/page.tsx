@@ -1,76 +1,74 @@
 "use client"
 
-import {useRouter} from "next/navigation";
-import {use, useEffect, useRef, useState} from "react";
+import '@/styles/discover/discover.scss';
+import '@/styles/games/invite.scss';
+import {use, useEffect, useState} from "react";
+import Link from "next/link";
 import {useAuthManager} from "@/app/(context)/authContext";
-import PageLayout from "@/components/pageLayout";
 import {dirHref} from "@/lib/routing/directoy";
-import LoadingUi from "@/components/loadingUi";
 import {supabaseGame} from "@/lib/supabase/db/game";
-import toast from "react-hot-toast";
+import DiscoverGameCard from "@/app/discover/(components)/DiscoverGameCard";
 
 type PageProps = {
-    params: Promise<{
-        inviteCode: string;
-    }>;
+    params: Promise<{ inviteCode: string }>;
 };
 
-
-export default function page({params}: PageProps) {
-    const {push} = useRouter();
-    const [game, setGame] = useState<any | null>(null);
-    const {user} = useAuthManager();
+export default function InvitePage({params}: PageProps) {
     const {inviteCode} = use(params);
-    const hasRun = useRef(false);
+    const {user} = useAuthManager();
+    const userId = user?.id;
+    const [game, setGame] = useState<any | null>(null);
+    const [status, setStatus] = useState<`loading` | `ready` | `missing`>(`loading`);
 
     useEffect(() => {
-        if (inviteCode && user && !hasRun.current) {
-            hasRun.current = true;
-            supabaseGame.get.game.fromInvite(inviteCode).then((result) => {
-                if (result) {
-                    setGame(result);
-                    supabaseGame.get.joinRequest.exists(result.id, user.id).then(result => {
-                        if (!result) return;
-                        toast.error(`You already requested to join this game!`)
-                        push(dirHref.games.root);
-                    })
-                }
-            })
-        }
-    }, [user]);
+        if (!userId) return; // the auth context sends signed-out visitors to the login page
+        let cancelled = false;
+        supabaseGame.get.game.fromInvite(inviteCode, userId).then((result) => {
+            if (cancelled) return;
+            setGame(result);
+            setStatus(result ? `ready` : `missing`);
+        });
+        return () => {
+            cancelled = true;
+        };
+    }, [inviteCode, userId]);
 
-    async function joinGame() {
-        if (user) {
-            await supabaseGame.set.join(game.id, user.id)
-            toast.success(`Join request sent!`)
-            push(dirHref.games.root);
-        }
-    }
+    const isMember = !!game && (game.gmUid === userId || game.players.some((p: any) => p.id === userId));
 
     return (
-        <PageLayout title={`Join Game: ${game?.name}`} backHref={dirHref.games.root}>
-            {(game) ?
-                <>
-                    <div className="w-full center px-2">
-                        <h2 className="w-1/4 flex mt-4 px-2 border">Game Description:</h2>
-                        <h2 className="w-3/4 flex mt-4 px-2 border">{game.description}</h2>
+        <div className="invite-page">
+            <section className="panel invite">
+                <header className="panel__bar">
+                    <div className="panel__title">
+                        <span className="panel__name">You&apos;re invited</span>
+                        <span className="panel__desc">to a game on PartyUp</span>
                     </div>
-                    <div className="w-full center px-2">
-                        <h2 className="w-1/4 flex mt-4 px-2 border">DM:</h2>
-                        <h2 className="w-3/4 flex mt-4 px-2 border">{game.gm.name}</h2>
-                    </div>
-                    <div className="w-full flex flex-col px-2">
-                        <h2 className="w-full flex mt-4 px-2 border">Players:</h2>
-                        <div className="w-full flex flex-col mt-4 px-2 border">
-                            {game.players.map((member: any) =>
-                                <div key={member.id} className="w-full flex mt-2">{member.name}</div>
-                            )}
-                            {(game.players.length === 0) && <div className="w-full flex mt-2">No players yet!</div>}
-                        </div>
-                        <button className="btn mt-5" onClick={joinGame}>Request to Join!</button>
-                    </div>
-                </>
-                : <LoadingUi/>}
-        </PageLayout>
+                </header>
+
+                <div className="panel__body">
+                    {status === `loading`
+                        ? <div className="flex justify-center py-8"><span className="loading loading-dots loading-md"/></div>
+                        : status === `missing`
+                            ? <p className="panel__hint py-6 text-center">
+                                This invite link doesn&apos;t match any game. It may have been mistyped, or the game was deleted.
+                            </p>
+                            : <DiscoverGameCard game={game} userId={userId}/>
+                    }
+                </div>
+
+                <footer className="invite__footer">
+                    {status === `missing`
+                        ? <Link href={dirHref.discover} className="btn btn-sm btn-primary">Discover games</Link>
+                        : <>
+                            <Link href={dirHref.games.root} className="btn btn-sm btn-ghost border border-neutral-content/20">
+                                Your games
+                            </Link>
+                            {isMember && game.started &&
+                              <Link href={dirHref.games.play(game.id)} className="btn btn-sm btn-primary">Play</Link>}
+                        </>
+                    }
+                </footer>
+            </section>
+        </div>
     )
 }

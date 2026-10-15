@@ -1,87 +1,63 @@
 'use client'
 
 import {useState} from 'react'
-
-import {cn} from '@/lib/utils'
 import {createClient} from '@/lib/client'
-import {Button} from '@/components/ui/button'
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card'
 
-export function LoginForm({className, ...props}: React.ComponentPropsWithoutRef<'div'>) {
+type Provider = `github` | `google`;
+
+const PROVIDERS: { id: Provider, label: string }[] = [
+    {id: `github`, label: `Continue with GitHub`},
+    {id: `google`, label: `Continue with Google`},
+];
+
+// `next`: where to go after signing in (already checked by safeNextPath on the page)
+export function LoginForm({next}: { next: string }) {
     const [error, setError] = useState<string | null>(null)
-    const [isLoading, setIsLoading] = useState(false)
+    const [pending, setPending] = useState<Provider | null>(null)
 
-    const githubLogin = async (e: React.FormEvent) => {
-        e.preventDefault()
-        const supabase = createClient()
-        setIsLoading(true)
+    const signIn = async (provider: Provider) => {
+        setPending(provider)
         setError(null)
 
-        try {
-            const {error} = await supabase.auth.signInWithOAuth({
-                provider: 'github',
-                options: {
-                    redirectTo: `${window.location.origin}/auth/oauth?next=/`,
-                },
-            })
+        // Both providers return through /auth/oauth, which finishes sign-in and redirects to `next`
+        const {error} = await createClient().auth.signInWithOAuth({
+            provider,
+            options: {redirectTo: `${window.location.origin}/auth/oauth?next=${encodeURIComponent(next)}`},
+        })
 
-            if (error) throw error
-        } catch (error: unknown) {
-            setError(error instanceof Error ? error.message : 'An error occurred')
-            setIsLoading(false)
+        if (error) {
+            setError(error.message)
+            setPending(null)
         }
-    }
-
-    const googleLogin = async (e: React.FormEvent) => {
-        e.preventDefault()
-        const supabase = createClient()
-        setIsLoading(true)
-        setError(null)
-
-        try {
-            const {error} = await supabase.auth.signInWithOAuth({
-                provider: 'google',
-                options: {
-                    // redirectTo: `${window.location.origin}/auth/callback`,
-                    redirectTo: `${window.location.origin}/auth/callback`,
-                },
-            })
-
-            if (error) throw error
-        } catch (error: unknown) {
-            setError(error instanceof Error ? error.message : 'An error occurred')
-            setIsLoading(false)
-        }
+        // on success the browser is already on its way to the provider
     }
 
     return (
-        <div className={cn('flex flex-col gap-6', className)} {...props}>
-            <Card>
-                <CardHeader>
-                    <CardTitle className="text-2xl">Welcome!</CardTitle>
-                    <CardDescription>Sign in to your account to continue</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <form onSubmit={githubLogin}>
-                        <div className="flex flex-col gap-6">
-                            {error && <p className="text-sm text-destructive-500">{error}</p>}
-                            <Button type="submit" className="w-full" disabled={isLoading}>Continue with GitHub</Button>
-                        </div>
-                    </form>
-                    <form onSubmit={googleLogin}>
-                        <div className="flex flex-col gap-6 mt-4">
-                            {error && <p className="text-sm text-destructive-500">{error}</p>}
-                            <Button type="submit" className="w-full" disabled={isLoading}>Continue with Google</Button>
-                        </div>
-                    </form>
-                </CardContent>
-            </Card>
-        </div>
+        <section className="panel auth-card">
+            <header className="panel__bar">
+                <div className="panel__title">
+                    <span className="panel__name">Sign in</span>
+                    <span className="panel__desc">to continue to PartyUp</span>
+                </div>
+            </header>
+
+            <div className="panel__body auth-card__body">
+                <p className="auth-card__lead">Play tabletop RPGs with your group, at your own pace.</p>
+
+                {next.startsWith(`/games/invite/`) &&
+                  <p className="auth-card__note">Sign in to see the game you were invited to.</p>}
+
+                <div className="auth-card__actions">
+                    {PROVIDERS.map(({id, label}) =>
+                        <button key={id} className="btn btn-primary w-full" onClick={() => signIn(id)}
+                                disabled={pending !== null}>
+                            {pending === id ? <span className="loading loading-spinner loading-sm"/> : label}
+                        </button>
+                    )}
+                </div>
+
+                {error && <p className="field__error" role="alert">{error}</p>}
+            </div>
+        </section>
     )
 }

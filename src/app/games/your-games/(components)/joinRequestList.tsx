@@ -1,42 +1,43 @@
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {supabaseGame} from "@/lib/supabase/db/game";
 import {usePopupModal} from "@/app/(context)/popupModalContext";
-import toast from "react-hot-toast";
 
-export default function JoinRequestList({game}: { game: any }) {
-    const [reqButtons, setReqButtons] = useState<Array<any>>([]);
+type JoinRequestListProps = {
+    game: any;
+    onAccepted: () => void;
+};
+
+// Pending join requests for one game, shown in the popup modal. Accepting adds the player.
+export default function JoinRequestList({game, onAccepted}: JoinRequestListProps) {
+    const [requests, setRequests] = useState<any[]>(game.joinRequests ?? []);
+    const [busyId, setBusyId] = useState<string | null>(null);
     const {hideModal} = usePopupModal();
-    useEffect(() => {
-        if (!game?.joinRequests) return;
 
-        const buttons = game.joinRequests.map((request: any, index: number) => {
-            const acceptOnClick = async () => {
-                let result = await supabaseGame.set.acceptRequest(game.id, request.id);
-                if (result) {
-                    if (game.joinRequests.length === 1) hideModal()
-                    setReqButtons(prev => {
-                        const newButtons = [...prev];
-                        newButtons.splice(index, 1);
-                        return newButtons;
-                    });
-                }
-            };
-            return (
-                <button
-                    key={request.id ?? index}
-                    onClick={acceptOnClick}
-                    className="btn btn-primary button-breakpoints md:px-6 txt-3xl"
-                >
-                    {request.name}
-                </button>
-            );
-        });
-        setReqButtons(buttons);
-    }, [game?.joinRequests]);
+    const accept = async (userId: string) => {
+        setBusyId(userId);
+        const added = await supabaseGame.set.acceptRequest(game.id, userId);
+        setBusyId(null);
+        if (!added) return;
+
+        const remaining = requests.filter((r) => r.id !== userId);
+        setRequests(remaining);
+        onAccepted();
+        if (remaining.length === 0) hideModal();
+    };
+
+    if (requests.length === 0) return <p className="panel__hint mt-4">No pending requests.</p>;
 
     return (
-        <div className='__players-list__list flex flex-row flex-wrap gap-2 mt-5'>
-            {reqButtons}
-        </div>
+        <ul className="join-requests">
+            {requests.map((request) =>
+                <li key={request.id} className="join-requests__item">
+                    <span className="join-requests__name">{request.name}</span>
+                    <button className="btn btn-sm btn-primary" onClick={() => accept(request.id)}
+                            disabled={busyId !== null}>
+                        {busyId === request.id ? <span className="loading loading-spinner loading-xs"/> : `Accept`}
+                    </button>
+                </li>
+            )}
+        </ul>
     )
 }

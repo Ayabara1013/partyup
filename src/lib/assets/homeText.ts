@@ -1,38 +1,42 @@
 import {dirHref} from "@/lib/routing/directoy";
 
+export type HomeAction = {
+    title: string;
+    sub: string;
+    img: string;
+    href: string;
+};
+
 export const allText = {
     home: {
-        cta_txt_1: 'THE #1 choice for flexible online rollplay',
-        cta_btn_1: 'make your free account!',
-        cya_card_1: {
-            header: 'sign up',
-            sub: 'create your free account in seconds',
-            img: '/images/008-spellbook-1.png',
-            href: dirHref.user.signup
-        },
-        cya_card_2: {
-            header: 'choose your adventure',
-            sub: 'choose your perfect adventure',
-            img: '/images/038-adventure-1.png',
-            href: dirHref.discover
-        },
-        cya_card_3: {
-            header: 'invite your friends',
-            sub: 'invite your fellow heroes with a click',
-            img: '/images/042-epidemiology.png',
-            href: dirHref.games.root
-        },
-        cya_card_4: {
-            header: 'start playing immediately',
-            sub: 'No fine print. Immediately.',
-            img: '/images/058-watching-tv.png',
-            href: dirHref.discover
-        },
-        cya_card_5: {
-            header: 'Create your adventure',
-            sub: 'Create a game',
-            img: '/images/008-spellbook-1.png',
-            href: dirHref.games.create
-        },
+        tagline: `Play how you want, when you want. No scheduling conflicts, ever again.`,
+        signedOutTitle: `The flexible way to play tabletop RPGs online`,
+        signedOutButton: `Log in to get started`,
+        actions: [
+            {
+                title: `Create a game`,
+                sub: `Run your own adventure as the GM.`,
+                img: `/images/008-spellbook-1.png`,
+                href: dirHref.games.create,
+            },
+            {
+                title: `Discover games`,
+                sub: `Find an open table that fits you.`,
+                img: `/images/038-adventure-1.png`,
+                href: dirHref.discover,
+            },
+            {
+                title: `Invite your friends`,
+                sub: `Share an invite link from Your Games.`,
+                img: `/images/042-epidemiology.png`,
+                href: dirHref.games.root,
+            },
+            {
+                title: `Play anytime`,
+                sub: `Take turns in chat, at your own pace.`,
+                img: `/images/058-watching-tv.png`,
+                href: dirHref.games.root,
+            },
+        ] satisfies HomeAction[],
     },
 }
