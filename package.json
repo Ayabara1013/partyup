@@ -11,10 +11,8 @@
   "dependencies": {
     "@supabase/ssr": "^0.9.0",
     "@supabase/supabase-js": "^2.98.0",
-    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "is-hotkey": "^0.2.0",
-    "lucide-react": "^0.576.0",
     "next": "16.2.1-canary.17",
     "radix-ui": "^1.4.3",
     "react": "19.2.3",
@@ -25,7 +23,6 @@
     "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
-    "@tailwindcss/typography": "^0.5.19",
     "@types/is-hotkey": "^0.1.10",
     "@types/node": "^20",
     "@types/react": "^19",

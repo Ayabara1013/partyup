@@ -131,7 +131,6 @@ export function AuthManagerProvider({children}: { children: ReactNode }) {
                 updateGames()
                 break;
             case `game_started`:
-
                 if (game) {
                     toast(gmGame ? `You started: ${game.name}.` : `${game.name} has started.`);
                 }
