@@ -2,7 +2,7 @@ import toast from "react-hot-toast";
 import {supabase} from "@/lib/supabase/client/client";
 import type {CharacterSheet} from "@/lib/assets/classes/characterSheet";
 
-// Characters live in "gameCharacter" (whole sheet in `data`). Rules are enforced by database functions:
+// Characters live in "game_character" (whole sheet in `data`). Rules are enforced by database functions:
 // one living character per player per game, creating needs game_player.can_create_character,
 // and only the GM can send a character to the grave (game.graveyard) or allow a new one.
 
@@ -75,7 +75,7 @@ const supabaseCharacter = {
 
         // Characters the GM sent to the grave, most recent first
         graveyard: async (gameId: string): Promise<GraveCharacter[]> => {
-            const {data, error} = await supabase.from(`gameCharacter`)
+            const {data, error} = await supabase.from(`game_character`)
                 .select(`id, name, system, owner_uid, archived_at`)
                 .eq(`game_id`, gameId).eq(`archived`, true)
                 .order(`archived_at`, {ascending: false});
@@ -92,7 +92,7 @@ const supabaseCharacter = {
         roster: (gameId: string, onChange: () => void) => supabase
             .channel(`roster-${gameId}-${crypto.randomUUID()}`)
             .on(`postgres_changes`, {event: `*`, schema: `public`, table: `game_player`, filter: `game_id=eq.${gameId}`}, onChange)
-            .on(`postgres_changes`, {event: `*`, schema: `public`, table: `gameCharacter`, filter: `game_id=eq.${gameId}`}, onChange)
+            .on(`postgres_changes`, {event: `*`, schema: `public`, table: `game_character`, filter: `game_id=eq.${gameId}`}, onChange)
             .subscribe(),
     },
 

@@ -2,6 +2,8 @@
 // New shape (command_roll edge function): {input, formula, rolled, result, total, totalsByType, groups} or {input, error}
 // Legacy shape: Array<{rollTotal, rollLog[], label}>
 //
+// A modifier from a character tag shows its source instead of "flat": 3 (Strength)
+//
 // Display, one line per damage group, then the totals:
 //   /roll 2d20 [fire] + 3d6 + 6 [water]
 //   2d20 [fire] -> 15 + 5 = 20 [fire]
@@ -16,7 +18,7 @@ export type DiceLogSummary = {
 
 type Term =
     | { kind: `dice`, sign: number, count: number, sides: number, rolls: number[] }
-    | { kind: `flat`, sign: number, value: number };
+    | { kind: `flat`, sign: number, value: number, source?: string }; // source: the character tag it came from
 
 type Group = { label: string, multiplier: number, terms: Term[], total: number };
 
@@ -40,12 +42,12 @@ function formatGroup(group: Group) {
     // Left side: the dice rolled (or the flat values if there are no dice)
     const notation = dice.length
         ? joinSignedText(dice.map((t) => ({sign: t.sign, text: `${t.count}d${t.sides}`})))
-        : joinSignedText(group.terms.map((t) => ({sign: t.sign, text: `${(t as any).value}`})));
+        : joinSignedText(group.terms.map((t) => ({sign: t.sign, text: t.kind === `flat` ? (t.source ?? `${t.value}`) : ``})));
 
     // Right side: every die result, then flat modifiers marked "(flat)"
     const rolled = joinSignedText(group.terms.flatMap((t) => t.kind === `dice`
         ? t.rolls.map((r) => ({sign: t.sign, text: `${r}`}))
-        : [{sign: t.sign, text: `${t.value} (flat)`}]));
+        : [{sign: t.sign, text: `${t.value} (${t.source ?? `flat`})`}]));
 
     const multiplied = group.multiplier !== 1;
     const left = multiplied ? `${group.multiplier} × (${notation})` : notation;
