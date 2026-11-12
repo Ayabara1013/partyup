@@ -69,11 +69,7 @@ export default function PlayPage({params}: PageProps) {
         if (!userLoading && !gamesLoading) {
             if (userLoading) return;
 
-            if (!user) {
-                toast.error(`Please login and try again.`);
-                const t = setTimeout(() => push(dirHref.user.signin), 1000);
-                return () => clearTimeout(t);
-            }
+            if (!user) return; // signed out: the auth context sends them to the login page
 
             if (gamesLoading) return;
             if (isPartOfGame(gmGames, gameId) || isPartOfGame(playerGames, gameId)) return;

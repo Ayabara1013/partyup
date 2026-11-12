@@ -19,7 +19,7 @@ export const dirHref = {
     },
     user: {
         chooseDisplayName: `/user/choose-display-name`,
-        signin: `/user/signin`,
+        signin: `/auth/login`,
         signup: `/user/signup`,
         settings: `/user/settings`,
         subscription: `/user/subscription`,

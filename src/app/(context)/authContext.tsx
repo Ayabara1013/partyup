@@ -87,6 +87,8 @@ export function AuthManagerProvider({children}: { children: ReactNode }) {
         if (userLoading) return;
 
         if (!userId) {
+            // Already on a sign-in page (/auth/login, /auth/error): the proxy put the right ?next= there
+            if (window.location.pathname.startsWith(`/auth`)) return;
             // Signed out: send them to the login page
             pendingInvite.save(window.location.pathname);
             router.replace(loginHref(window.location.pathname + window.location.search));

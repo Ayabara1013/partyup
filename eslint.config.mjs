@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Reference copies of Deno edge functions, not part of the Next.js app
+    "supabaseMemory/**",
+    "fableUpdate/**",
   ]),
 ]);
 

@@ -1,18 +1,16 @@
 import type {Metadata} from "next";
-import {Geist, Geist_Mono} from "next/font/google";
+import {Barlow_Condensed} from "next/font/google";
 import Providers from "@/app/(context)/serverProviders";
 import "../styles/globals.scss";
 import NavBar from "@/components/ui/navBar";
 import {Toaster} from "react-hot-toast";
 
-const geistSans = Geist({
-    variable: "--font-geist-sans",
+// The app's only typeface, served from the site itself. Not a variable font: one file per weight.
+const barlowCondensed = Barlow_Condensed({
+    variable: "--font-barlow",
     subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-    variable: "--font-geist-mono",
-    subsets: ["latin"],
+    weight: ["400", "500", "600", "700"],
+    display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -22,8 +20,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({children,}: Readonly<{ children: React.ReactNode; }>) {
     return (
-        <html lang="en">
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}>
+        <html lang="en" className={barlowCondensed.variable}>
+        <body className="antialiased dark">
         <Providers>
             <div className="flex flex-col h-screen">
                 <NavBar/>
