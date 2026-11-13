@@ -79,8 +79,11 @@ export default function CharacterForm({system, gameName, playerName, onClose, on
         if (!await onSubmit(sheet)) setSaving(false); // on success the popup closes
     };
 
+    // The popup wrapper lives here, not on the play page, because its position comes from character.scss, which loads
+    // with this component (the play page downloads the creator on demand)
     return (
-        <form className="panel character-form" onSubmit={submit} noValidate role="dialog" aria-label="Create a character">
+        <div className="character-popup">
+            <form className="panel character-form" onSubmit={submit} noValidate role="dialog" aria-label="Create a character">
                 <header className="panel__bar">
                     <div className="panel__title">
                         <span className="panel__name">Create a character</span>
@@ -137,7 +140,8 @@ export default function CharacterForm({system, gameName, playerName, onClose, on
                         {saving ? <span className="loading loading-spinner loading-xs"/> : `Create character`}
                     </button>
                 </footer>
-        </form>
+            </form>
+        </div>
     );
 }
 

@@ -1,7 +1,5 @@
 import type {CSSProperties, ReactNode} from "react";
 import toast from "react-hot-toast";
-import {Editor, Range as SlateRange, Transforms} from "slate";
-import {ReactEditor} from "slate-react";
 
 // Custom Cut / Copy / Paste menu for text inputs, textareas and contenteditable editors (the Slate chat box),
 // replacing the browser menu the app blocks everywhere.
@@ -11,15 +9,23 @@ const TEXT_INPUT_TYPES = new Set([``, `text`, `search`, `url`, `tel`, `email`, `
 
 const MENU_WIDTH = 200;
 
-// Slate editors by their editable element. Slate keeps its own selection and document, so DOM editing commands
-// don't reach it reliably: its menu items go through the editor instead (see useEditMenuEditor in slatejs.tsx).
-const slateEditors = new WeakMap<HTMLElement, ReactEditor>();
+// What the menu needs from an editor that keeps its own selection and document (the Slate chat box). The editor
+// registers it for its editable element (components/slatejs/util/editMenuAdapter.ts), so this file, and with it the
+// app-wide menu, doesn't load the editor library.
+export type EditMenuAdapter = {
+    // When the menu opens (selection: the DOM selection if it is inside the element): the selected text, whether
+    // the editor is read-only, and a function that puts this selection back
+    open: (selection: Selection | null) => { text: string; readOnly: boolean; restore: () => void };
+    deleteSelection: () => void;        // Cut, when the browser's cut command doesn't run
+    insertText: (text: string) => void; // Paste
+};
 
-export function registerSlateEditor(editor: ReactEditor) {
-    const el = ReactEditor.toDOMNode(editor, editor);
-    slateEditors.set(el, editor);
+const adapters = new WeakMap<HTMLElement, EditMenuAdapter>();
+
+export function registerEditMenuAdapter(el: HTMLElement, adapter: EditMenuAdapter) {
+    adapters.set(el, adapter);
     return () => {
-        slateEditors.delete(el);
+        adapters.delete(el);
     };
 }
 
@@ -28,7 +34,7 @@ type Snapshot = {
     start: number | null; // inputs / textareas
     end: number | null;
     range: Range | null;  // contenteditable
-    slate: { editor: ReactEditor, range: SlateRange | null } | null;
+    editor: { adapter: EditMenuAdapter, restore: () => void } | null; // a registered editor (the Slate chat box)
     text: string;         // selected text when the menu opened
     readOnly: boolean;
     password: boolean;
@@ -53,7 +59,7 @@ function snapshot(el: HTMLElement): Snapshot {
             // some input types (email, number) don't expose a selection
         }
         return {
-            el, start, end, range: null, slate: null,
+            el, start, end, range: null, editor: null,
             text: start !== null && end !== null ? el.value.slice(start, end) : ``,
             readOnly: el.readOnly || el.disabled,
             password: el instanceof HTMLInputElement && el.type === `password`,
@@ -61,23 +67,13 @@ function snapshot(el: HTMLElement): Snapshot {
     }
     const selection = window.getSelection();
     const inside = !!selection && selection.rangeCount > 0 && el.contains(selection.anchorNode);
-    const editor = slateEditors.get(el);
-    if (editor) {
-        // A right-click collapses the DOM selection to a caret before this runs, while Slate still holds the
-        // selection that was there. Keep Slate's when the caret landed inside it; otherwise the caret is where the
-        // user clicked (Slate hasn't synced it yet).
-        const dom = inside ? ReactEditor.toSlateRange(editor, selection!, {exactMatch: false, suppressThrow: true}) : null;
-        const held = editor.selection;
-        const range = dom && SlateRange.isCollapsed(dom) && held && SlateRange.isExpanded(held) && SlateRange.includes(held, dom.anchor)
-            ? held : dom ?? held;
-        return {
-            el, start: null, end: null, range: null, slate: {editor, range},
-            text: range && SlateRange.isExpanded(range) ? Editor.string(editor, range) : ``,
-            readOnly: ReactEditor.isReadOnly(editor), password: false,
-        };
+    const adapter = adapters.get(el);
+    if (adapter) {
+        const {text, readOnly, restore} = adapter.open(inside ? selection : null);
+        return {el, start: null, end: null, range: null, editor: {adapter, restore}, text, readOnly, password: false};
     }
     const range = inside ? selection!.getRangeAt(0).cloneRange() : null;
-    return {el, start: null, end: null, range, slate: null, text: range?.toString() ?? ``, readOnly: false, password: false};
+    return {el, start: null, end: null, range, editor: null, text: range?.toString() ?? ``, readOnly: false, password: false};
 }
 
 // Put focus and the selection back exactly as they were when the menu opened
@@ -89,14 +85,8 @@ function restore(s: Snapshot) {
         } catch {
             // type without selection support
         }
-    } else if (s.slate) {
-        // Slate's selection drives its copy / cut handlers; the DOM selection decides which element gets the event
-        const {editor, range} = s.slate;
-        if (!range) return;
-        Transforms.select(editor, range);
-        const selection = window.getSelection();
-        selection?.removeAllRanges();
-        selection?.addRange(ReactEditor.toDOMRange(editor, range));
+    } else if (s.editor) {
+        s.editor.restore();
     } else if (s.range) {
         const selection = window.getSelection();
         selection?.removeAllRanges();
@@ -115,7 +105,7 @@ async function cut(s: Snapshot) {
     if (document.execCommand(`cut`)) return;
     await navigator.clipboard.writeText(s.text);
     restore(s);
-    if (s.slate) Editor.deleteFragment(s.slate.editor);
+    if (s.editor) s.editor.adapter.deleteSelection();
     else document.execCommand(`delete`);
 }
 
@@ -128,11 +118,8 @@ async function paste(s: Snapshot) {
         return;
     }
     restore(s);
-    if (s.slate) {
-        // Same path as Ctrl+V: multi-line text becomes separate lines
-        const data = new DataTransfer();
-        data.setData(`text/plain`, text);
-        ReactEditor.insertData(s.slate.editor, data);
+    if (s.editor) {
+        s.editor.adapter.insertText(text);
     } else {
         document.execCommand(`insertText`, false, text);
     }

@@ -1,7 +1,7 @@
 "use client";
 
 import isHotkey from "is-hotkey";
-import {useEffect} from "react";
+import {memo, useEffect} from "react";
 import {ReactEditor} from "slate-react";
 import type {KeyboardEvent} from "react";
 import {CustomSlate, useCustomEditorHook} from "@/components/slatejs/slatejs";
@@ -9,7 +9,6 @@ import ChatOptionHeader from "@/app/games/play/[gameId]/(components)/chat/input/
 import {useChatOptions} from "@/app/games/play/[gameId]/(components)/chat/input/header/chatOptionsHook";
 import {editorFix, editorTools} from "@/components/slatejs/util/editorUtil";
 import {supabaseInGame} from "@/lib/supabase/db/inGame";
-import {useAuthManager} from "@/app/(context)/authContext";
 import ChatReplyHeader from "@/app/games/play/[gameId]/(components)/chat/input/header/chatReplyHeader";
 
 
@@ -22,10 +21,11 @@ type ChatInputProps = {
     game: any;
     replyTo?: any;
     onCancelReply?: () => void;
+    userId: string | undefined;
 };
 
-export default function ChatInput({name, hidden, game, replyTo, onCancelReply}: ChatInputProps) {
-    const {user} = useAuthManager();
+// memo: new messages in the window don't re-render the composer (its props stay the same)
+export default memo(function ChatInput({name, hidden, game, replyTo, onCancelReply, userId}: ChatInputProps) {
     const {editor} = useCustomEditorHook();
 
     const chatOptions = useChatOptions(editor, game);
@@ -47,7 +47,7 @@ export default function ChatInput({name, hidden, game, replyTo, onCancelReply}: 
 
         if (!block && isHotkey("enter", e.nativeEvent)) {
             e.preventDefault();
-            supabaseInGame.set.addMessage(game.id, editorTools.getEditorStringValue(editor), user?.id ?? '', name,
+            supabaseInGame.set.addMessage(game.id, editorTools.getEditorStringValue(editor), userId ?? '', name,
                 null, replyTo?.id ?? null)
             editorTools.resetEditor(editor);
             onCancelReply?.();
@@ -81,4 +81,4 @@ export default function ChatInput({name, hidden, game, replyTo, onCancelReply}: 
             </div>
         </div>
     );
-}
+});

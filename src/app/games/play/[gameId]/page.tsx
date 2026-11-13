@@ -2,7 +2,8 @@
 
 import '@/styles/games/play/play.scss';
 import toast from "react-hot-toast";
-import {use, useCallback, useEffect, useState} from "react";
+import {type ComponentProps, use, useCallback, useEffect, useState} from "react";
+import dynamic from "next/dynamic";
 import {useRouter} from "next/navigation";
 import {useAuthManager} from "@/app/(context)/authContext";
 
@@ -10,14 +11,13 @@ import {dirHref} from "@/lib/routing/directoy";
 import {lsInGame} from "@/lib/util/localStorage";
 import {supabase} from "@/lib/supabase/client/client";
 import {supabaseInGame} from "@/lib/supabase/db/inGame";
-import msgArrayManipulation from "@/lib/supabase/util/msgArrayManipulation";
-
-import {useContextMenuSetter} from "@/app/(context)/contextMenuContext";
 
 import {ChatWindow} from "@/app/games/play/[gameId]/(components)/chat/window/chatWindow";
+import {useGameMessages} from "@/app/games/play/[gameId]/(components)/chat/useGameMessages";
 import GMTools from "@/app/games/play/[gameId]/(components)/gmTools";
 import PlayerSettingDisplay from "@/app/games/play/[gameId]/(components)/playerSettingsDisplay";
-import CharacterForm, {CharacterSystem} from "@/app/games/play/[gameId]/(components)/character/characterForm";
+import type CharacterFormComponent from "@/app/games/play/[gameId]/(components)/character/characterForm";
+import type {CharacterSystem} from "@/app/games/play/[gameId]/(components)/character/characterForm";
 import {useCharacterRoster} from "@/app/games/play/[gameId]/(components)/character/useCharacterRoster";
 import {PlayerCardProvider} from "@/app/games/play/[gameId]/(components)/player/playerCard";
 import {supabaseCharacter} from "@/lib/supabase/db/character";
@@ -25,6 +25,23 @@ import type {CharacterSheet} from "@/lib/assets/classes/characterSheet";
 
 // Systems the character creator supports
 const CHARACTER_SYSTEMS: CharacterSystem[] = [`dnd5e`, `pf2e`];
+
+// The character creator is downloaded only when it is opened, or about to be (its button hovered or focused)
+const loadCharacterForm = () => import("@/app/games/play/[gameId]/(components)/character/characterForm");
+const CharacterForm = dynamic<ComponentProps<typeof CharacterFormComponent>>(
+    () => loadCharacterForm().catch(() => CreatorUnavailable), {ssr: false});
+const preloadCharacterForm = () => {
+    loadCharacterForm().catch(() => {}); // opening the creator reports a failure
+};
+
+// A failed download: say so and close the popup instead of breaking the page
+function CreatorUnavailable({onClose}: { onClose: () => void }) {
+    useEffect(() => {
+        toast.error(`Could not load the character creator. Check your connection and reload the page.`, {id: `creator-load`});
+        onClose();
+    }, [onClose]);
+    return null;
+}
 
 type PageProps = {
     params: Promise<{
@@ -36,23 +53,26 @@ export default function PlayPage({params}: PageProps) {
     const {push} = useRouter();
     const {gameId} = use(params);
     const {user, userLoading, gmGames, playerGames, gamesLoading} = useAuthManager();
-    const setContextMenu = useContextMenuSetter();
 
-    const [messages, setMessages] = useState<Array<any>>([]);
     const [settings, setSettings] = useState({
         loaded: false,
         rollingStick: '',
         talkingStick: '',
         openMute: null
     });
+    // A failed settings fetch keeps the loading screen, with a retry instead of the spinner
+    const [settingsFailed, setSettingsFailed] = useState(false);
+    const [settingsAttempt, setSettingsAttempt] = useState(0);
     const [gameObject, setGameObject] = useState<any>(null);
-    const [players, setPlayers] = useState({hasPlayers: false});
-    const chatWindowProps = {messages, game: gameObject, user: user, players, settings, setContextMenu}
+
+    // The chat: loaded once the visitor is confirmed as the GM or a player of this game
+    const {messages, messagesById, reload} = useGameMessages(gameId, !!gameObject);
+    const chatWindowProps = {messages, messagesById, game: gameObject, settings, userId: user?.id}
 
     // Characters: one living character per player; the GM sends dead ones to the grave and allows new ones
-    const {roster, graveyard} = useCharacterRoster(gameObject?.id);
-    const [creatorOpen, setCreatorOpen] = useState(false);
     const isGm = !!gameObject && gameObject.gmUid === user?.id;
+    const {roster, graveyard} = useCharacterRoster(gameObject?.id, isGm); // only the GM's panel shows the graveyard
+    const [creatorOpen, setCreatorOpen] = useState(false);
     const mySeat = roster.find((entry) => entry.userId === user?.id);
     const canCreateCharacter = !!mySeat?.canCreateCharacter && !mySeat.character;
     const closeCreator = useCallback(() => setCreatorOpen(false), []);
@@ -78,30 +98,33 @@ export default function PlayPage({params}: PageProps) {
             const t = setTimeout(() => push(dirHref.games.root), 1000);
             return () => clearTimeout(t);
         }
-        // console.log({
-        //     text: `/r 2 * (1d6+2[fire] + 2[fire, splash, 10ft]) + 1d6[bleed, persistent]`,
-        //     result: messageParser.parseDice(`/r 2 * (1d6+2[fire] + 2[fire, splash, 10ft]) + 1d6[bleed, persistent]`)
-        // })
-        // console.log({
-        //     text: `/r 2 * (1d6+2[fire] + 2[fire, splash, 10ft]) + 3 * (1d6+3[water] + 3[water, splash, 6ft])`,
-        //     result: messageParser.parseDice(`/r 2 * (1d6+2[fire] + 2[fire, splash, 10ft]) + 3 * (1d6+3[water] + 3[water, splash, 6ft])`)
-        // })
     }, [gmGames, playerGames, user, userLoading, gamesLoading]);
 
     useEffect(() => {
         if (gameObject) {
-            supabaseInGame.get.settings(gameId).then(data => {
-                setSettings(data)
+            let latest = true; // false once a retry (or leaving) replaces this attempt
+            supabaseInGame.get.settings(gameObject.id).then(data => {
+                if (!latest) return;
+                if (data) {
+                    setSettings(data);
+                } else {
+                    toast.error(`Could not load the game settings.`);
+                    setSettingsFailed(true);
+                }
             })
             const settingsChannel = supabaseInGame.live.settings(gameObject.id, setSettings);
-            const messagesChannel = supabaseInGame.live.messages(gameObject.id, updateMessages);
 
             return () => {
+                latest = false;
                 supabase.removeChannel(settingsChannel);
-                supabase.removeChannel(messagesChannel);
             }
         }
-    }, [gameObject])
+    }, [gameObject, settingsAttempt])
+
+    const retrySettings = () => {
+        setSettingsFailed(false);
+        setSettingsAttempt((n) => n + 1);
+    };
 
 
     useEffect(() => {
@@ -112,47 +135,19 @@ export default function PlayPage({params}: PageProps) {
             lsInGame.set.settings(gameObject.id, settings)
         }
     }, [settings]);
-    useEffect(() => {
-    }, [messages]);
 
     function isPartOfGame(gameList: any[] | null, gameId: string) {
         const game = gameList?.find((g) => g.id === gameId);
         if (!game) return false;
 
-        if (messages.length === 0) loadMessages();
         setGameObject((prev: any) => prev ?? game);
         return true;
-    }
-    async function loadMessages() {
-        lsInGame.clear.legacy();
-        let tempMessages = lsInGame.get.chatLog(gameId);
-        if (tempMessages.length === 0) {
-            tempMessages = await supabaseInGame.get.allMessages(gameId);
-        } else {
-            msgArrayManipulation.sortByUpdated(tempMessages);
-            let lastUpdated = tempMessages[tempMessages.length - 1].updatedAt;
-            let newMessages = await supabaseInGame.get.allMessagesAfterDate(gameId, new Date(lastUpdated).toISOString());
-            msgArrayManipulation.combineReplaceOnKey(tempMessages, newMessages, `id`);
-        }
-        lsInGame.set.chatLog(gameId, tempMessages);
-        setMessages(tempMessages);
     }
 
     // Drops this game's cached chat log and re-downloads every message from the database
     async function clearLocalMessages() {
-        lsInGame.clear.chatLog(gameId);
-        setMessages([]);
-        await loadMessages();
+        await reload();
         toast.success(`Cleared local messages and reloaded chat.`);
-    }
-
-    async function updateMessages(newMessages: Array<any> = []) {
-        let tempMessages = [...lsInGame.get.chatLog(gameId)];
-        msgArrayManipulation.combineReplaceOnKey(tempMessages, newMessages, `id`);
-        msgArrayManipulation.sortByCreated(tempMessages);
-        console.log(`tempMessages`, tempMessages)
-        lsInGame.set.chatLog(gameId, tempMessages);
-        setMessages(tempMessages);
     }
 
     return (
@@ -164,13 +159,11 @@ export default function PlayPage({params}: PageProps) {
                         <ChatWindow {...chatWindowProps} name={'turn'}/>
                         <ChatWindow {...chatWindowProps} name={'open'}/>
 
-                        {/* Character creator: a popup over the Canon chat */}
+                        {/* Character creator: a popup over the Canon chat (nothing shows while it downloads) */}
                         {creatorOpen && canCreateCharacter &&
-                          <div className="character-popup">
-                              <CharacterForm system={gameObject.system} gameName={gameObject.name}
-                                             playerName={user?.userMetadata?.name ?? ``}
-                                             onClose={closeCreator} onSubmit={createCharacter}/>
-                          </div>
+                          <CharacterForm system={gameObject.system} gameName={gameObject.name}
+                                         playerName={user?.userMetadata?.name ?? ``}
+                                         onClose={closeCreator} onSubmit={createCharacter}/>
                         }
                     </div>
 
@@ -188,7 +181,9 @@ export default function PlayPage({params}: PageProps) {
                             </header>
                             <div className='panel__body panel__actions'>
                                 {!isGm && CHARACTER_SYSTEMS.includes(gameObject.system) &&
-                                  <button className="panel-action" onClick={() => setCreatorOpen(true)} disabled={!canCreateCharacter}>
+                                  <button className="panel-action" onClick={() => setCreatorOpen(true)} disabled={!canCreateCharacter}
+                                          onPointerEnter={canCreateCharacter ? preloadCharacterForm : undefined}
+                                          onFocus={canCreateCharacter ? preloadCharacterForm : undefined}>
                                       <span className="panel-action__title">Create Character</span>
                                       <span className="panel-action__sub">
                                           {mySeat?.character
@@ -208,7 +203,9 @@ export default function PlayPage({params}: PageProps) {
                     </div>
                 </PlayerCardProvider> :
                 <div className={`flex justify-center`}>
-                    <span className={`loading loading-infinity loading-lg`}/>
+                    {settingsFailed
+                        ? <button className={`btn btn-sm`} onClick={retrySettings}>Retry loading the game</button>
+                        : <span className={`loading loading-infinity loading-lg`}/>}
                 </div>
             }
         </div>

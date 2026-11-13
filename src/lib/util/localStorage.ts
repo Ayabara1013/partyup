@@ -17,7 +17,15 @@ export type GameSettings = {
     openMute?: any;
 };
 
-const CHAT_LOG_VERSION = 2;
+// v3: only the fields the chat UI reads are saved; v4: saved as {cursor, messages} so the sync cursor is written
+// together with the messages it covers (older versions are dropped by lsInGame.clear.legacy)
+const CHAT_LOG_VERSION = 4;
+
+// A game's saved chat: the messages plus the sync cursor (newest updatedAt among fetched rows) they are complete up to
+export type SavedChat = {
+    cursor: string | null;
+    messages: CachedMessage[];
+};
 
 const keys = {
     notifications: (uid: string) => `${uid}-notifications`,
@@ -65,6 +73,19 @@ function normalizeMessage(m: any): CachedMessage {
     return {...m, channel: Array.isArray(m.channel) ? m.channel : [m.channel]};
 }
 
+// The fields the chat UI reads (the same columns as MESSAGE_COLUMNS in inGame.ts). Messages are kept with only
+// these, in memory (useGameMessages) and in the saved copy.
+const SAVED_MESSAGE_FIELDS = [`id`, `channel`, `createdAt`, `updatedAt`, `editedAt`, `playerId`, `system`,
+    `messageText`, `log`, `deleted`, `isPinned`, `replyTo`, `locked`] as const;
+
+export function slimMessage(message: CachedMessage): CachedMessage {
+    const saved: Record<string, unknown> = {};
+    for (const field of SAVED_MESSAGE_FIELDS) {
+        if (message[field] !== undefined) saved[field] = message[field];
+    }
+    return saved as CachedMessage;
+}
+
 const lsAccount = {
     notificationTime: (uid: string) => getSetTimestamp(keys.notificationTime(uid)),
     getLastOtherUpdateTime: (uid: string) => getSetTimestamp(keys.otherUpdates(uid)),
@@ -78,14 +99,19 @@ const lsAccount = {
 
 const lsInGame = {
     get: {
-        chatLog: (gid: string): CachedMessage[] =>
-            read<any[]>(keys.chatLog(gid), []).map(normalizeMessage),
+        chatLog: (gid: string): SavedChat => {
+            const saved = read<{ cursor?: string | null; messages?: any[] } | null>(keys.chatLog(gid), null);
+            return {
+                cursor: typeof saved?.cursor === `string` ? saved.cursor : null,
+                messages: Array.isArray(saved?.messages) ? saved.messages.map(normalizeMessage) : [],
+            };
+        },
         settings: (gid: string): GameSettings =>
             read<GameSettings>(keys.settings(gid), {loaded: false, rollingStick: ``, talkingStick: ``, openMute: null}),
     },
     set: {
-        chatLog: (gid: string, messages: CachedMessage[]) => {
-            if (gid && messages) write(keys.chatLog(gid), messages);
+        chatLog: (gid: string, messages: CachedMessage[], cursor: string | null) => {
+            if (gid && messages) write(keys.chatLog(gid), {cursor, messages: messages.map(slimMessage)});
         },
         settings: (gid: string, settings: GameSettings) => {
             if (gid && settings) write(keys.settings(gid), settings);

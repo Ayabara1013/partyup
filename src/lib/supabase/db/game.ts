@@ -11,9 +11,9 @@ const supabaseGame = {
             gm: async (userId: string) => {
                 const {data, error} = await supabase.from(`game`).select(`
                     *,
-                    gm:user!game_gm_id_fkey (*),
-                    players:game_player (user:user_id (*)),
-                    joinRequests:join_requests (user:user_id (*))`)
+                    gm:user!game_gm_id_fkey (id,name,image_url),
+                    players:game_player (user:user_id (id,name,image_url)),
+                    joinRequests:join_requests (user:user_id (id,name,image_url))`)
                     .eq(`gm_uid`, userId);
                 if (error) return [];
                 return objectToCamel(data ?? []).map((game: any) => ({
@@ -26,8 +26,8 @@ const supabaseGame = {
                 const {data, error} = await supabase.from(`game_player`).select(`
                     game:game_id (
                         *,
-                        gm:user!game_gm_id_fkey (*),
-                        players:game_player (user:user_id (*)))`)
+                        gm:user!game_gm_id_fkey (id,name,image_url),
+                        players:game_player (user:user_id (id,name,image_url)))`)
                     .eq(`user_id`, userId);
                 if (error) return [];
                 return objectToCamel(data ?? []).map(({game}: any) => ({
@@ -46,7 +46,7 @@ const supabaseGame = {
                 userId?: string;
             }) => {
                 let query = supabase.from(`game`)
-                    .select(`*,
+                    .select(`id,created_at,gm_uid,name,description,system,max_players,age_restriction,sc0,sc1,sc2,sc3,tags,
                     gm:user!game_gm_id_fkey (id,name,image_url),
                     players:game_player!game_player_game_id_fkey (
                         user:user!game_player_user_id_fkey (id,name,image_url)),
@@ -87,8 +87,8 @@ const supabaseGame = {
                 if (!UUID_RE.test(inviteCode)) return null;
 
                 let query = supabase.rpc(`get_game_by_invite_code`, {code: inviteCode}).select(`*,
-                    gm:user!game_gm_id_fkey (*),
-                    players:game_player (user:user_id (*)),
+                    gm:user!game_gm_id_fkey (id,name,image_url),
+                    players:game_player (user:user_id (id,name,image_url)),
                     myRequests:join_requests (user_id)`);
                 if (userId) query = query.eq(`myRequests.user_id`, userId);
 
@@ -106,7 +106,7 @@ const supabaseGame = {
     },
     set: {
         create: {
-            // Returns the new game row, or null (with a toast) if it couldn't be created
+            // Returns the new game's id and name, or null (with a toast) if it couldn't be created
             game: async (userId: string, data: any) => {
                 const {data: game, error} = await supabase.from(`game`).insert([
                     {
@@ -124,7 +124,7 @@ const supabaseGame = {
                         tags: data.tags,
                         started: false
                     }
-                ]).select().single();
+                ]).select(`id,name`).single();
                 if (error) {
                     console.error(error);
                     toast.error(`Could not create the game.`);
@@ -134,7 +134,7 @@ const supabaseGame = {
             }
         },
         edit: {
-            // Returns the updated game row, or null (with a toast) if it couldn't be saved
+            // Returns the updated game's id and name, or null (with a toast) if it couldn't be saved
             game: async (data: any, gameId: string) => {
                 const {data: result, error} = await supabase.from(`game`).update(
                     {
@@ -150,7 +150,7 @@ const supabaseGame = {
                         sc3: data.sc3,
                         tags: data.tags
                     }
-                ).eq(`id`, gameId).select().single();
+                ).eq(`id`, gameId).select(`id,name`).single();
                 if (error) {
                     console.error(error);
                     toast.error(`Could not save the game.`);
@@ -160,7 +160,7 @@ const supabaseGame = {
             },
             startGame: async (gameId: string) => {
                 const {data: uData, error: uError} = await supabase.from(`game`)
-                    .update({started: true}).eq(`id`, gameId).select().single();
+                    .update({started: true}).eq(`id`, gameId).select(`id`).single();
                 if (uError) {
                     console.error(uError);
                     toast.error(`Could not update game entry`)
@@ -172,13 +172,13 @@ const supabaseGame = {
         },
         join: async (gameId: string, userId: string) => {
             const {error} = await supabase
-                .from(`join_requests`).insert([objectToSnake({gameId, userId})]).select().single();
+                .from(`join_requests`).insert([objectToSnake({gameId, userId})]).select(`user_id`).single();
             return !error;
         },
         // Add the player first, then remove the request, so a failed insert doesn't lose the request
         acceptRequest: async (gameId: string, userId: string) => {
             const {data, error} = await supabase.from(`game_player`)
-                .insert([objectToSnake({gameId, userId})]).select().single();
+                .insert([objectToSnake({gameId, userId})]).select(`user_id`).single();
             if (error) {
                 toast.error(`Could not add the player to the game.`)
                 return false

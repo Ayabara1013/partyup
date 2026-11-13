@@ -35,6 +35,30 @@ const notificationToast: Record<string, { text?: string, gm?: gameToast, player?
     game_stopped: {gm: (name) => `You stopped: ${name}.`, player: (name) => `${name} has stopped.`},
 };
 
+// Whether the game lists already show what a notification reports, so it needs no refresh. `game_edited` can't be
+// told from the lists (any field may have changed), so it always refreshes.
+type ListGame = { started?: boolean, players?: { id: string }[], joinRequests?: { id: string }[] };
+function listsShow(type: string, data: { userId?: string, requestUserId?: string },
+                   gmGame: ListGame | undefined, playerGame: ListGame | undefined): boolean {
+    switch (type) {
+        case `game_created`:
+            return !!gmGame;
+        case `game_started`:
+        case `game_stopped`: {
+            const game = gmGame ?? playerGame;
+            return !!game && game.started === (type === `game_started`);
+        }
+        case `game_joined_as_player`:
+            return !!playerGame;
+        case `player_joined`:
+            return !!gmGame?.players?.some((p) => p?.id === data.userId);
+        case `join_request_created`:
+            return !!gmGame?.joinRequests?.some((u) => u?.id === data.requestUserId);
+        default:
+            return false;
+    }
+}
+
 export function AuthManagerProvider({children}: { children: ReactNode }) {
     const router = useRouter();
     const [user, setUser] = useState<CamelUser | null>(null);
@@ -45,12 +69,12 @@ export function AuthManagerProvider({children}: { children: ReactNode }) {
     const userId = user?.id ?? null;
     const gamesRequest = useRef(0);
 
+    // The lists as last loaded, for the notification handler: set together with the state, because the handler can
+    // run before React renders again
     const gmGamesRef = useRef(gmGames);
     const playerGamesRef = useRef(playerGames);
-    useEffect(() => {
-        gmGamesRef.current = gmGames;
-        playerGamesRef.current = playerGames;
-    }, [gmGames, playerGames]);
+    // The refresh that is running, if any; `again` asks it to go round once more when it finishes
+    const refresh = useRef<{ promise: Promise<void>, again: boolean } | null>(null);
 
     // The listener also reports the initial session, so no separate getSession() call is needed
     useEffect(() => {
@@ -61,6 +85,9 @@ export function AuthManagerProvider({children}: { children: ReactNode }) {
             setUserLoading(false);
             if (!next) {
                 gamesRequest.current++;
+                refresh.current = null; // a running refresh doesn't go round again
+                gmGamesRef.current = [];
+                playerGamesRef.current = [];
                 setGmGames([]);
                 setPlayerGames([]);
                 setGamesLoading(true);
@@ -69,19 +96,43 @@ export function AuthManagerProvider({children}: { children: ReactNode }) {
         return () => listener.subscription.unsubscribe();
     }, []);
 
-    const updateGames = useCallback(async () => {
+    // One refresh: both lists in parallel; an answer older than the newest request is dropped
+    const fetchGames = useCallback(async () => {
         if (!userId) return;
         const request = ++gamesRequest.current;
-        // Both lists load in parallel
         const [newGmGame, newPlayerGame] = await Promise.all([
             supabaseGame.get.game.gm(userId),
             supabaseGame.get.game.player(userId),
         ]);
         if (request !== gamesRequest.current) return;
+        gmGamesRef.current = newGmGame;
+        playerGamesRef.current = newPlayerGame;
         setGmGames(newGmGame);
         setPlayerGames(newPlayerGame);
         setGamesLoading(false);
     }, [userId]);
+
+    // One refresh at a time. A call during a refresh doesn't start another: it asks the running one to go round once
+    // more and waits for that, so `await updateGames()` still means "the lists are at least as fresh as my call"
+    const updateGames = useCallback((): Promise<void> => {
+        if (refresh.current) {
+            refresh.current.again = true;
+            return refresh.current.promise;
+        }
+        const state = {promise: Promise.resolve(), again: false};
+        state.promise = (async () => {
+            try {
+                do {
+                    state.again = false;
+                    await fetchGames();
+                } while (state.again && refresh.current === state);
+            } finally {
+                if (refresh.current === state) refresh.current = null;
+            }
+        })();
+        refresh.current = state;
+        return state.promise;
+    }, [fetchGames]);
 
     useEffect(() => {
         if (userLoading) return;
@@ -102,18 +153,21 @@ export function AuthManagerProvider({children}: { children: ReactNode }) {
         if (invite && (path === `/home` || path === `/`)) router.replace(invite);
 
         // Loading the user's games from the server; state is only set after the request resolves
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         updateGames();
-        const notificationsChannel = supabaseAccount.live.notifications(userId, (input: any) => {
+        const notificationsChannel = supabaseAccount.live.notifications(userId, async (input: any) => {
             const payload = input[0];
             const message = notificationToast[payload.type];
             if (!message) return;
 
+            // A notification is a hint that something changed. Let a refresh that's already running finish, then look
+            // at the lists: if they already show the change, this notification needs no refresh of its own.
+            await refresh.current?.promise;
             const gmGame = gmGamesRef.current.find((g) => g.id === payload.data.gameId);
-            const game = gmGame ?? playerGamesRef.current.find((g) => g.id === payload.data.gameId);
+            const playerGame = playerGamesRef.current.find((g) => g.id === payload.data.gameId);
+            const game = gmGame ?? playerGame;
             const text = message.text ?? (game && (gmGame ? message.gm : message.player)?.(game.name));
             if (text) toast(text);
-            updateGames();
+            if (!listsShow(payload.type, payload.data, gmGame, playerGame)) updateGames();
         });
         return () => {
             supabase.removeChannel(notificationsChannel);

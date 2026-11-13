@@ -1,11 +1,11 @@
-import React, {KeyboardEvent, useEffect, useMemo} from "react";
+import React, {KeyboardEvent, useEffect, useMemo, useState} from "react";
 import {createEditor, Descendant, BaseEditor, Element as SlateElement} from "slate";
 import {Editable, ReactEditor, RenderElementProps, Slate, withReact} from "slate-react";
 
 import ElementRenderer from "@/components/slatejs/elementRenderer";
 import {editorStyle} from "@/components/slatejs/util/editorSettings";
 import {editorDefault} from "@/components/slatejs/util/editorDefaultValues";
-import {registerSlateEditor} from "@/components/ui/editContextMenu";
+import {registerSlateEditor} from "@/components/slatejs/util/editMenuAdapter";
 
 type CustomElement = {
     type: string;
@@ -54,24 +54,28 @@ type CustomSlateProps = {
 const cloneDefaultValue = () =>
     structuredClone(editorDefault.value.default);
 
+// One render function for every editor, so Editable doesn't get a new one on each render
+const renderElement = (props: RenderElementProps) => <ElementRenderer {...props} />;
+
 function CustomSlate({
                          editor,
-                         initialValue = cloneDefaultValue(),
+                         initialValue,
                          readOnly,
                          onKeyDown,
                          onKeyUp,
                          className,
                          placeholder = "Enter some text...",
                      }: CustomSlateProps) {
+    // Slate only reads the starting value when it mounts, so it is built once per editor
+    const [startValue] = useState(() => initialValue ?? cloneDefaultValue());
+
     // Lets the right-click Cut / Copy / Paste menu edit through Slate (Editable has mounted by the time this runs)
     useEffect(() => registerSlateEditor(editor), [editor]);
 
     return (
-        <Slate editor={editor} initialValue={initialValue}>
+        <Slate editor={editor} initialValue={startValue}>
             <Editable
-                renderElement={(innerProps) => (
-                    <ElementRenderer {...innerProps} />
-                )}
+                renderElement={renderElement}
                 className={className}
                 readOnly={readOnly}
                 placeholder={!readOnly ? placeholder : undefined}

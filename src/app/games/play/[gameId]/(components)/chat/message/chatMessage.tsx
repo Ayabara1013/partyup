@@ -18,6 +18,7 @@ type ChatMessageProps = {
     canTalk: boolean;
     repliedMessage?: any;
     onReply: (message: any) => void;
+    onJump: (messageId: string) => void; // the chat window's scroll-to-message (draws earlier rows if needed)
 };
 
 // Rows from the database get a new updated_at on every change (trigger-owned), so id + updatedAt
@@ -32,11 +33,12 @@ const propsEqual = (prev: ChatMessageProps, next: ChatMessageProps) =>
     && prev.channelName === next.channelName
     && prev.canTalk === next.canTalk
     && prev.onReply === next.onReply
+    && prev.onJump === next.onJump
     && sameMessage(prev.message, next.message)
     && sameMessage(prev.repliedMessage, next.repliedMessage);
 
 export const ChatMessage = memo(function ChatMessage(
-    {message, header, game, userId, channelName, canTalk, repliedMessage, onReply}: ChatMessageProps
+    {message, header, game, userId, channelName, canTalk, repliedMessage, onReply, onJump}: ChatMessageProps
 ) {
     const setContextMenu = useContextMenuSetter();
 
@@ -115,7 +117,7 @@ export const ChatMessage = memo(function ChatMessage(
     return (
         <div className={`msg ${header ? `msg--header` : ``} ${isMentioned ? `msg--mention` : ``}`}
              onContextMenu={openMessageMenu} data-msg-id={message.id}>
-            {message.replyTo && <ReplyPreview replied={repliedMessage} game={game}/>}
+            {message.replyTo && <ReplyPreview replied={repliedMessage} game={game} onJump={onJump}/>}
             <div className="msg__gutter">
                 {header
                     ? <PlayerCardTrigger userId={message.system ? null : message.playerId} className="msg__avatar-trigger">
@@ -141,7 +143,7 @@ export const ChatMessage = memo(function ChatMessage(
                     ? <ChatMessageEditor message={message} game={game} onClose={() => setEditing(false)}/>
                     : <div className="msg__body">
                         <ChatMessageRenderer messageText={message.messageText} players={members}/>
-                        {(message.editLog?.length ?? 0) > 1 && <span className="msg__edited">(edited)</span>}
+                        {message.editedAt && <span className="msg__edited">(edited)</span>}
                         {message.locked && <span className="msg__locked" title="Locked">🔒</span>}
                     </div>
                 }
@@ -156,7 +158,7 @@ export const ChatMessage = memo(function ChatMessage(
     )
 }, propsEqual);
 
-function ReplyPreview({replied, game}: { replied?: any, game: any }) {
+function ReplyPreview({replied, game, onJump}: { replied?: any, game: any, onJump: (messageId: string) => void }) {
     if (!replied || replied.deleted) {
         return <div className="reply reply--missing">Original message was deleted</div>;
     }
@@ -165,11 +167,8 @@ function ReplyPreview({replied, game}: { replied?: any, game: any }) {
     const avatarUrl = replied.system ? null : findAuthor(game, replied.playerId)?.imageUrl;
     const created = replied.createdAt ? formatDiscordTime(new Date(replied.createdAt)) : ``;
 
-    const jumpToOriginal = (e: any) => {
-        e.currentTarget.closest(`.message-area`)
-            ?.querySelector(`[data-msg-id="${replied.id}"]`)
-            ?.scrollIntoView({behavior: `smooth`, block: `center`});
-    }
+    // Through the chat window, which draws earlier rows first when the original isn't drawn
+    const jumpToOriginal = () => onJump(replied.id);
 
     return (
         <div className="reply" onClick={jumpToOriginal}>
