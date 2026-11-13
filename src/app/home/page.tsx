@@ -8,6 +8,7 @@ import {useAuthManager} from "@/app/(context)/authContext";
 import HomeActionCard from "@/app/home/(components)/homeActionCard";
 import {allText} from "@/lib/assets/homeText";
 import {dirHref} from "@/lib/routing/directoy";
+import {SUBTLE_BUTTON} from "@/components/ui/buttonClasses";
 import {gameSystems} from "@/lib/assets/gameSystems";
 
 export default function Home() {
@@ -43,7 +44,7 @@ export default function Home() {
                         {!gamesLoading &&
                           <span className="panel__desc">{activeGames.length} in progress</span>}
                     </div>
-                    <Link href={dirHref.games.root} className="btn btn-sm btn-ghost border border-neutral-content/20">
+                    <Link href={dirHref.games.root} className={SUBTLE_BUTTON}>
                         Your games
                     </Link>
                 </header>
@@ -56,7 +57,7 @@ export default function Home() {
                             </p>
                             : <ul className="home__active-list">
                                 {activeGames.map(({game, role}) =>
-                                    <li key={game.id} className="home__active-item">
+                                    <li key={game.id} className="home__active-item soft-card">
                                         <span className="home__active-name">{game.name}</span>
                                         <span className="badge badge-ghost badge-sm">{gameSystems.valueToTitle[game.system] ?? game.system}</span>
                                         <span className={`badge badge-sm ${role === `GM` ? `badge-primary` : `badge-primary badge-outline`}`}>{role}</span>

@@ -11,6 +11,7 @@ import {
 } from "@/lib/character/build";
 import Dnd5eFields from "./dnd5eFields";
 import Pf2eFields from "./pf2eFields";
+import {SUBTLE_BUTTON} from "@/components/ui/buttonClasses";
 
 export type CharacterSystem = `dnd5e` | `pf2e`;
 
@@ -131,10 +132,10 @@ export default function CharacterForm({system, gameName, playerName, onClose, on
                     </section>
                 </div>
 
-                <footer className="character-form__footer">
+                <footer className="character-form__footer panel__footer">
                     {submitted && Object.keys(errors).length > 0 &&
                       <span className="field__error mr-auto">Fix the highlighted fields to continue.</span>}
-                    <button type="button" className="btn btn-sm btn-ghost border border-neutral-content/20" onClick={onClose}
+                    <button type="button" className={SUBTLE_BUTTON} onClick={onClose}
                             disabled={saving}>Cancel</button>
                     <button type="submit" className="btn btn-sm btn-primary" disabled={saving}>
                         {saving ? <span className="loading loading-spinner loading-xs"/> : `Create character`}

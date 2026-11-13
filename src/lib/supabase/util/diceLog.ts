@@ -10,6 +10,8 @@
 //   3d6 [water] -> 3 + 3 + 2 + 6 (flat) = 14 [water]
 //   Fire: 20, Water: 14
 
+import {capitalize} from "@/lib/util/strings";
+
 export type DiceLogSummary = {
     lines: string[];
     totals: string;
@@ -21,8 +23,6 @@ type Term =
     | { kind: `flat`, sign: number, value: number, source?: string }; // source: the character tag it came from
 
 type Group = { label: string, multiplier: number, terms: Term[], total: number };
-
-const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 function formatTotals(totalsByType: Record<string, number>) {
     return Object.entries(totalsByType)

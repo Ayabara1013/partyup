@@ -2,11 +2,9 @@ import {memo, useState} from "react";
 import toast from "react-hot-toast";
 import timeSince from "@/lib/util/timeSince";
 import {gameSystems} from "@/lib/assets/gameSystems";
-import {safetyChecks} from "@/lib/assets/safetyChecks";
+import {safetyChecks, SAFETY_COLUMNS} from "@/lib/assets/safetyChecks";
 import {supabaseGame} from "@/lib/supabase/db/game";
-
-// Safety tool columns on `game`, in the same order as safetyChecks.array
-const SAFETY_COLUMNS = [`sc0`, `sc1`, `sc2`, `sc3`] as const;
+import Avatar from "@/components/ui/avatar";
 
 type DiscoverGameCardProps = {
     game: any;
@@ -39,10 +37,10 @@ export default memo(function DiscoverGameCard({game, userId}: DiscoverGameCardPr
     };
 
     return (
-        <article className="discover-card">
+        <article className="discover-card soft-card">
             <div className="discover-card__top">
                 <div className="discover-card__info">
-                    <span className="discover-card__name">{game.name}</span>
+                    <span className="discover-card__name card-title">{game.name}</span>
                     <span className="badge badge-ghost badge-sm">{gameSystems.valueToTitle[game.system] ?? game.system}</span>
                     {game.ageRestriction > 10 && <span className="badge badge-warning badge-outline badge-sm">{game.ageRestriction}+</span>}
                 </div>
@@ -58,7 +56,8 @@ export default memo(function DiscoverGameCard({game, userId}: DiscoverGameCardPr
             </div>
 
             <div className="discover-card__meta">
-                <GmAvatar gm={game.gm}/>
+                <Avatar src={game.gm?.imageUrl} name={game.gm?.name} imageClassName="discover-card__avatar"
+                        fallbackClassName="discover-card__avatar discover-card__avatar--fallback"/>
                 <span>GM <strong>{game.gm?.name ?? `Unknown`}</strong></span>
                 <span aria-hidden>·</span>
                 <span>{age === `today` ? `Created today` : `Created ${age} ago`}</span>
@@ -67,7 +66,7 @@ export default memo(function DiscoverGameCard({game, userId}: DiscoverGameCardPr
             {game.description && <p className="discover-card__description">{game.description}</p>}
 
             <div className="discover-card__seats">
-                <span className="discover-card__count">{players.length} / {game.maxPlayers}</span>
+                <span className="discover-card__count card-seat-count">{players.length} / {game.maxPlayers}</span>
                 <ul className="seat-list">
                     {players.map((player) =>
                         <li key={player.id} className={`seat ${player.id === userId ? `seat--you` : `seat--filled`}`}>
@@ -86,10 +85,3 @@ export default memo(function DiscoverGameCard({game, userId}: DiscoverGameCardPr
         </article>
     );
 });
-
-function GmAvatar({gm}: { gm: any }) {
-    if (gm?.imageUrl) {
-        return <img className="discover-card__avatar" src={gm.imageUrl} alt="" loading="lazy" referrerPolicy="no-referrer"/>;
-    }
-    return <span className="discover-card__avatar discover-card__avatar--fallback">{(gm?.name ?? `?`).charAt(0).toUpperCase()}</span>;
-}

@@ -3,6 +3,7 @@ import type {Ability, Pf2eProficiency, Pf2eSkill} from "@/lib/assets/classes/cha
 import {PF2E_SKILL_ABILITIES} from "@/lib/assets/classes/characterSheet";
 import {ABILITIES, ABILITY_SHORT, PF2E_CLASSES, PF2E_PROFICIENCIES, PF2E_SKILL_LABELS} from "@/lib/character/options";
 import {DraftErrors, Pf2eDraft, pf2eSummary, signed} from "@/lib/character/build";
+import {capitalize} from "@/lib/util/strings";
 
 type Props = {
     draft: Pf2eDraft;
@@ -10,7 +11,6 @@ type Props = {
     errors: DraftErrors;
 };
 
-const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const MODIFIERS = Array.from({length: 13}, (_, i) => i - 5); // -5 .. +7
 
 function ProficiencySelect({value, onChange, className = `field__input`}: {
@@ -83,7 +83,7 @@ export default function Pf2eFields({draft, set, errors}: Props) {
                 <h3 className="character-form__heading">Attribute modifiers</h3>
                 <div className="ability-grid">
                     {ABILITIES.map(({key, label, short}) =>
-                        <label key={key} className={`ability-box ${key === draft.keyAttribute ? `ability-box--key` : ``}`} title={label}>
+                        <label key={key} className={`ability-box soft-card ${key === draft.keyAttribute ? `ability-box--key` : ``}`} title={label}>
                             <span className="ability-box__label">{short}</span>
                             <select className="ability-box__input" value={draft.attributes[key]}
                                     onChange={(e) => set({attributes: {...draft.attributes, [key]: Number(e.target.value)}})}>

@@ -2,13 +2,7 @@
 // Fills the space under the navbar (no min-h-svh, which made the page scroll).
 
 .auth-page {
-  display: flex;
   align-items: flex-start;
-  justify-content: center;
-  height: 100%;
-  min-height: 0;
-  padding: 0.5rem;
-  overflow-y: auto;
 }
 
 .auth-card {
@@ -42,11 +36,4 @@
     gap: 0.5rem;
   }
 
-  &__footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    border-top: 1px solid oklch(var(--nc) / 0.1);
-  }
 }

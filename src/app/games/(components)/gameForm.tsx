@@ -5,8 +5,9 @@ import {FormEvent, useState} from "react";
 import Field from "@/components/ui/field";
 import Link from "next/link";
 import {gameSystems} from "@/lib/assets/gameSystems";
-import {safetyChecks} from "@/lib/assets/safetyChecks";
+import {safetyChecks, SAFETY_COLUMNS} from "@/lib/assets/safetyChecks";
 import {firefoxNumberInputOnKeyDown} from "@/lib/util/browserFixes/firefox";
+import {SUBTLE_BUTTON} from "@/components/ui/buttonClasses";
 
 // Shape create.game / edit.game expect
 export type GameFormValues = {
@@ -38,7 +39,6 @@ export const EMPTY_GAME: GameFormValues = {
 };
 
 const LIMITS = {name: 80, description: 2000, minPlayers: 2, maxPlayers: 4, minAge: 10, maxAge: 99, tags: 10, tagLength: 24};
-const SAFETY_KEYS = [`sc0`, `sc1`, `sc2`, `sc3`] as const;
 
 // "Dnd, ocean ,, World" -> ["dnd", "ocean", "world"]
 function parseTags(text: string) {
@@ -108,7 +108,7 @@ export default function GameForm({title, description, initial = EMPTY_GAME, curr
     };
 
     return (
-        <div className="game-form-page">
+        <div className="centered-page">
             <form className="panel game-form" onSubmit={submit} noValidate>
                 <header className="panel__bar">
                     <div className="panel__title">
@@ -155,9 +155,9 @@ export default function GameForm({title, description, initial = EMPTY_GAME, curr
                         <legend className="field__label">Safety tools <span className="field__optional">optional</span></legend>
                         <div className="game-form__tools">
                             {safetyChecks.array.map((check, i) => {
-                                const key = SAFETY_KEYS[i];
+                                const key = SAFETY_COLUMNS[i];
                                 return (
-                                    <label key={key} className={`game-form__tool ${draft[key] ? `game-form__tool--on` : ``}`}>
+                                    <label key={key} className={`game-form__tool soft-card ${draft[key] ? `game-form__tool--on` : ``}`}>
                                         <input type="checkbox" className="checkbox checkbox-primary checkbox-sm"
                                                checked={draft[key]} onChange={(e) => set(key, e.target.checked)}/>
                                         {check.title}
@@ -187,8 +187,8 @@ export default function GameForm({title, description, initial = EMPTY_GAME, curr
                     </div>
                 </div>
 
-                <footer className="game-form__footer">
-                    <Link href={cancelHref} className="btn btn-sm btn-ghost border border-neutral-content/20">Cancel</Link>
+                <footer className="game-form__footer panel__footer">
+                    <Link href={cancelHref} className={SUBTLE_BUTTON}>Cancel</Link>
                     <button type="submit" className="btn btn-sm btn-primary" disabled={saving}>
                         {saving ? <span className="loading loading-spinner loading-xs"/> : submitLabel}
                     </button>

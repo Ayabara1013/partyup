@@ -43,11 +43,6 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border-radius: 0.75rem;
-  border: 1px solid oklch(var(--bc) / 0.1);
-  background-color: oklch(var(--b2));
-  color: oklch(var(--bc));
-  box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.5);
 
   // Player: the outer wrapper
   &__player {
@@ -66,9 +61,6 @@
 
     &--fallback {
       @apply bg-primary text-primary-content;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       font-size: 1.125rem;
       font-weight: 700;
     }

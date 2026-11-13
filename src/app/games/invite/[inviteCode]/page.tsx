@@ -8,6 +8,7 @@ import {useAuthManager} from "@/app/(context)/authContext";
 import {dirHref} from "@/lib/routing/directoy";
 import {supabaseGame} from "@/lib/supabase/db/game";
 import DiscoverGameCard from "@/app/discover/(components)/discoverGameCard";
+import {SUBTLE_BUTTON} from "@/components/ui/buttonClasses";
 
 type PageProps = {
     params: Promise<{ inviteCode: string }>;
@@ -36,7 +37,7 @@ export default function InvitePage({params}: PageProps) {
     const isMember = !!game && (game.gmUid === userId || game.players.some((p: any) => p.id === userId));
 
     return (
-        <div className="invite-page">
+        <div className="centered-page">
             <section className="panel invite">
                 <header className="panel__bar">
                     <div className="panel__title">
@@ -56,11 +57,11 @@ export default function InvitePage({params}: PageProps) {
                     }
                 </div>
 
-                <footer className="invite__footer">
+                <footer className="invite__footer panel__footer">
                     {status === `missing`
                         ? <Link href={dirHref.discover} className="btn btn-sm btn-primary">Discover games</Link>
                         : <>
-                            <Link href={dirHref.games.root} className="btn btn-sm btn-ghost border border-neutral-content/20">
+                            <Link href={dirHref.games.root} className={SUBTLE_BUTTON}>
                                 Your games
                             </Link>
                             {isMember && game.started &&

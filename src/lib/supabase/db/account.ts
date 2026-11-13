@@ -21,12 +21,5 @@ const supabaseAccount = {
                 .subscribe();
         },
     },
-    get: {
-        notifications: async (userId: string) => {
-            const {data, error} = await supabase.from(`notifications`).select()
-                .eq(`user_id`, userId);
-            return objectToCamel(data)|| [];
-        }
-    }
 }
 export {supabaseAccount}

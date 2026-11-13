@@ -1,11 +1,12 @@
 import '@/styles/auth.scss'
 import Link from 'next/link'
+import {SUBTLE_BUTTON} from "@/components/ui/buttonClasses";
 
 export default async function Page({searchParams}: { searchParams: Promise<{ error?: string }> }) {
     const {error} = await searchParams
 
     return (
-        <div className="auth-page">
+        <div className="auth-page centered-page">
             <section className="panel auth-card">
                 <header className="panel__bar">
                     <div className="panel__title">
@@ -20,8 +21,8 @@ export default async function Page({searchParams}: { searchParams: Promise<{ err
                     {error && <p className="panel__hint">Error code: {error}</p>}
                 </div>
 
-                <footer className="auth-card__footer">
-                    <Link href="/home" className="btn btn-sm btn-ghost border border-neutral-content/20">Home</Link>
+                <footer className="auth-card__footer panel__footer">
+                    <Link href="/home" className={SUBTLE_BUTTON}>Home</Link>
                     <Link href="/auth/login" className="btn btn-sm btn-primary">Try again</Link>
                 </footer>
             </section>

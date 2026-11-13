@@ -17,7 +17,7 @@ function ChatOptionHeader({title, list, highlightIndex, onSelect}: ChatOptionHea
     if (list.length === 0) return null;
 
     return (
-        <div className="chat-options" role="listbox">
+        <div className="chat-options popup-surface" role="listbox">
             {title && <div className="chat-options__title">{title}</div>}
             {list.map((item, i) =>
                 <button key={`${item.value}-${i}`} role="option" aria-selected={i === highlightIndex}

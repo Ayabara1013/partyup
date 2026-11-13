@@ -6,6 +6,7 @@ import {dirHref} from "@/lib/routing/directoy";
 import {usePopupModal} from "@/app/(context)/popupModalContext";
 import JoinRequestList from "@/app/games/your-games/(components)/joinRequestList";
 import {supabaseGame} from "@/lib/supabase/db/game";
+import {SUBTLE_BUTTON} from "@/components/ui/buttonClasses";
 
 // Below this many players a game shows its seat count as a warning
 const MIN_PLAYERS = 2;
@@ -59,10 +60,10 @@ const GameCard = memo(function GameCard({game, isGm, userId, updateGames}: GameC
     const countClass = players.length >= seats ? `text-success` : players.length < MIN_PLAYERS ? `text-warning` : ``;
 
     return (
-        <article className="game-card">
+        <article className="game-card soft-card">
             <div className="game-card__top">
                 <div className="game-card__info">
-                    <span className="game-card__name">{game.name}</span>
+                    <span className="game-card__name card-title">{game.name}</span>
                     <span className="badge badge-ghost badge-sm uppercase">{game.system}</span>
                     <span className={`badge badge-sm ${game.started ? `badge-success badge-outline` : `badge-ghost`}`}>
                         {game.started ? `In progress` : `Not started`}
@@ -73,7 +74,7 @@ const GameCard = memo(function GameCard({game, isGm, userId, updateGames}: GameC
             </div>
 
             <div className="game-card__seats">
-                <span className={`game-card__count ${countClass}`}>{players.length} / {seats}</span>
+                <span className={`game-card__count card-seat-count ${countClass}`}>{players.length} / {seats}</span>
                 <SeatList game={game} players={players} seats={seats} userId={userId}/>
             </div>
         </article>
@@ -128,17 +129,16 @@ function GameActions({game, isGm, updateGames}: { game: any, isGm: boolean, upda
         showModal();
     };
 
-    const subtleButton = `btn btn-sm btn-ghost border border-neutral-content/20`;
 
     return (
         <div className="game-card__actions">
             {isGm && !game.started &&
-              <button className={subtleButton} onClick={showJoinRequests} disabled={requestCount === 0}>
+              <button className={SUBTLE_BUTTON} onClick={showJoinRequests} disabled={requestCount === 0}>
                 Join requests
                 {requestCount > 0 && <span className="badge badge-sm badge-primary">{requestCount}</span>}
               </button>
             }
-            {isGm && <Link href={dirHref.games.edit(game.id)} className={subtleButton}>Edit</Link>}
+            {isGm && <Link href={dirHref.games.edit(game.id)} className={SUBTLE_BUTTON}>Edit</Link>}
             {game.started
                 ? <Link href={dirHref.games.play(game.id)} className="btn btn-sm btn-primary">Play</Link>
                 : isGm && <button className="btn btn-sm btn-primary" onClick={startGame}>Start</button>}

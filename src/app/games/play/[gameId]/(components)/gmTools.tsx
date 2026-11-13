@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 import {useContextMenuSetter} from "@/app/(context)/contextMenuContext";
 import {supabaseInGame} from "@/lib/supabase/db/inGame";
 import {GraveCharacter, RosterEntry, supabaseCharacter} from "@/lib/supabase/db/character";
+import {menuPositionStyle} from "@/components/ui/menuPosition";
 
 type GMToolsProps = {
     game: any;
@@ -10,9 +11,6 @@ type GMToolsProps = {
     roster: RosterEntry[];
     graveyard: GraveCharacter[];
 };
-
-// Approximate menu width, to open it leftwards near the right edge of the window
-const MENU_WIDTH = 200;
 
 export default function GMTools({game, settings, roster, graveyard}: GMToolsProps) {
     const players: any[] = game.players ?? [];
@@ -27,7 +25,6 @@ export default function GMTools({game, settings, roster, graveyard}: GMToolsProp
         const fromKeyboard = e.clientX === 0 && e.clientY === 0;
         const x = fromKeyboard ? rect.left : e.clientX;
         const y = fromKeyboard ? rect.bottom : e.clientY;
-        const openLeft = x + MENU_WIDTH > window.innerWidth;
 
         const seat = roster.find((entry) => entry.userId === player.id);
         const character = seat?.character;
@@ -58,7 +55,7 @@ export default function GMTools({game, settings, roster, graveyard}: GMToolsProp
         setContextMenu({
             clicked: true,
             options,
-            style: {top: `${y}px`, ...(openLeft ? {right: `${window.innerWidth - x}px`} : {left: `${x}px`})},
+            style: menuPositionStyle(x, y),
         });
     };
 

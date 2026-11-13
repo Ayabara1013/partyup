@@ -1,15 +1,4 @@
-import {getMillisec} from "@/lib/supabase/util/dateConversion";
 import type {CachedMessage} from "@/lib/util/localStorage";
-
-type TimestampLike = {
-    seconds: number;
-};
-
-type MessageLike = {
-    createdAt: TimestampLike;
-    updatedAt: TimestampLike;
-    [key: string]: any;
-};
 
 // The chat list held by useGameMessages: every message oldest first, plus the same messages indexed by id.
 // `cursor` is the newest updatedAt among *fetched* rows (the server's exact string); realtime rows never move it.
@@ -77,43 +66,6 @@ function isNewerVersion(row: CachedMessage, current: CachedMessage): boolean {
 }
 
 const msgArrayManipulation = {
-    sortByCreated(array: any[] = []) {
-        array.sort((a, b) => {
-            return getMillisec.createdAt(a) - getMillisec.createdAt(b);
-        });
-    },
-
-    sortByUpdated(array: any[]) {
-        array.sort((a, b) => {
-            return getMillisec.updatedAt(a) - getMillisec.updatedAt(b);
-        });
-    },
-
-    sortByKey<T extends Record<string, any>>(array: T[], key: keyof T) {
-        array.sort((a, b) => {
-            const x = a[key];
-            const y = b[key];
-
-            return x < y ? -1 : x > y ? 1 : 0;
-        });
-    },
-
-    combineReplaceOnKey<T extends Record<string, any>>(
-        array: T[],
-        arrayToAdd: T[],
-        key: keyof T
-    ) {
-        for (const newMsg of arrayToAdd) {
-            const index = array.findIndex((msg) => msg[key] === newMsg[key]);
-
-            if (index === -1) {
-                array.push(newMsg);
-            } else {
-                array[index] = newMsg;
-            }
-        }
-    },
-
     // Merges rows into the list by id. A message that didn't change keeps its object (so memoized rows skip it),
     // and the same state comes back when nothing changed (so React skips the update). Appending is the common
     // case; the list is only re-sorted when a row arrives out of order.

@@ -3,6 +3,7 @@
 import {useEffect, useRef, useState} from "react";
 import ChatMessageRenderer from "@/app/games/play/[gameId]/(components)/chat/message/chatMessageRenderer";
 import {supabaseInGame} from "@/lib/supabase/db/inGame";
+import Avatar from "@/components/ui/avatar";
 import {
     authorName, findAuthor, formatDiscordTime, gameMembers
 } from "@/app/games/play/[gameId]/(components)/chat/message/messageUtil";
@@ -45,7 +46,7 @@ export default function PinnedChatMessages({pinned, game, isGm, onJump}: PinnedM
             </button>
 
             {open &&
-              <div className="pinned__popover">
+              <div className="pinned__popover popup-surface">
                 <div className="pinned__title">Pinned Messages</div>
                 <div className="pinned__list">
                     {pinned.length === 0
@@ -71,9 +72,7 @@ function PinnedCard({message, game, isGm, onJump}: { message: any, game: any, is
 
     return (
         <div className="pinned__card">
-            {avatarUrl
-                ? <img className="pinned__avatar" src={avatarUrl} alt=""/>
-                : <div className="pinned__avatar pinned__avatar--fallback">{name.charAt(0).toUpperCase()}</div>}
+            <Avatar src={avatarUrl} name={name} imageClassName="pinned__avatar" fallbackClassName="pinned__avatar pinned__avatar--fallback"/>
             <div className="pinned__content">
                 <div className="msg__header">
                     <span className="msg__name">{name}</span>

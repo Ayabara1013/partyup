@@ -37,13 +37,19 @@ const supabaseGame = {
             },
             // Open public games for Discover, newest first. With userId, each game also says whether
             // that user already asked to join (one query, the request is embedded).
-            publicGameList: async ({systems, safetyChecks = [], hideAgeRestricted = false, sortBy = `time`, search = ``, userId}: {
+            // One page of open games: {games, hasMore}, or null on an error
+            publicGameList: async ({
+                systems, safetyChecks = [], hideAgeRestricted = false, sortBy = `time`, search = ``, userId,
+                offset = 0, pageSize
+            }: {
                 systems: string[];
                 safetyChecks?: string[];
                 hideAgeRestricted?: boolean;
                 sortBy?: `time` | `name`;
                 search?: string;
                 userId?: string;
+                offset?: number; // games already shown
+                pageSize: number;
             }) => {
                 let query = supabase.from(`game`)
                     .select(`id,created_at,gm_uid,name,description,system,max_players,age_restriction,sc0,sc1,sc2,sc3,tags,
@@ -65,21 +71,24 @@ const supabaseGame = {
                 // age_restriction is the minimum age; 10 is the unrestricted default
                 if (hideAgeRestricted) query = query.lte(`age_restriction`, 10);
 
+                // id as a second key keeps the order stable from one page to the next
                 query = sortBy === `name`
-                    ? query.order(`name`, {ascending: true})
-                    : query.order(`created_at`, {ascending: false});
+                    ? query.order(`name`, {ascending: true}).order(`id`, {ascending: true})
+                    : query.order(`created_at`, {ascending: false}).order(`id`, {ascending: true});
 
-                const {data, error} = await query;
+                // One row more than a page tells whether there is another page
+                const {data, error} = await query.range(offset, offset + pageSize);
                 if (error) {
                     console.error(`Error fetching public games:`, error);
                     return null;
                 }
 
-                return objectToCamel(data ?? []).map(({myRequests, ...game}: any) => ({
+                const games = objectToCamel(data ?? []).map(({myRequests, ...game}: any) => ({
                     ...game,
                     players: (game.players ?? []).map((p: any) => p.user),
                     requested: (myRequests ?? []).length > 0,
                 }));
+                return {games: games.slice(0, pageSize), hasMore: games.length > pageSize};
             },
             // Game for an invite link, in one call: GM, players and (with userId) whether that user
             // already asked to join are embedded on the RPC result. Returns null if the code matches nothing.

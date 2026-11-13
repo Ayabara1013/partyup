@@ -1,11 +1,4 @@
-import chatOptions from "@/lib/assets/chatOptions";
-
-// Same format as messageUtil: <@userId>
-const MENTION_RE = /<@([0-9a-fA-F-]{36})>/g;
-
-function parseOption(text: string) {
-    return text.split(`{`)[1]?.split(`}`);
-}
+import {MENTION_RE} from "@/lib/supabase/util/mentions";
 
 const markdownParser = {
     toDisplay: function (text: string, players: Array<any>) {
@@ -48,65 +41,9 @@ const markdownParser = {
             }
         }
 
-        function boldItalicParser(text: string, baseElement: any) {
-            return {text};
-        }
-
         return newLineParserDisplay(text)
 
     },
-    // toEditor: function (text) {
-    //   return newLineParser(text)
-    // }
-}
-
-const optionIntoObject = {
-    mention: function (text: string, baseElement: any, players: Array<any>,) {
-        let [idOnly, restOfText] = parseOption(text);
-        for (let player of players) {
-            if (idOnly === player.id) {
-                baseElement.children.push({
-                    type: 'badge',
-                    featureType: `mention`,
-                    value: `@{${idOnly}}`,
-                    children: [{text: `@${player.name}`}]
-                })
-                baseElement.children.push({text: restOfText});
-                return;
-            }
-        }
-        baseElement.children.push({text: text});
-    },
-
-    command: function (text: string, baseElement: any) {
-        // let [commandOnly, restOfText] = parseOption(text);
-        // if (chatOptions.validate.command(commandOnly)) {
-        //   baseElement.children.push({
-        //     type: 'badge',
-        //     featureType: `command`,
-        //     value: `/${commandOnly}`,
-        //     children: [{text: `/${commandOnly}`}]
-        //   })
-        //   baseElement.children.push({text: restOfText});
-        //   return;
-        // }
-        baseElement.children.push({text: text});
-    },
-
-    dice: function (text: string, baseElement: any) {
-        let [dice, restOfText] = parseOption(text);
-        if (chatOptions.validate.dice.all(dice)) {
-            baseElement.children.push({
-                type: 'badge',
-                featureType: `dice`,
-                value: `~${dice}`,
-                children: [{text: `~${dice}`}]
-            })
-            baseElement.children.push({text: restOfText});
-            return;
-        }
-        baseElement.children.push({text: text});
-    }
 }
 
 

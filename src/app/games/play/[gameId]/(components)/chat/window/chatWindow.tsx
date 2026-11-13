@@ -180,7 +180,7 @@ export const ChatWindow = memo(function ChatWindow(
                 <PinnedChatMessages pinned={pinned} game={game} isGm={isGm} onJump={jumpToMessage}/>
             </header>
 
-            <div className={`message-area chat-window__messages`} ref={messageAreaRef} onScroll={onScroll}>
+            <div className={`message-area chat-window__messages thin-scrollbar`} ref={messageAreaRef} onScroll={onScroll}>
                 {/* The first drawn row always shows its header, even if it was grouped under an earlier one */}
                 {rows.slice(start).map(({message, header}, i) =>
                     <ChatMessage key={message.id} message={message} header={header || i === 0} game={game}

@@ -1,13 +1,12 @@
-// Mentions are stored in message_text as <@userId> (Discord's format), so names can
-// contain spaces and renames don't break old messages.
-export const MENTION_RE = /<@([0-9a-fA-F-]{36})>/g;
+import {MENTION_RE} from "@/lib/supabase/util/mentions";
 
 export const mentionToken = (userId: string) => `<@${userId}>`;
 
-// The GM and every player
-export function gameMembers(game: any): any[] {
+// The GM and every player. `order` only changes the suggestion list in chatOptionsHook, which listed players first.
+export function gameMembers(game: any, order: `gmFirst` | `playersFirst` = `gmFirst`): any[] {
     if (!game) return [];
-    return [game.gm, ...(game.players ?? [])].filter(Boolean);
+    const members = order === `playersFirst` ? [...(game.players ?? []), game.gm] : [game.gm, ...(game.players ?? [])];
+    return members.filter(Boolean);
 }
 
 export function findAuthor(game: any, playerId: string | null | undefined) {

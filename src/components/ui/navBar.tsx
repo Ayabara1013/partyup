@@ -5,9 +5,9 @@ import {usePathname} from "next/navigation";
 import {ReactNode} from "react";
 import {dirHref} from "@/lib/routing/directoy";
 import {useAuthManager} from "@/app/(context)/authContext";
+import Avatar from "@/components/ui/avatar";
 
 const NAV_LINKS = [
-    {href: ``, label: `Play`},
     {href: dirHref.discover, label: `Discover`},
     {href: dirHref.games.root, label: `Your Games`},
 ];
@@ -41,7 +41,7 @@ export default function NavBar() {
                 <div className="dropdown dropdown-end">
                     <NavBarAvatar name={user?.userMetadata?.name}
                                   src={user?.userMetadata?.avatarUrl ?? user?.userMetadata?.picture}/>
-                    <ul tabIndex={-1} className="app-nav__menu menu dropdown-content">
+                    <ul tabIndex={-1} className="app-nav__menu menu dropdown-content popup-surface">
                         {user
                             ? <>
                                 <li className="menu-title">{user.userMetadata.name}</li>
@@ -51,7 +51,7 @@ export default function NavBar() {
                                         <Link href={link.href} onClick={closeMenu}>{link.label}</Link>
                                     </li>
                                 )}
-                                <li><Link href={dirHref.home} onClick={closeMenu}>Your Profile</Link></li>
+                                <li><Link href={dirHref.user.profile} onClick={closeMenu}>Your Profile</Link></li>
                                 <li><Link href={dirHref.user.settings} onClick={closeMenu}>Settings</Link></li>
                                 <li><Link href={dirHref.home} onClick={() => { closeMenu(); signOut(); }}>Log Out</Link></li>
                             </>
@@ -79,9 +79,7 @@ function NavLink({href, active, children}: { href: string, active: boolean, chil
 function NavBarAvatar({name, src}: { name?: string, src?: string }) {
     return (
         <div tabIndex={0} role="button" className="btn btn-ghost btn-circle" aria-label="Account menu">
-            {src
-                ? <img className="app-nav__avatar" src={src} alt="" referrerPolicy="no-referrer"/>
-                : <div className="app-nav__avatar app-nav__avatar--fallback">{(name ?? `?`).charAt(0).toUpperCase()}</div>}
+            <Avatar src={src} name={name} imageClassName="app-nav__avatar" fallbackClassName="app-nav__avatar app-nav__avatar--fallback"/>
         </div>
     )
 }

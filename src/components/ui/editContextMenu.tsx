@@ -1,13 +1,12 @@
-import type {CSSProperties, ReactNode} from "react";
+import type {ReactNode} from "react";
 import toast from "react-hot-toast";
+import {menuPositionStyle} from "@/components/ui/menuPosition";
 
 // Custom Cut / Copy / Paste menu for text inputs, textareas and contenteditable editors (the Slate chat box),
 // replacing the browser menu the app blocks everywhere.
 
 // Input types that hold editable text (checkboxes, buttons, ranges etc. get no menu)
 const TEXT_INPUT_TYPES = new Set([``, `text`, `search`, `url`, `tel`, `email`, `password`, `number`]);
-
-const MENU_WIDTH = 200;
 
 // What the menu needs from an editor that keeps its own selection and document (the Slate chat box). The editor
 // registers it for its editable element (components/slatejs/util/editMenuAdapter.ts), so this file, and with it the
@@ -129,7 +128,7 @@ const shortcut = (key: string) =>
     `${typeof navigator !== `undefined` && /Mac|iPhone|iPad/.test(navigator.platform) ? `⌘` : `Ctrl+`}${key}`;
 
 // The menu state for the app's context menu (contextMenuContext): items keep focus in the field when clicked
-export function editMenu(el: HTMLElement, x: number, y: number): { clicked: true, style: CSSProperties, options: ReactNode } {
+export function editMenu(el: HTMLElement, x: number, y: number): { clicked: true, style: ReturnType<typeof menuPositionStyle>, options: ReactNode } {
     const s = snapshot(el);
     const hasSelection = s.text.length > 0 && !s.password;
     const canPaste = !s.readOnly && typeof navigator !== `undefined` && !!navigator.clipboard?.readText;
@@ -142,10 +141,9 @@ export function editMenu(el: HTMLElement, x: number, y: number): { clicked: true
             <span className="context-menu__shortcut">{shortcut(key)}</span>
         </li>;
 
-    const openLeft = x + MENU_WIDTH > window.innerWidth;
     return {
         clicked: true,
-        style: {top: `${y}px`, ...(openLeft ? {right: `${window.innerWidth - x}px`} : {left: `${x}px`})},
+        style: menuPositionStyle(x, y),
         options: [
             item(`X`, `Cut`, hasSelection && !s.readOnly, cut),
             item(`C`, `Copy`, hasSelection, copy),

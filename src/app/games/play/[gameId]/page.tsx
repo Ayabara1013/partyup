@@ -181,7 +181,7 @@ export default function PlayPage({params}: PageProps) {
                             </header>
                             <div className='panel__body panel__actions'>
                                 {!isGm && CHARACTER_SYSTEMS.includes(gameObject.system) &&
-                                  <button className="panel-action" onClick={() => setCreatorOpen(true)} disabled={!canCreateCharacter}
+                                  <button className="panel-action soft-card" onClick={() => setCreatorOpen(true)} disabled={!canCreateCharacter}
                                           onPointerEnter={canCreateCharacter ? preloadCharacterForm : undefined}
                                           onFocus={canCreateCharacter ? preloadCharacterForm : undefined}>
                                       <span className="panel-action__title">Create Character</span>
@@ -194,7 +194,7 @@ export default function PlayPage({params}: PageProps) {
                                       </span>
                                   </button>
                                 }
-                                <button className="panel-action" onClick={clearLocalMessages}>
+                                <button className="panel-action soft-card" onClick={clearLocalMessages}>
                                     <span className="panel-action__title">Clear Local Messages</span>
                                     <span className="panel-action__sub">Messages are cached in your browser. Clear them to re-download this game&apos;s chat.</span>
                                 </button>

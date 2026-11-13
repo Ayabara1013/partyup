@@ -1,7 +1,7 @@
 'use client'
 
 import {useState} from 'react'
-import {createClient} from '@/lib/client'
+import {supabase} from '@/lib/supabase/client/client'
 
 type Provider = `github` | `google`;
 
@@ -20,7 +20,7 @@ export function LoginForm({next}: { next: string }) {
         setError(null)
 
         // Both providers return through /auth/oauth, which finishes sign-in and redirects to `next`
-        const {error} = await createClient().auth.signInWithOAuth({
+        const {error} = await supabase.auth.signInWithOAuth({
             provider,
             options: {redirectTo: `${window.location.origin}/auth/oauth?next=${encodeURIComponent(next)}`},
         })

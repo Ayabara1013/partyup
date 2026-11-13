@@ -30,7 +30,7 @@ export default function JoinRequestList({game, onAccepted}: JoinRequestListProps
     return (
         <ul className="join-requests">
             {requests.map((request) =>
-                <li key={request.id} className="join-requests__item">
+                <li key={request.id} className="join-requests__item soft-card">
                     <span className="join-requests__name">{request.name}</span>
                     <button className="btn btn-sm btn-primary" onClick={() => accept(request.id)}
                             disabled={busyId !== null}>

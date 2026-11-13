@@ -10,7 +10,7 @@ type ChatReplyHeaderProps = {
 // "Replying to Name — message…  ✕" bar shown above the chat input.
 function ChatReplyHeader({replyTo, game, onCancel}: ChatReplyHeaderProps) {
     return (
-        <div className="chat-reply-bar">
+        <div className="chat-reply-bar popup-surface">
             <span className="chat-reply-bar__label">Replying to</span>
             <span className="chat-reply-bar__name">{authorName(replyTo, game)}</span>
             <span className="chat-reply-bar__text">{previewText(replyTo, game)}</span>

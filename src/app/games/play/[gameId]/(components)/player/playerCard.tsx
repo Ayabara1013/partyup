@@ -3,6 +3,8 @@
 import '@/styles/games/play/playerCard.scss';
 import {createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
 import type {RosterEntry} from "@/lib/supabase/db/character";
+import {gameMembers} from "@/app/games/play/[gameId]/(components)/chat/message/messageUtil";
+import Avatar from "@/components/ui/avatar";
 
 type OpenCard = (userId: string, anchor: HTMLElement) => void;
 
@@ -60,10 +62,9 @@ export function PlayerCardProvider({game, roster, currentUserId, children}: Play
     }, [card]);
 
     const member = useMemo(() => {
-        if (!card || !game) return null;
-        if (game.gm?.id === card.userId) return {user: game.gm, isGm: true};
-        const player = (game.players ?? []).find((p: any) => p.id === card.userId);
-        return player ? {user: player, isGm: false} : null;
+        if (!card) return null;
+        const user = gameMembers(game).find((p: any) => p.id === card.userId);
+        return user ? {user, isGm: user.id === game?.gm?.id} : null;
     }, [card, game]);
 
     const seat = card ? roster.find((entry) => entry.userId === card.userId) : undefined;
@@ -72,7 +73,7 @@ export function PlayerCardProvider({game, roster, currentUserId, children}: Play
         <PlayerCardContext.Provider value={open}>
             {children}
             {card && member &&
-              <div ref={cardRef} className="player-card" style={{top: card.top, left: card.left}} role="dialog"
+              <div ref={cardRef} className="player-card popup-surface" style={{top: card.top, left: card.left}} role="dialog"
                    aria-label={`${member.user.name}'s profile`}>
                   <PlayerCardContent user={member.user} isGm={member.isGm} isYou={member.user.id === currentUserId}
                                      seat={seat}/>
@@ -91,9 +92,8 @@ export function PlayerCardContent({user, isGm, isYou, seat}: { user: any, isGm: 
     return (
         <>
             <header className="player-card__player">
-                {user.imageUrl
-                    ? <img className="player-card__avatar" src={user.imageUrl} alt="" referrerPolicy="no-referrer"/>
-                    : <span className="player-card__avatar player-card__avatar--fallback">{(user.name ?? `?`).charAt(0).toUpperCase()}</span>}
+                <Avatar src={user.imageUrl} name={user.name} imageClassName="player-card__avatar"
+                        fallbackClassName="player-card__avatar player-card__avatar--fallback"/>
                 <div className="player-card__who">
                     <span className="player-card__name">{user.name}{isYou && <span className="player-card__you"> (you)</span>}</span>
                     <span className={`badge badge-sm ${isGm ? `badge-primary` : `badge-primary badge-outline`}`}>{isGm ? `Game Master` : `Player`}</span>

@@ -1,11 +1,5 @@
 // Small shared helpers. `.h-full` intentionally extends Tailwind's h-full with max-height (layouts rely on it).
 
-.center {
-  display: flex;
-  align-content: space-evenly;
-  justify-content: space-evenly;
-}
-
 .h-full {
   max-height: 100%;
   height: 100%;

@@ -1,8 +1,5 @@
 import {gameSystems} from "@/lib/assets/gameSystems";
-import {safetyChecks} from "@/lib/assets/safetyChecks";
-
-// Safety tool columns on `game`, in the same order as safetyChecks.array
-const SAFETY_COLUMNS = [`sc0`, `sc1`, `sc2`, `sc3`];
+import {safetyChecks, SAFETY_COLUMNS} from "@/lib/assets/safetyChecks";
 
 export type DiscoverFilterState = {
     search: string;

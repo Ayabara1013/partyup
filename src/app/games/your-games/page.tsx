@@ -5,6 +5,7 @@ import Link from "next/link";
 import {dirHref} from "@/lib/routing/directoy";
 import {useAuthManager} from "@/app/(context)/authContext";
 import MyGamesList from "@/app/games/your-games/(components)/gameList";
+import {SUBTLE_BUTTON} from "@/components/ui/buttonClasses";
 
 export default function Page() {
     const {user, gmGames, playerGames, gamesLoading, updateGames} = useAuthManager();
@@ -17,7 +18,7 @@ export default function Page() {
                 empty="You aren't running any games yet."/>
             <MyGamesList
                 type="player" games={playerGames} loading={gamesLoading} userId={user?.id} updateGames={updateGames}
-                action={<Link href={dirHref.discover} className="btn btn-sm btn-ghost border border-neutral-content/20">Find games</Link>}
+                action={<Link href={dirHref.discover} className={SUBTLE_BUTTON}>Find games</Link>}
                 empty="You haven't joined any games yet."/>
         </div>
     )

@@ -28,9 +28,6 @@ export type SavedChat = {
 };
 
 const keys = {
-    notifications: (uid: string) => `${uid}-notifications`,
-    notificationTime: (uid: string) => `${uid}-notificationTime`,
-    otherUpdates: (uid: string) => `${uid}-otherUpdates`,
     chatLog: (gid: string) => `${gid}-chatLog-v${CHAT_LOG_VERSION}`,
     settings: (gid: string) => `${gid}-settings`,
 };
@@ -62,13 +59,6 @@ function remove(key: string) {
     if (hasStorage()) localStorage.removeItem(key);
 }
 
-function getSetTimestamp(key: string): number {
-    const now = Date.now();
-    const previous = read<number | null>(key, null);
-    write(key, now);
-    return previous ?? now;
-}
-
 function normalizeMessage(m: any): CachedMessage {
     return {...m, channel: Array.isArray(m.channel) ? m.channel : [m.channel]};
 }
@@ -85,17 +75,6 @@ export function slimMessage(message: CachedMessage): CachedMessage {
     }
     return saved as CachedMessage;
 }
-
-const lsAccount = {
-    notificationTime: (uid: string) => getSetTimestamp(keys.notificationTime(uid)),
-    getLastOtherUpdateTime: (uid: string) => getSetTimestamp(keys.otherUpdates(uid)),
-    notifications: {
-        get: (uid: string) => read<any[]>(keys.notifications(uid), []),
-        set: (uid: string, notifications: any[]) => {
-            if (uid && notifications) write(keys.notifications(uid), notifications);
-        },
-    },
-};
 
 const lsInGame = {
     get: {
@@ -119,12 +98,6 @@ const lsInGame = {
     },
     clear: {
         chatLog: (gid: string) => remove(keys.chatLog(gid)),
-        allChatLogs: () => {
-            if (!hasStorage()) return;
-            Object.keys(localStorage)
-                .filter((k) => /-chatLog(-v\d+)?$/.test(k))
-                .forEach(remove);
-        },
         legacy: () => {
             // remove chat logs from older cache versions
             if (!hasStorage()) return;
@@ -137,6 +110,5 @@ const lsInGame = {
 
 
 export {
-    lsAccount,
     lsInGame
 }

@@ -1,5 +1,6 @@
 import {useMemo} from "react";
 import markdownParser from "@/components/slatejs/util/markdownParser";
+import {mentionUserId} from "@/lib/supabase/util/mentions";
 import BadgeElement from "@/components/slatejs/(customElements)/badgeElement";
 import DefaultElement from "@/components/slatejs/(customElements)/defaultElement";
 import {PlayerCardTrigger} from "@/app/games/play/[gameId]/(components)/player/playerCard";
@@ -28,7 +29,7 @@ function ObjectRenderer({messageObject, className}: { messageObject: any, classN
         case `badge`:
             if (messageObject.featureType === `mention`) {
                 // value is "<@userId>"; clicking the pill opens that player's card
-                const userId = /^<@([0-9a-f-]{36})>$/i.exec(messageObject.value ?? ``)?.[1];
+                const userId = mentionUserId(messageObject.value ?? ``);
                 return <PlayerCardTrigger userId={userId} className="mention">{messageObject.children[0]?.text}</PlayerCardTrigger>
             }
             return (

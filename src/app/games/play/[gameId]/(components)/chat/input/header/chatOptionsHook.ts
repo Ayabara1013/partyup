@@ -4,6 +4,7 @@ import {BaseEditor, Transforms} from "slate";
 import {ReactEditor} from "slate-react";
 import {editorFix, editorTools} from "@/components/slatejs/util/editorUtil";
 import type {ChatOption} from "@/app/games/play/[gameId]/(components)/chat/input/header/chatOptionHeader";
+import {gameMembers} from "@/app/games/play/[gameId]/(components)/chat/message/messageUtil";
 
 type CustomEditor = BaseEditor & ReactEditor;
 
@@ -58,8 +59,7 @@ export const useChatOptions = (editor: CustomEditor, game: any) => {
     const [highlightIndex, setHighlightIndex] = useState(0);
 
     // The GM and every player, for @mention suggestions (lowercased once, not per keystroke)
-    const members = useMemo<Member[]>(() => (game ? [...(game.players ?? []), game.gm] : [])
-        .filter(Boolean)
+    const members = useMemo<Member[]>(() => gameMembers(game, `playersFirst`)
         .map((p: any) => ({value: p.id, name: p.name, search: (p.name ?? ``).toLowerCase()})), [game]);
 
     const close = () => {

@@ -6,7 +6,7 @@ export default async function Page({searchParams}: { searchParams: Promise<{ nex
     const {next} = await searchParams
 
     return (
-        <div className="auth-page">
+        <div className="auth-page centered-page">
             <LoginForm next={safeNextPath(next)}/>
         </div>
     )

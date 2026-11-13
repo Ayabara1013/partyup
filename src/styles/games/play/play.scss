@@ -29,8 +29,6 @@
   min-width: 0;
   padding: 0.625rem 0.875rem;
   border-radius: 0.75rem;
-  border: 1px solid oklch(var(--bc) / 0.15);
-  background-color: oklch(var(--b1) / 0.6);
   color: oklch(var(--bc));
   text-align: left;
   transition: border-color 0.15s, background-color 0.15s;

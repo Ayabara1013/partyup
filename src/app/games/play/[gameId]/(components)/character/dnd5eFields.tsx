@@ -3,6 +3,7 @@ import type {Dnd5eSkill, Dnd5eTraining} from "@/lib/assets/classes/characterShee
 import {DND5E_SKILL_ABILITIES} from "@/lib/assets/classes/characterSheet";
 import {ABILITIES, ABILITY_SHORT, DND5E_ALIGNMENTS, DND5E_CLASSES, DND5E_SKILL_LABELS, DND5E_STANDARD_ARRAY} from "@/lib/character/options";
 import {Dnd5eDraft, DraftErrors, dnd5eSummary, signed} from "@/lib/character/build";
+import {SUBTLE_BUTTON_XS} from "@/components/ui/buttonClasses";
 
 type Props = {
     draft: Dnd5eDraft;
@@ -61,11 +62,11 @@ export default function Dnd5eFields({draft, set, errors}: Props) {
                 <div className="character-form__heading-row">
                     <h3 className="character-form__heading">Ability scores</h3>
                     <div className="flex gap-2">
-                        <button type="button" className="btn btn-xs btn-ghost border border-neutral-content/20"
+                        <button type="button" className={SUBTLE_BUTTON_XS}
                                 onClick={() => set({scores: Object.fromEntries(ABILITIES.map((a, i) => [a.key, DND5E_STANDARD_ARRAY[i]])) as Dnd5eDraft[`scores`]})}>
                             Standard array
                         </button>
-                        <button type="button" className="btn btn-xs btn-ghost border border-neutral-content/20"
+                        <button type="button" className={SUBTLE_BUTTON_XS}
                                 onClick={() => set({scores: Object.fromEntries(ABILITIES.map((a) => [a.key, 10])) as Dnd5eDraft[`scores`]})}>
                             All 10
                         </button>

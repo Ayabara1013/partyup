@@ -3,6 +3,8 @@ import ChatMessageRenderer from "@/app/games/play/[gameId]/(components)/chat/mes
 import {PlayerCardTrigger} from "@/app/games/play/[gameId]/(components)/player/playerCard";
 import ChatMessageEditor from "@/app/games/play/[gameId]/(components)/chat/message/chatMessageEditor";
 import {useContextMenuSetter} from "@/app/(context)/contextMenuContext";
+import {menuPositionStyle} from "@/components/ui/menuPosition";
+import Avatar from "@/components/ui/avatar";
 import {summarizeDiceLog} from "@/lib/supabase/util/diceLog";
 import {supabaseInGame} from "@/lib/supabase/db/inGame";
 import {
@@ -81,12 +83,7 @@ export const ChatMessage = memo(function ChatMessage(
 
     const openMessageMenu = (e: any) => {
         e.preventDefault();
-        // Open to the left of the cursor when the menu would run off the right edge
-        const openLeft = e.clientX + 200 > window.innerWidth;
-        const style = {
-            top: `${e.clientY}px`,
-            ...(openLeft ? {right: `${window.innerWidth - e.clientX}px`} : {left: `${e.clientX}px`})
-        };
+        const style = menuPositionStyle(e.clientX, e.clientY);
         const item = (key: string, label: string, onClick: () => void) =>
             <li className="btn btn-ghost btn-sm" onClick={onClick} key={key}>{label}</li>;
 
@@ -121,12 +118,8 @@ export const ChatMessage = memo(function ChatMessage(
             <div className="msg__gutter">
                 {header
                     ? <PlayerCardTrigger userId={message.system ? null : message.playerId} className="msg__avatar-trigger">
-                        {avatarUrl
-                            ? <img className="msg__avatar" src={avatarUrl} alt="" loading="lazy" decoding="async"/>
-                            : <span
-                                className={`msg__avatar msg__avatar--fallback ${message.system ? `bg-black text-white` : `bg-primary text-primary-content`}`}>
-                                {name.charAt(0).toUpperCase()}
-                            </span>}
+                        <Avatar src={avatarUrl} name={name} imageClassName="msg__avatar"
+                                fallbackClassName={`msg__avatar msg__avatar--fallback ${message.system ? `bg-black text-white` : `bg-primary text-primary-content`}`}/>
                     </PlayerCardTrigger>
                     : <time className="msg__hover-time" title={fullTime}>{shortTime}</time>
                 }
@@ -172,9 +165,7 @@ function ReplyPreview({replied, game, onJump}: { replied?: any, game: any, onJum
 
     return (
         <div className="reply" onClick={jumpToOriginal}>
-            {avatarUrl
-                ? <img className="reply__avatar" src={avatarUrl} alt="" loading="lazy" decoding="async"/>
-                : <span className="reply__avatar reply__avatar--fallback">{name.charAt(0).toUpperCase()}</span>}
+            <Avatar src={avatarUrl} name={name} imageClassName="reply__avatar" fallbackClassName="reply__avatar reply__avatar--fallback"/>
             <span className="reply__name">{name}</span>
             <span className="reply__text">{previewText(replied, game)}</span>
 

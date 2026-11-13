@@ -13,7 +13,7 @@ import ChatReplyHeader from "@/app/games/play/[gameId]/(components)/chat/input/h
 
 
 // Slash commands offered in the suggestion list
-const CHAT_COMMANDS = [`roll`, `r`];
+const CHAT_COMMANDS = [`roll`];
 
 type ChatInputProps = {
     name: string;
@@ -47,8 +47,10 @@ export default memo(function ChatInput({name, hidden, game, replyTo, onCancelRep
 
         if (!block && isHotkey("enter", e.nativeEvent)) {
             e.preventDefault();
-            supabaseInGame.set.addMessage(game.id, editorTools.getEditorStringValue(editor), userId ?? '', name,
-                null, replyTo?.id ?? null)
+            const text = editorTools.getEditorStringValue(editor);
+            // Nothing but spaces or blank lines: send nothing, keep the editor and the reply as they are
+            if (!text.trim()) return;
+            supabaseInGame.set.addMessage(game.id, text, userId ?? '', name, null, replyTo?.id ?? null)
             editorTools.resetEditor(editor);
             onCancelReply?.();
         }
