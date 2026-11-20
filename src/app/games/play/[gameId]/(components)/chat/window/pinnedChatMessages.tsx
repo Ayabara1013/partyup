@@ -4,6 +4,7 @@ import {useEffect, useRef, useState} from "react";
 import ChatMessageRenderer from "@/app/games/play/[gameId]/(components)/chat/message/chatMessageRenderer";
 import {supabaseInGame} from "@/lib/supabase/db/inGame";
 import Avatar from "@/components/ui/avatar";
+import {summarizeDiceLog} from "@/lib/supabase/util/diceLog";
 import {
     authorName, findAuthor, formatDiscordTime, gameMembers
 } from "@/app/games/play/[gameId]/(components)/chat/message/messageUtil";
@@ -67,12 +68,17 @@ export default function PinnedChatMessages({pinned, game, isGm, onJump}: PinnedM
 
 function PinnedCard({message, game, isGm, onJump}: { message: any, game: any, isGm: boolean, onJump: () => void }) {
     const name = authorName(message, game);
-    const avatarUrl = findAuthor(game, message.playerId)?.imageUrl;
+    // A dice result: the plain System avatar the chat shows, and its dice lines under the text
+    const avatarUrl = message.system ? null : findAuthor(game, message.playerId)?.imageUrl;
+    const dice = message.system ? summarizeDiceLog(message.log) : null;
     const time = message.createdAt ? formatDiscordTime(new Date(message.createdAt)) : ``;
 
     return (
         <div className="pinned__card">
-            <Avatar src={avatarUrl} name={name} imageClassName="pinned__avatar" fallbackClassName="pinned__avatar pinned__avatar--fallback"/>
+            <Avatar src={avatarUrl} name={name} imageClassName="pinned__avatar"
+                    fallbackClassName={message.system
+                        ? `pinned__avatar msg__avatar--fallback bg-black text-white`
+                        : `pinned__avatar pinned__avatar--fallback`}/>
             <div className="pinned__content">
                 <div className="msg__header">
                     <span className="msg__name">{name}</span>
@@ -81,6 +87,12 @@ function PinnedCard({message, game, isGm, onJump}: { message: any, game: any, is
                 <div className="msg__body">
                     <ChatMessageRenderer messageText={message.messageText} players={gameMembers(game)}/>
                 </div>
+                {dice && (dice.error
+                    ? <div className="msg__dice msg__dice--error">{dice.error}</div>
+                    : <div className="msg__dice">
+                        {dice.lines.map((line, i) => <div key={i}>{line}</div>)}
+                        {dice.totals && <div className="msg__dice-totals">{dice.totals}</div>}
+                    </div>)}
             </div>
             <div className="pinned__actions">
                 <button className="btn btn-xs" onClick={onJump}>Jump</button>

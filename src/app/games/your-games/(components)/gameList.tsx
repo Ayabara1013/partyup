@@ -65,6 +65,9 @@ const GameCard = memo(function GameCard({game, isGm, userId, updateGames}: GameC
                 <div className="game-card__info">
                     <span className="game-card__name card-title">{game.name}</span>
                     <span className="badge badge-ghost badge-sm uppercase">{game.system}</span>
+                    {game.premade &&
+                      <span className="badge badge-ghost badge-sm max-w-full" title={game.premade}><span className="truncate">{game.premade}</span></span>}
+                    {!game.isPublic && <span className="badge badge-outline badge-sm">Private</span>}
                     <span className={`badge badge-sm ${game.started ? `badge-success badge-outline` : `badge-ghost`}`}>
                         {game.started ? `In progress` : `Not started`}
                     </span>

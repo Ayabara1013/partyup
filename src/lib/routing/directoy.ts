@@ -1,12 +1,13 @@
-export const domainHref = process.env.NEXT_PUBLIC_SITE_URL ?? `http://localhost:3000`;
-
 export const dirHref = {
     discover: `/discover`,
     home: `/home`,
     games: {
         root: `/games/your-games`,
         create: `/games/create`,
-        inviteLink: (inviteCode: string) => `${domainHref}/games/invite/${inviteCode}`,
+        // The hosted address when NEXT_PUBLIC_SITE_URL is set (so a link copied on localhost still points to the live
+        // site), else the page's own address (call it in the browser only)
+        inviteLink: (inviteCode: string) =>
+            `${process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin}/games/invite/${inviteCode}`,
         play: (gameId: string) => `/games/play/${gameId}`,
         edit: (gameId: string) => `/games/edit/${gameId}`,
     },

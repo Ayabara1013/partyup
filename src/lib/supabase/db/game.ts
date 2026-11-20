@@ -40,10 +40,11 @@ const supabaseGame = {
             // One page of open games: {games, hasMore}, or null on an error
             publicGameList: async ({
                 systems, safetyChecks = [], hideAgeRestricted = false, sortBy = `time`, search = ``, userId,
-                offset = 0, pageSize
+                premade = null, offset = 0, pageSize
             }: {
                 systems: string[];
                 safetyChecks?: string[];
+                premade?: string | null; // only games running this premade campaign
                 hideAgeRestricted?: boolean;
                 sortBy?: `time` | `name`;
                 search?: string;
@@ -52,7 +53,7 @@ const supabaseGame = {
                 pageSize: number;
             }) => {
                 let query = supabase.from(`game`)
-                    .select(`id,created_at,gm_uid,name,description,system,max_players,age_restriction,sc0,sc1,sc2,sc3,tags,
+                    .select(`id,created_at,gm_uid,name,description,system,max_players,age_restriction,sc0,sc1,sc2,sc3,tags,premade,
                     gm:user!game_gm_id_fkey (id,name,image_url),
                     players:game_player!game_player_game_id_fkey (
                         user:user!game_player_user_id_fkey (id,name,image_url)),
@@ -62,6 +63,7 @@ const supabaseGame = {
 
                 if (userId) query = query.eq(`myRequests.user_id`, userId);
                 for (const sc of safetyChecks) query = query.eq(sc, true);
+                if (premade) query = query.eq(`premade`, premade);
 
                 // Terms are separated by ";". Characters that would break the filter syntax are dropped.
                 for (const term of search.split(`;`).map((t) => t.replace(/[,()"\\{}%*]/g, ``).trim()).filter(Boolean)) {
@@ -119,6 +121,7 @@ const supabaseGame = {
                         sc2: data.sc2,
                         sc3: data.sc3,
                         tags: data.tags,
+                        premade: data.premade ?? null,
                         started: false
                     }
                 ]).select(`id,name`).single();
@@ -145,7 +148,8 @@ const supabaseGame = {
                         sc1: data.sc1,
                         sc2: data.sc2,
                         sc3: data.sc3,
-                        tags: data.tags
+                        tags: data.tags,
+                        premade: data.premade ?? null
                     }
                 ).eq(`id`, gameId).select(`id,name`).single();
                 if (error) {

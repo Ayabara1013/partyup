@@ -24,7 +24,7 @@ const supabaseInGame = {
         messagesSince: async (gameId: string, since: string | null): Promise<CachedMessage[] | null> => {
             const rows: unknown[] = [];
             let last: { updated_at: string; id: string } | null = null;
-            for (;;) {
+            for (; ;) {
                 let query = supabase.from(`game_chat_messages`).select(MESSAGE_COLUMNS).eq(`game_id`, gameId);
                 if (last) {
                     query = query.or(`updated_at.gt."${last.updated_at}",and(updated_at.eq."${last.updated_at}",id.gt.${last.id})`);
@@ -168,7 +168,22 @@ const supabaseInGame = {
                 }
                 return objectToCamel(data);
             }
-        }
+        },
+        // The GM's changes to a dice result: database functions that check the GM and the limits
+        roll: {
+            adjust: async (messageId: string, value: number, label: string | null, group: number) => {
+                const {error} = await supabase.rpc(`adjust_roll`, {
+                    p_message_id: messageId, p_value: value, p_label: label, p_group: group,
+                });
+                if (error) toast.error(error.message);
+                return !error;
+            },
+            reset: async (messageId: string) => {
+                const {error} = await supabase.rpc(`reset_roll`, {p_message_id: messageId});
+                if (error) toast.error(error.message);
+                return !error;
+            },
+        },
     }
 }
 export {supabaseInGame}

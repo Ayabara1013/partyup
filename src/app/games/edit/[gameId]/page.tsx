@@ -44,6 +44,7 @@ export default function EditGamePage({params}: PageProps) {
         sc3: !!game.sc3,
         tags: game.tags ?? [],
         isPublic: game.isPublic,
+        premade: game.premade ?? null,
     };
 
     const save = async (values: GameFormValues) => {

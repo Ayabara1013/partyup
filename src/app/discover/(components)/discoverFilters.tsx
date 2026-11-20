@@ -1,5 +1,6 @@
 import {gameSystems} from "@/lib/assets/gameSystems";
 import {safetyChecks, SAFETY_COLUMNS} from "@/lib/assets/safetyChecks";
+import SearchSelect from "@/components/ui/searchSelect";
 
 export type DiscoverFilterState = {
     search: string;
@@ -7,6 +8,7 @@ export type DiscoverFilterState = {
     systems: string[];
     safetyChecks: string[]; // sc0..sc3 columns that must be on
     hideAgeRestricted: boolean;
+    premade: string | null; // only games running this premade campaign; null = any
 };
 
 export const DEFAULT_FILTERS: DiscoverFilterState = {
@@ -15,6 +17,7 @@ export const DEFAULT_FILTERS: DiscoverFilterState = {
     systems: gameSystems.array.map((s) => s.value),
     safetyChecks: [],
     hideAgeRestricted: true,
+    premade: null,
 };
 
 type DiscoverFiltersProps = {
@@ -25,8 +28,17 @@ type DiscoverFiltersProps = {
 const toggle = (list: string[], value: string) =>
     list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
 
+// A chosen premade campaign stays only while one of the ticked systems lists it
+const keepPremade = (systems: string[], premade: string | null) =>
+    premade && gameSystems.array.some((s) => systems.includes(s.value) && s.premade.includes(premade)) ? premade : null;
+
 export default function DiscoverFilters({filters, onChange}: DiscoverFiltersProps) {
     const set = (patch: Partial<DiscoverFilterState>) => onChange({...filters, ...patch});
+
+    // The premade campaigns of the ticked systems, grouped by system
+    const premadeGroups = gameSystems.array
+        .filter((s) => filters.systems.includes(s.value) && s.premade.length > 0)
+        .map((s) => ({label: s.title, options: s.premade}));
 
     return (
         <section className="panel discover__filters">
@@ -61,11 +73,21 @@ export default function DiscoverFilters({filters, onChange}: DiscoverFiltersProp
                         <label key={system.value} className="discover-filters__check">
                             <input type="checkbox" className="checkbox checkbox-primary checkbox-sm"
                                    checked={filters.systems.includes(system.value)}
-                                   onChange={() => set({systems: toggle(filters.systems, system.value)})}/>
+                                   onChange={() => {
+                                       const systems = toggle(filters.systems, system.value);
+                                       set({systems, premade: keepPremade(systems, filters.premade)});
+                                   }}/>
                             {system.title}
                         </label>
                     )}
                 </fieldset>
+
+                {premadeGroups.length > 0 &&
+                  <div className="field">
+                      <label className="field__label" htmlFor="discover-premade">Premade campaign</label>
+                      <SearchSelect id="discover-premade" groups={premadeGroups} value={filters.premade} noneLabel="Any"
+                                    onChange={(premade) => set({premade})}/>
+                  </div>}
 
                 <fieldset className="field">
                     <legend className="field__label">Safety tools required</legend>

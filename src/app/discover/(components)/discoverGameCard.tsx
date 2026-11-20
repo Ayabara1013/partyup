@@ -42,6 +42,8 @@ export default memo(function DiscoverGameCard({game, userId}: DiscoverGameCardPr
                 <div className="discover-card__info">
                     <span className="discover-card__name card-title">{game.name}</span>
                     <span className="badge badge-ghost badge-sm">{gameSystems.valueToTitle[game.system] ?? game.system}</span>
+                    {game.premade &&
+                      <span className="badge badge-ghost badge-sm max-w-full" title={game.premade}><span className="truncate">{game.premade}</span></span>}
                     {game.ageRestriction > 10 && <span className="badge badge-warning badge-outline badge-sm">{game.ageRestriction}+</span>}
                 </div>
                 <div className="discover-card__action">

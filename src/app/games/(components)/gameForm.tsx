@@ -8,6 +8,7 @@ import {gameSystems} from "@/lib/assets/gameSystems";
 import {safetyChecks, SAFETY_COLUMNS} from "@/lib/assets/safetyChecks";
 import {firefoxNumberInputOnKeyDown} from "@/lib/util/browserFixes/firefox";
 import {SUBTLE_BUTTON} from "@/components/ui/buttonClasses";
+import SearchSelect from "@/components/ui/searchSelect";
 
 // Shape create.game / edit.game expect
 export type GameFormValues = {
@@ -22,6 +23,7 @@ export type GameFormValues = {
     sc3: boolean;
     tags: string[];
     isPublic: boolean;
+    premade: string | null; // a name from the system's premade list, or null
 };
 
 export const EMPTY_GAME: GameFormValues = {
@@ -36,9 +38,15 @@ export const EMPTY_GAME: GameFormValues = {
     sc3: false,
     tags: [],
     isPublic: true,
+    premade: null,
 };
 
 const LIMITS = {name: 80, description: 2000, minPlayers: 2, maxPlayers: 4, minAge: 10, maxAge: 99, tags: 10, tagLength: 24};
+
+const VISIBILITY = [
+    {value: true, title: `Public`, hint: `Listed on Discover until it starts. Anyone can ask to join.`},
+    {value: false, title: `Private`, hint: `Not listed. Only people with the invite link can find it and ask to join.`},
+] as const;
 
 // "Dnd, ocean ,, World" -> ["dnd", "ocean", "world"]
 function parseTags(text: string) {
@@ -93,6 +101,7 @@ export default function GameForm({title, description, initial = EMPTY_GAME, curr
     const errors = validate(draft, minPlayers);
     const shownErrors = submitted ? errors : {};
     const tagPreview = parseTags(draft.tagsText);
+    const premadeNames = gameSystems.array.find((s) => s.value === draft.system)?.premade ?? [];
 
     const set = <K extends keyof Draft>(key: K, value: Draft[K]) => setDraft((d) => ({...d, [key]: value}));
 
@@ -130,7 +139,9 @@ export default function GameForm({title, description, initial = EMPTY_GAME, curr
 
                     <div className="game-form__row">
                         <Field label="System">
-                            <select className="field__input" value={draft.system} onChange={(e) => set(`system`, e.target.value)}>
+                            {/* A premade campaign belongs to one system, so changing the system clears it */}
+                            <select className="field__input" value={draft.system}
+                                    onChange={(e) => setDraft((d) => ({...d, system: e.target.value, premade: null}))}>
                                 {gameSystems.array.map((system) =>
                                     <option key={system.value} value={system.value}>{system.title}</option>)}
                             </select>
@@ -150,6 +161,16 @@ export default function GameForm({title, description, initial = EMPTY_GAME, curr
                                    onChange={(e) => set(`ageRes`, e.target.valueAsNumber)}/>
                         </Field>
                     </div>
+
+                    {premadeNames.length > 0 &&
+                      <div className="field">
+                          <label className="field__label" htmlFor="game-premade">
+                              Premade campaign<span className="field__optional">optional</span>
+                          </label>
+                          <SearchSelect id="game-premade" groups={[{options: premadeNames}]} value={draft.premade} noneLabel="None"
+                                        onChange={(premade) => set(`premade`, premade)}/>
+                          <span className="panel__hint">Type to search. Leave on None for a homebrew game.</span>
+                      </div>}
 
                     <fieldset className="field">
                         <legend className="field__label">Safety tools <span className="field__optional">optional</span></legend>
@@ -177,14 +198,22 @@ export default function GameForm({title, description, initial = EMPTY_GAME, curr
                           </div>}
                     </Field>
 
-                    {/* Visibility is fixed during testing, so it's shown rather than offered as a disabled toggle */}
-                    <div className="field">
-                        <span className="field__label">Visibility</span>
-                        <div className="game-form__public">
-                            <span className="badge badge-primary badge-outline">{draft.isPublic ? `Public` : `Private`}</span>
-                            <span className="panel__hint">All games are public while PartyUp is in testing.</span>
+                    <fieldset className="field">
+                        <legend className="field__label">Visibility</legend>
+                        <div className="game-form__options">
+                            {VISIBILITY.map((option) =>
+                                <label key={option.title}
+                                       className={`game-form__option soft-card ${draft.isPublic === option.value ? `game-form__option--on` : ``}`}>
+                                    <input type="radio" name="visibility" className="radio radio-primary radio-sm"
+                                           checked={draft.isPublic === option.value} onChange={() => set(`isPublic`, option.value)}/>
+                                    <span className="game-form__option-text">
+                                        <span className="game-form__option-title">{option.title}</span>
+                                        <span className="panel__hint">{option.hint}</span>
+                                    </span>
+                                </label>
+                            )}
                         </div>
-                    </div>
+                    </fieldset>
                 </div>
 
                 <footer className="game-form__footer panel__footer">

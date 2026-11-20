@@ -1,8 +1,11 @@
 // Normalizes the `log` column on game_chat_messages for display.
 // New shape (command_roll edge function): {input, formula, rolled, result, total, totalsByType, groups} or {input, error}
+// The GM's changes (adjust_roll in the database) add adjustments[] and base {total, totalsByType, result}, and
+// update total, totalsByType and result; groups stay as rolled.
 // Legacy shape: Array<{rollTotal, rollLog[], label}>
 //
 // A modifier from a character tag shows its source instead of "flat": 3 (Strength)
+// After the dice lines, one line per adjustment: Circumstance +2: cover (with [part] when the roll has several)
 //
 // Display, one line per damage group, then the totals:
 //   /roll 2d20 [fire] + 3d6 + 6 [water]
@@ -23,6 +26,8 @@ type Term =
     | { kind: `flat`, sign: number, value: number, source?: string }; // source: the character tag it came from
 
 type Group = { label: string, multiplier: number, terms: Term[], total: number };
+
+type Adjustment = { kind: string, value: number, label?: string | null, group: number };
 
 function formatTotals(totalsByType: Record<string, number>) {
     return Object.entries(totalsByType)
@@ -57,6 +62,14 @@ function formatGroup(group: Group) {
     return `${left}${label} -> ${right} = ${group.total}${label}`;
 }
 
+function formatAdjustment(adjustment: Adjustment, groups: Group[]) {
+    const value = `${adjustment.value < 0 ? `-` : `+`}${Math.abs(adjustment.value)}`;
+    // Which part it went to, when the roll has several
+    const part = groups.length > 1 ? ` [${groups[adjustment.group]?.label || `untyped`}]` : ``;
+    const note = adjustment.label ? `: ${adjustment.label}` : ``;
+    return `${capitalize(adjustment.kind)} ${value}${part}${note}`;
+}
+
 export function summarizeDiceLog(log: any): DiceLogSummary | null {
     if (!log) return null;
 
@@ -75,8 +88,9 @@ export function summarizeDiceLog(log: any): DiceLogSummary | null {
     if (typeof log === `object`) {
         if (log.error) return {lines: [], totals: ``, error: String(log.error)};
         const groups: Group[] = Array.isArray(log.groups) ? log.groups : [];
+        const adjustments: Adjustment[] = Array.isArray(log.adjustments) ? log.adjustments : [];
         return {
-            lines: groups.map(formatGroup),
+            lines: [...groups.map(formatGroup), ...adjustments.map((a) => formatAdjustment(a, groups))],
             totals: formatTotals(log.totalsByType ?? {}),
             error: null
         };

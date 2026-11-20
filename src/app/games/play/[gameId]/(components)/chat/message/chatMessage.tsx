@@ -103,7 +103,7 @@ export const ChatMessage = memo(function ChatMessage(
         const canReply = canTalk && (channelName === `turn` || channelName === `open`);
 
         const options = [];
-        // System messages only get canon toggle and delete
+        // System messages only get canon toggle, pin and delete
         if (!message.system && canReply) options.push(item(`reply`, `Reply`, () => onReply(message)));
         if (isAuthor && !message.locked) options.push(item(`edit`, `Edit Message`, () => setEditing(true)));
         if (canToggleCanon) options.push(item(`canon`, isCanon ? `Remove from Canon` : `Add to Canon`, toggleCanon));
@@ -111,7 +111,8 @@ export const ChatMessage = memo(function ChatMessage(
         if (isGm && !message.system && message.playerId !== game.gmUid) {
             options.push(item(`lock`, message.locked ? `Unlock Message` : `Lock Message`, toggleLock));
         }
-        if (isGm && !message.system) {
+        // Pinning a dice result also pins its /roll message (database trigger chat_message_pin_original)
+        if (isGm) {
             options.push(item(`pin`, message.isPinned ? `Unpin Message` : `Pin Message`, togglePin));
         }
         if (isGm) options.push(item(`delete`, `Delete Message`, deleteMessage));
@@ -123,7 +124,9 @@ export const ChatMessage = memo(function ChatMessage(
         const isRollResult = !!message.system && !!dice && !dice.error;
         setContextMenu({
             style, clicked: true,
-            options: isGm && isRollResult ? <RollMenu key={e.timeStamp} items={options}/> : options,
+            options: isGm && isRollResult
+                ? <RollMenu key={e.timeStamp} items={options} messageId={message.id} log={message.log}/>
+                : options,
         });
     }
 
