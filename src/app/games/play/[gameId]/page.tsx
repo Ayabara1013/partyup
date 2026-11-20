@@ -67,7 +67,12 @@ export default function PlayPage({params}: PageProps) {
 
     // The chat: loaded once the visitor is confirmed as the GM or a player of this game
     const {messages, messagesById, reload} = useGameMessages(gameId, !!gameObject);
-    const chatWindowProps = {messages, messagesById, game: gameObject, settings, userId: user?.id}
+    // The GM's "Show deleted messages" switch (GM Tools): off each time the page opens, never on for a player
+    const [showDeleted, setShowDeleted] = useState(false);
+    const chatWindowProps = {
+        messages, messagesById, game: gameObject, settings, userId: user?.id,
+        showDeleted: showDeleted && !!gameObject && gameObject.gmUid === user?.id,
+    };
 
     // Characters: one living character per player; the GM sends dead ones to the grave and allows new ones
     const isGm = !!gameObject && gameObject.gmUid === user?.id;
@@ -169,7 +174,8 @@ export default function PlayPage({params}: PageProps) {
 
                     <div className="tool-row flex shrink-0 p-2 pt-0 gap-2">
                         {gameObject.gmUid === user?.id
-                            ? <GMTools game={gameObject} settings={settings} roster={roster} graveyard={graveyard}/>
+                            ? <GMTools game={gameObject} settings={settings} roster={roster} graveyard={graveyard}
+                                       showDeleted={showDeleted} onShowDeletedChange={setShowDeleted}/>
                             : <PlayerSettingDisplay game={gameObject} settings={settings}/>
                         }
                         <section className='panel tool-row__element'>

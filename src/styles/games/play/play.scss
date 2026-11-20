@@ -69,6 +69,17 @@
   }
 }
 
+// GM Tools bar: the "Show deleted messages" switch (gmTools.tsx)
+.gm-switch {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
 .gm-grave {
   margin-top: 0.25rem;
   font-size: 0.875rem;

@@ -24,7 +24,7 @@ export default function InvitePage({params}: PageProps) {
     useEffect(() => {
         if (!userId) return; // the auth context sends signed-out visitors to the login page
         let cancelled = false;
-        supabaseGame.get.game.fromInvite(inviteCode, userId).then((result) => {
+        supabaseGame.get.game.fromInvite(inviteCode).then((result) => {
             if (cancelled) return;
             setGame(result);
             setStatus(result ? `ready` : `missing`);

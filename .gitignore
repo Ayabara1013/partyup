@@ -43,4 +43,5 @@ yarn-error.log*
 next-env.d.ts
 /supabaseMemory/
 /fableUpdate/
+/fableUpdates2/
 /.claude/

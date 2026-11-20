@@ -90,26 +90,14 @@ const supabaseGame = {
                 }));
                 return {games: games.slice(0, pageSize), hasMore: games.length > pageSize};
             },
-            // Game for an invite link, in one call: GM, players and (with userId) whether that user
-            // already asked to join are embedded on the RPC result. Returns null if the code matches nothing.
-            fromInvite: async (inviteCode: string, userId?: string) => {
+            // Game for an invite link, in one call: GM, players and whether the signed-in user already asked to join.
+            // The function reads past the seat rules, so a started or private game still shows its players.
+            // Returns null if the code matches nothing.
+            fromInvite: async (inviteCode: string) => {
                 if (!UUID_RE.test(inviteCode)) return null;
-
-                let query = supabase.rpc(`get_game_by_invite_code`, {code: inviteCode}).select(`*,
-                    gm:user!game_gm_id_fkey (id,name,image_url),
-                    players:game_player (user:user_id (id,name,image_url)),
-                    myRequests:join_requests (user_id)`);
-                if (userId) query = query.eq(`myRequests.user_id`, userId);
-
-                const {data, error} = await query.maybeSingle();
+                const {data, error} = await supabase.rpc(`get_invite_card`, {code: inviteCode});
                 if (error || !data) return null;
-
-                const {myRequests, ...game}: any = objectToCamel(data);
-                return {
-                    ...game,
-                    players: (game.players ?? []).map((p: any) => p.user),
-                    requested: (myRequests ?? []).length > 0,
-                };
+                return objectToCamel(data);
             }
         },
     },

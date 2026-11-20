@@ -7,6 +7,7 @@ import {menuPositionStyle} from "@/components/ui/menuPosition";
 import Avatar from "@/components/ui/avatar";
 import {summarizeDiceLog} from "@/lib/supabase/util/diceLog";
 import {supabaseInGame} from "@/lib/supabase/db/inGame";
+import RollMenu from "@/app/games/play/[gameId]/(components)/chat/message/rollMenu";
 import {
     authorName, findAuthor, formatDiscordTime, gameMembers, mentionToken, previewText
 } from "@/app/games/play/[gameId]/(components)/chat/message/messageUtil";
@@ -78,7 +79,10 @@ export const ChatMessage = memo(function ChatMessage(
         await supabaseInGame.edit.message.pinned(message.id, !message.isPinned);
     }
     const deleteMessage = async () => {
-        await supabaseInGame.edit.message.delete(message.id);
+        await supabaseInGame.edit.message.delete(message.id, true);
+    }
+    const restoreMessage = async () => {
+        await supabaseInGame.edit.message.delete(message.id, false);
     }
 
     const openMessageMenu = (e: any) => {
@@ -86,6 +90,12 @@ export const ChatMessage = memo(function ChatMessage(
         const style = menuPositionStyle(e.clientX, e.clientY);
         const item = (key: string, label: string, onClick: () => void) =>
             <li className="btn btn-ghost btn-sm" onClick={onClick} key={key}>{label}</li>;
+
+        // Only the GM sees a deleted message (with "Show deleted messages" on), and can only restore it
+        if (message.deleted) {
+            if (isGm) setContextMenu({style, options: [item(`restore`, `Restore Message`, restoreMessage)], clicked: true});
+            return;
+        }
 
         // Removing canon from a message that is only in canon would leave it in no channel
         const canToggleCanon = isGm && (channelName === `turn`
@@ -108,11 +118,17 @@ export const ChatMessage = memo(function ChatMessage(
         if (options.length === 0) {
             options.push(<li className="btn btn-ghost btn-sm btn-disabled" key="no-options">No Options</li>)
         }
-        setContextMenu({style, options, clicked: true});
+        // The GM's menu on a dice result has a second step (Modify roll). A new key per right-click makes every
+        // opening start at the first level.
+        const isRollResult = !!message.system && !!dice && !dice.error;
+        setContextMenu({
+            style, clicked: true,
+            options: isGm && isRollResult ? <RollMenu key={e.timeStamp} items={options}/> : options,
+        });
     }
 
     return (
-        <div className={`msg ${header ? `msg--header` : ``} ${isMentioned ? `msg--mention` : ``}`}
+        <div className={`msg ${header ? `msg--header` : ``} ${isMentioned ? `msg--mention` : ``} ${message.deleted ? `msg--deleted` : ``}`}
              onContextMenu={openMessageMenu} data-msg-id={message.id}>
             {message.replyTo && <ReplyPreview replied={repliedMessage} game={game} onJump={onJump}/>}
             <div className="msg__gutter">
@@ -138,6 +154,7 @@ export const ChatMessage = memo(function ChatMessage(
                         <ChatMessageRenderer messageText={message.messageText} players={members}/>
                         {message.editedAt && <span className="msg__edited">(edited)</span>}
                         {message.locked && <span className="msg__locked" title="Locked">🔒</span>}
+                        {message.deleted && <span className="msg__tag msg__tag--deleted">DELETED</span>}
                     </div>
                 }
                 {dice && (dice.error

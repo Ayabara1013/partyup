@@ -47,11 +47,13 @@ export default memo(function DiscoverGameCard({game, userId}: DiscoverGameCardPr
                 <div className="discover-card__action">
                     {isGm ? <span className="badge badge-ghost">Your game</span>
                         : isPlayer ? <span className="badge badge-primary badge-outline">Joined</span>
-                            : openSeats === 0 ? <span className="badge badge-ghost">Full</span>
-                                : requested ? <span className="badge badge-ghost">Request sent</span>
-                                    : <button className="btn btn-sm btn-primary" onClick={requestToJoin} disabled={sending}>
-                                        {sending ? <span className="loading loading-spinner loading-xs"/> : `Request to join`}
-                                    </button>}
+                            // Requests to a started game are refused by the database (only shows on invite links)
+                            : game.started ? <span className="badge badge-ghost">In progress</span>
+                                : openSeats === 0 ? <span className="badge badge-ghost">Full</span>
+                                    : requested ? <span className="badge badge-ghost">Request sent</span>
+                                        : <button className="btn btn-sm btn-primary" onClick={requestToJoin} disabled={sending}>
+                                            {sending ? <span className="loading loading-spinner loading-xs"/> : `Request to join`}
+                                        </button>}
                 </div>
             </div>
 

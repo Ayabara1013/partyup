@@ -310,12 +310,32 @@ body {
     padding: 0.25rem 1rem;
     border-bottom: 1px solid oklch(var(--nc) / 0.1);
 
+    // Lets the brand shrink below its text's width, so a long name can't push the links or the account button
+    .navbar-start {
+        min-width: 0;
+    }
+
+    // "PartyUp", or the game's name on its pages (navBar.tsx). A name that doesn't fit ends in "…" until it
+    // scrolls; while it scrolls, the text moves as one block and nothing is cut off with "…".
     &__brand {
         @apply text-primary;
+        display: block;
+        min-width: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
         font-size: 1.5rem;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.05em;
+
+        &[data-scrolling] {
+            text-overflow: clip;
+
+            > span {
+                display: inline-block;
+            }
+        }
     }
 
     // Soft outlined buttons, same border and fill as the idle chat input
@@ -443,4 +463,26 @@ body {
     font-size: 0.8125rem;
     font-weight: 400;
     opacity: 0.55;
+}
+
+// "Back" at the top of a menu's second step (rollMenu.tsx): dimmer than the entries, with a line under it
+.context-menu__back {
+    position: relative;
+    gap: 0.25rem;
+    margin-bottom: 0.25rem;
+    opacity: 0.75;
+
+    &:hover {
+        opacity: 1;
+    }
+
+    &::after {
+        content: "";
+        position: absolute;
+        left: 0.5rem;
+        right: 0.5rem;
+        bottom: -0.1875rem;
+        height: 1px;
+        background-color: oklch(var(--bc) / 0.1);
+    }
 }

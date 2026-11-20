@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import {usePathname} from "next/navigation";
-import {ReactNode} from "react";
+import {ReactNode, useEffect, useRef} from "react";
 import {dirHref} from "@/lib/routing/directoy";
 import {useAuthManager} from "@/app/(context)/authContext";
 import Avatar from "@/components/ui/avatar";
@@ -12,9 +12,30 @@ const NAV_LINKS = [
     {href: dirHref.games.root, label: `Your Games`},
 ];
 
+const BRAND = `PartyUp`;
+// A game's own pages show its name in the bar and the tab
+const GAME_PAGE_RE = /^\/games\/(?:play|edit)\/([^/]+)/;
+// Long names: show the start, slide to the end, pause, jump back
+const SCROLL_HOLD_START_MS = 2000;
+const SCROLL_HOLD_END_MS = 1000;
+const SCROLL_PX_PER_SECOND = 40;
+
+type NamedGame = { id: string, name?: string };
+
 export default function NavBar() {
-    const {user, signOut} = useAuthManager()
+    const {user, signOut, gmGames, playerGames} = useAuthManager()
     const pathname = usePathname();
+    const gameName = gamePageName(pathname, gmGames, playerGames);
+
+    // The tab shows the game too; the layout's "PartyUp" comes back when leaving
+    useEffect(() => {
+        if (!gameName) return;
+        const previous = document.title;
+        document.title = `${gameName} | ${BRAND}`;
+        return () => {
+            document.title = previous;
+        };
+    }, [gameName]);
 
     // Daisy dropdowns stay open while focused; blurring closes them after a choice
     function closeMenu() {
@@ -24,7 +45,7 @@ export default function NavBar() {
     return (
         <nav className="app-nav navbar">
             <div className="navbar-start">
-                <Link href={dirHref.home} className="app-nav__brand">PartyUp</Link>
+                <NavBrand gameName={gameName}/>
             </div>
 
             <div className='navbar-center hidden lg:flex'>
@@ -62,6 +83,76 @@ export default function NavBar() {
             </div>
         </nav>
     )
+}
+
+// The game's name on its play and edit pages, from the lists the auth context already holds; null elsewhere,
+// while the lists load, or for a game the visitor is not in
+function gamePageName(pathname: string, gmGames: NamedGame[], playerGames: NamedGame[]) {
+    const gameId = GAME_PAGE_RE.exec(pathname)?.[1];
+    if (!gameId) return null;
+    const game = gmGames.find((g) => g.id === gameId) ?? playerGames.find((g) => g.id === gameId);
+    return game?.name || null;
+}
+
+// "PartyUp", or the game's name. A name wider than its space scrolls (SCROLL_*); with reduced motion it is cut off
+// with an ellipsis instead. The state sits on the link as data-scrolling, which the stylesheet reads.
+function NavBrand({gameName}: { gameName: string | null }) {
+    const linkRef = useRef<HTMLAnchorElement>(null);
+    const textRef = useRef<HTMLSpanElement>(null);
+
+    useEffect(() => {
+        const link = linkRef.current;
+        const text = textRef.current;
+        if (!link || !text) return;
+        const reduceMotion = window.matchMedia(`(prefers-reduced-motion: reduce)`);
+        let animation: Animation | null = null;
+        let distance = 0;
+        let active = true;
+
+        const update = () => {
+            if (!active) return;
+            const overflow = text.getBoundingClientRect().width - link.getBoundingClientRect().width;
+            const next = reduceMotion.matches || overflow <= 0.5 ? 0 : Math.ceil(overflow);
+            if (next === distance) return;
+            distance = next;
+            animation?.cancel();
+            animation = null;
+            link.toggleAttribute(`data-scrolling`, distance > 0);
+            if (!distance) return;
+
+            const slideMs = distance / SCROLL_PX_PER_SECOND * 1000;
+            const totalMs = SCROLL_HOLD_START_MS + slideMs + SCROLL_HOLD_END_MS;
+            const start = `translateX(0)`;
+            const end = `translateX(-${distance}px)`;
+            // Each repeat starts again at 0, which is the jump back
+            animation = text.animate([
+                {transform: start, offset: 0},
+                {transform: start, offset: SCROLL_HOLD_START_MS / totalMs},
+                {transform: end, offset: (SCROLL_HOLD_START_MS + slideMs) / totalMs},
+                {transform: end, offset: 1},
+            ], {duration: totalMs, iterations: Infinity});
+        };
+
+        const observer = new ResizeObserver(update);
+        observer.observe(link);
+        reduceMotion.addEventListener(`change`, update);
+        document.fonts.ready.then(update); // the web font changes the name's width once it arrives
+        update();
+        return () => {
+            active = false;
+            observer.disconnect();
+            reduceMotion.removeEventListener(`change`, update);
+            animation?.cancel();
+            link.removeAttribute(`data-scrolling`);
+        };
+    }, [gameName]);
+
+    return (
+        <Link ref={linkRef} href={dirHref.home} className="app-nav__brand"
+              title={gameName ? `${BRAND} home` : undefined}>
+            <span ref={textRef}>{gameName ?? BRAND}</span>
+        </Link>
+    );
 }
 
 function NavLink({href, active, children}: { href: string, active: boolean, children: ReactNode }) {

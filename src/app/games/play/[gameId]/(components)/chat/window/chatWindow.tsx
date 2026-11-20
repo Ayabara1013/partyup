@@ -1,7 +1,7 @@
 'use client'
 
 import '@/styles/games/play/chatWindow.scss';
-import {memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
+import {Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import {createdMs} from "@/lib/supabase/util/msgArrayManipulation";
 import type {CachedMessage, ChatChannel} from "@/lib/util/localStorage";
 import {ChatMessage} from "@/app/games/play/[gameId]/(components)/chat/message/chatMessage";
@@ -24,6 +24,14 @@ const NEAR_TOP_PX = 4;
 // messages are added at the end or deleted
 type RowStart = { ms: number, id: string };
 const atOrAfter = (m: CachedMessage, s: RowStart) => createdMs(m) > s.ms || (createdMs(m) === s.ms && m.id >= s.id);
+const after = (m: CachedMessage, s: RowStart) => createdMs(m) > s.ms || (createdMs(m) === s.ms && m.id > s.id);
+
+// Index of the first row after a position (rows.length if none). The rows are sorted, so it walks back from the end.
+function firstAfter(rows: { message: CachedMessage }[], from: RowStart) {
+    let i = rows.length;
+    while (i > 0 && after(rows[i - 1].message, from)) i--;
+    return i;
+}
 
 // Scrolls a drawn message into the middle of its chat and flashes it
 function flashRow(area: HTMLElement | null, messageId: string) {
@@ -47,11 +55,12 @@ type ChatWindowProps = {
     settings: any;
     name: ChatChannel;
     userId: string | undefined;
+    showDeleted: boolean;                     // the GM's switch: keep deleted messages (drawn faded)
 };
 
 // memo: a refresh of the game lists (or any other page render that leaves these props alone) skips the chat
 export const ChatWindow = memo(function ChatWindow(
-    {messages, messagesById, game, settings, name, userId}: ChatWindowProps
+    {messages, messagesById, game, settings, name, userId, showDeleted}: ChatWindowProps
 ) {
     const windowEnd = useRef<HTMLDivElement | null>(null);
     const [replyTo, setReplyTo] = useState<any>(null);
@@ -79,7 +88,7 @@ export const ChatWindow = memo(function ChatWindow(
     // This chat's messages in order (the list is already sorted), each flagged with whether it starts a new group
     // (shows a header). The original objects are kept so ChatMessage's memo can skip unchanged rows.
     const rows = useMemo(() => {
-        const channelMessages = messages.filter((m) => m.channel.includes(name) && !m.deleted);
+        const channelMessages = messages.filter((m) => m.channel.includes(name) && (showDeleted || !m.deleted));
         return channelMessages.map((m, i) => {
             const prev = channelMessages[i - 1];
             const gap = prev ? createdMs(m) - createdMs(prev) : 0;
@@ -87,7 +96,7 @@ export const ChatWindow = memo(function ChatWindow(
                 || gap > GROUP_GAP_MS || !!m.replyTo;
             return {message: m, header};
         });
-    }, [messages, name]);
+    }, [messages, name, showDeleted]);
 
     // null: the last FIRST_ROWS rows, sliding with new messages while you follow them. Set the first time you scroll
     // up (and moved up when earlier rows are drawn or you jump), so new messages don't push rows out above you.
@@ -100,6 +109,39 @@ export const ChatWindow = memo(function ChatWindow(
     }, [rows, startAt]);
     const startOf = (i: number): RowStart => ({ms: createdMs(rows[i].message), id: rows[i].message.id});
 
+    // Set when you leave the bottom: the last row then. Rows after it are new to you; the button shows while it's set.
+    const [awayFrom, setAwayFrom] = useState<RowStart | null>(null);
+
+    // Messages that became the newest in this chat since you left the bottom, not counting your own. Edits and pins
+    // change no row; a new message deleted before you're back leaves the rows, so it drops out of the count.
+    const newCount = useMemo(() => {
+        if (!awayFrom) return 0;
+        let count = 0;
+        for (let i = rows.length - 1; i >= 0 && after(rows[i].message, awayFrom); i--) {
+            const m = rows[i].message;
+            if (m.system || !userId || m.playerId !== userId) count++;
+        }
+        return count;
+    }, [rows, awayFrom, userId]);
+
+    // The line: above the first new row while you're away; it goes once you're back at the bottom
+    const newLineIndex = useMemo(() => {
+        if (!awayFrom || newCount === 0) return -1;
+        const i = firstAfter(rows, awayFrom);
+        return i < rows.length ? i : -1;
+    }, [rows, awayFrom, newCount]);
+
+    // Back at the bottom (scrolled there, or the button): the button and the line go
+    const backAtBottom = () => {
+        followNew.current = true;
+        if (awayFrom) setAwayFrom(null);
+    };
+
+    const toLatest = () => {
+        backAtBottom();
+        windowEnd.current?.scrollIntoView({behavior: `smooth`, block: `start`});
+    };
+
     // Scroll position before earlier rows are drawn above, to keep the view where it was
     const restoreFrom = useRef<{ height: number, top: number } | null>(null);
 
@@ -107,8 +149,12 @@ export const ChatWindow = memo(function ChatWindow(
         const area = messageAreaRef.current;
         if (!area) return;
         const up = area.scrollTop < lastScrollTop.current;
-        if (area.scrollHeight - area.scrollTop - area.clientHeight < NEAR_BOTTOM_PX) followNew.current = true;
-        else if (up) followNew.current = false;
+        if (area.scrollHeight - area.scrollTop - area.clientHeight < NEAR_BOTTOM_PX) backAtBottom();
+        else if (up) {
+            followNew.current = false;
+            // Leaving the bottom: what comes after the current last row is new (set once per trip up)
+            if (!awayFrom && rows.length > 0) setAwayFrom(startOf(rows.length - 1));
+        }
         lastScrollTop.current = area.scrollTop;
         if (!up || rows.length === 0) return;
 
@@ -180,15 +226,28 @@ export const ChatWindow = memo(function ChatWindow(
                 <PinnedChatMessages pinned={pinned} game={game} isGm={isGm} onJump={jumpToMessage}/>
             </header>
 
-            <div className={`message-area chat-window__messages thin-scrollbar`} ref={messageAreaRef} onScroll={onScroll}>
-                {/* The first drawn row always shows its header, even if it was grouped under an earlier one */}
-                {rows.slice(start).map(({message, header}, i) =>
-                    <ChatMessage key={message.id} message={message} header={header || i === 0} game={game}
-                                 userId={userId} channelName={name} canTalk={canTalk} onReply={setReplyTo}
-                                 onJump={jumpToMessage}
-                                 repliedMessage={message.replyTo ? messagesById.get(message.replyTo) : undefined}/>
-                )}
-                <div ref={windowEnd}/>
+            <div className={`chat-window__body`}>
+                <div className={`message-area chat-window__messages thin-scrollbar`} ref={messageAreaRef} onScroll={onScroll}>
+                    {/* The first drawn row, and the row under the "New messages" line, always show their header */}
+                    {rows.slice(start).map(({message, header}, i) =>
+                        <Fragment key={message.id}>
+                            {start + i === newLineIndex && <div className={`chat-window__new-line`}>New messages</div>}
+                            <ChatMessage message={message} header={header || i === 0 || start + i === newLineIndex}
+                                         game={game} userId={userId} channelName={name} canTalk={canTalk}
+                                         onReply={setReplyTo} onJump={jumpToMessage}
+                                         repliedMessage={message.replyTo ? messagesById.get(message.replyTo) : undefined}/>
+                        </Fragment>
+                    )}
+                    <div ref={windowEnd}/>
+                </div>
+
+                {awayFrom &&
+                  <button type="button" onClick={toLatest}
+                          className={`chat-window__latest ${newCount > 0 ? `chat-window__latest--new` : ``}`}
+                          aria-label={newCount > 0 ? `${newCount} new, jump to the latest message` : `Jump to the latest message`}>
+                      <ArrowDownIcon/>
+                      <span aria-live="polite">{newCount > 0 && `${newCount} new message${newCount === 1 ? `` : `s`}`}</span>
+                  </button>}
             </div>
 
             <div className={`chat-window__composer`}>
@@ -201,3 +260,14 @@ export const ChatWindow = memo(function ChatWindow(
             </div>
         </section>)
 });
+
+// Lucide "arrow-down" icon (ISC license)
+function ArrowDownIcon() {
+    return (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+             strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M12 5v14"/>
+            <path d="m19 12-7 7-7-7"/>
+        </svg>
+    );
+}

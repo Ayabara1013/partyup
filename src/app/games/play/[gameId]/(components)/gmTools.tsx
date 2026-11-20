@@ -10,9 +10,11 @@ type GMToolsProps = {
     settings: any;
     roster: RosterEntry[];
     graveyard: GraveCharacter[];
+    showDeleted: boolean;
+    onShowDeletedChange: (on: boolean) => void;
 };
 
-export default function GMTools({game, settings, roster, graveyard}: GMToolsProps) {
+export default function GMTools({game, settings, roster, graveyard, showDeleted, onShowDeletedChange}: GMToolsProps) {
     const players: any[] = game.players ?? [];
     const setContextMenu = useContextMenuSetter();
 
@@ -66,6 +68,12 @@ export default function GMTools({game, settings, roster, graveyard}: GMToolsProp
                     <span className='panel__name'>GM Tools</span>
                     <span className='panel__desc'>Click a player for options</span>
                 </div>
+                {/* Shows deleted messages in all three chats, on the GM's screen only */}
+                <label className="gm-switch">
+                    <span>Show deleted messages</span>
+                    <input type="checkbox" className="toggle toggle-primary toggle-sm" checked={showDeleted}
+                           onChange={(e) => onShowDeletedChange(e.target.checked)}/>
+                </label>
             </header>
             <div className='panel__body'>
                 {players.length === 0

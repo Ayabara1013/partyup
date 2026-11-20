@@ -157,13 +157,13 @@ const supabaseInGame = {
                 }
                 return objectToCamel(data);
             },
-            delete: async (messageId: string) => {
-                // Soft delete: the row stays, the UI filters out `deleted` messages
+            // Soft delete (true) or restore (false): the row stays; the UI hides `deleted` messages unless the GM shows them
+            delete: async (messageId: string, deleted: boolean) => {
                 const {data, error} = await supabase.from(`game_chat_messages`)
-                    .update({deleted: true})
+                    .update({deleted})
                     .eq(`id`, messageId).select(`id`).single();
                 if (error) {
-                    toast.error(`Could not delete message.`);
+                    toast.error(`Could not ${deleted ? `delete` : `restore`} message.`);
                     return null;
                 }
                 return objectToCamel(data);
